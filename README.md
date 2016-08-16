@@ -5,6 +5,6 @@ A thresher is used to help break the grain from the chaff.  This project will do
 
 Keeping unused code is like keeping clothes in your closet that you do not fit in.  Even if you do fit into them again what are the changes that they will be of a style you will want to wear.
 
-Before deleting any of the code identified by this project please take precautionary steps to make sure you have a current backup and recovery plan in place.  If you need help to put discipline around this process feel free to contact me @AgileSchell and I will try to help.
+Before deleting any of the code identified by this project please take precautionary steps to make sure you have a current backup and recovery plan in place.  If you need help to put discipline around this process feel free to contact me [@AgileSchell](https://twitter.com/agileschell).
 
 Every line of removed code counts….or doesn't count.
