@@ -102,7 +102,7 @@ BEGIN
          SELECT DB_NAME(database_id) database_name, OBJECT_NAME(object_id, database_id) procedure_name, plan_handle, cached_time, last_execution_time, execution_count
          FROM sys.dm_exec_procedure_stats
          WHERE OBJECT_NAME(object_id, database_id) NOT LIKE 'MSmerge%'
-         AND DB_NAME(database_id) NOT IN ('msdb', 'master', 'distribution')
+         AND DB_NAME(database_id) NOT IN ('msdb', 'master', 'model', 'tempdb')
          AND DB_NAME(database_id) IS NOT NULL
      ) AS dmv
      ON ps.plan_handle = dmv.plan_handle AND ps.cached_time = dmv.cached_time
