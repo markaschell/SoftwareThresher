@@ -75,6 +75,7 @@ CREATE TABLE [dbo].[performance_stats](
 	[id] [int] IDENTITY(1,1) NOT NULL,
 	[database_name] [sysname] NOT NULL,
 	[object_name] [sysname] NOT NULL,
+        [type] [char](2) NOT NULL,
 	[plan_handle] [varbinary](64) NULL,
 	[cached_time] [datetime] NULL,
 	[last_execution_time] [datetime] NULL,
@@ -99,11 +100,20 @@ AS
 BEGIN
      MERGE history.dbo.performance_stats ps
      USING (
-         SELECT DB_NAME(database_id) database_name, OBJECT_NAME(object_id, database_id) procedure_name, plan_handle, cached_time, last_execution_time, execution_count
+         SELECT DB_NAME(database_id) database_name, OBJECT_NAME(object_id, database_id) procedure_name, type, plan_handle, cached_time, last_execution_time, execution_count
          FROM sys.dm_exec_procedure_stats
          WHERE OBJECT_NAME(object_id, database_id) NOT LIKE 'MSmerge%'
          AND DB_NAME(database_id) NOT IN ('msdb', 'master', 'model', 'tempdb')
          AND DB_NAME(database_id) IS NOT NULL
+-- BEGIN IF SQL SERVER 2016
+         UNION  
+         SELECT DB_NAME(database_id) database_name, OBJECT_NAME(object_id, database_id) procedure_name, type, plan_handle, cached_time, last_execution_time, execution_count
+         FROM sys.dm_exec_function_stats
+         WHERE OBJECT_NAME(object_id, database_id) NOT LIKE 'MSmerge%'
+         AND DB_NAME(database_id) NOT IN ('msdb', 'master', 'model', 'tempdb')
+         AND DB_NAME(database_id) IS NOT NULL
+-- END IF SQL SERVER 2016
+-- add dm_exec_trigger_stats?
      ) AS dmv
      ON ps.plan_handle = dmv.plan_handle AND ps.cached_time = dmv.cached_time
      WHEN MATCHED THEN
@@ -112,7 +122,7 @@ BEGIN
              ps.execution_count = dmv.execution_count
      WHEN NOT MATCHED
      THEN INSERT VALUES
-         (dmv.database_name, dmv.procedure_name, dmv.plan_handle, dmv.cached_time, dmv.last_execution_time, dmv.execution_count);
+         (dmv.database_name, dmv.procedure_name, dmv.type, dmv.plan_handle, dmv.cached_time, dmv.last_execution_time, dmv.execution_count);
 END
  
 GO
