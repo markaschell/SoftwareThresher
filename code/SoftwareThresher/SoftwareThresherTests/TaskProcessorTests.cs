@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher;
 using SoftwareThresher.Configuration;
+using SoftwareThresher.Observations;
 using SoftwareThresher.Tasks;
 
 namespace SoftwareThresherTests
@@ -27,14 +28,19 @@ namespace SoftwareThresherTests
         }
 
         [TestMethod]
-        public void RunOneTask()
+        public void RunMultipleTasks()
         {
+            var task2 = Substitute.For<Task>();
+
             configurationLoader.Load().Returns(configuration);
-            configuration.Tasks.Returns(new List<Task> { task });
+            configuration.Tasks.Returns(new List<Task> { task, task2 });
+
+            var task1Observations = new List<Observation>();
+            task.Execute(Arg.Is<List<Observation>>(l => l.Count == 0)).Returns(task1Observations);
 
             taskProcessor.Run();
 
-            task.Received().Execute();
+            task2.Received().Execute(task1Observations);
         }
     }
 }

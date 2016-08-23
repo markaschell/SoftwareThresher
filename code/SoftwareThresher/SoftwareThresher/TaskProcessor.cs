@@ -1,5 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
 using SoftwareThresher.Configuration;
+using SoftwareThresher.Observations;
 
 namespace SoftwareThresher
 {
@@ -20,7 +21,11 @@ namespace SoftwareThresher
         {
             var configuration = configurationLoader.Load();
 
-            configuration.Tasks.First().Execute();
+            var observations = new List<Observation>();
+            foreach(var task in configuration.Tasks)
+            {
+                observations = task.Execute(observations);
+            }
         }
     }
 }

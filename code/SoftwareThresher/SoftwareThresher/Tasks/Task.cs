@@ -1,7 +1,10 @@
-﻿namespace SoftwareThresher.Tasks
+﻿using System.Collections.Generic;
+using SoftwareThresher.Observations;
+
+namespace SoftwareThresher.Tasks
 {
     public interface Task
     {
-        void Execute();
+        List<Observation> Execute(List<Observation> observations);
     }
 }
