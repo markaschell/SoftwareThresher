@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareThresher", "Softwar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareThresherTests", "SoftwareThresherTests\SoftwareThresherTests.csproj", "{3F441A52-9094-4243-88EA-CAF5B666EB4E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareThresherIntegrationTests", "SoftwareThresherIntegrationTests\SoftwareThresherIntegrationTests.csproj", "{E1B3C5A7-9889-458F-A2C6-BABB737D2270}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{73DA6AF2-490D-49F8-BEAD-5191C05AC150}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{3F441A52-9094-4243-88EA-CAF5B666EB4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F441A52-9094-4243-88EA-CAF5B666EB4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F441A52-9094-4243-88EA-CAF5B666EB4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1B3C5A7-9889-458F-A2C6-BABB737D2270}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1B3C5A7-9889-458F-A2C6-BABB737D2270}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1B3C5A7-9889-458F-A2C6-BABB737D2270}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1B3C5A7-9889-458F-A2C6-BABB737D2270}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73DA6AF2-490D-49F8-BEAD-5191C05AC150}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73DA6AF2-490D-49F8-BEAD-5191C05AC150}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73DA6AF2-490D-49F8-BEAD-5191C05AC150}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73DA6AF2-490D-49F8-BEAD-5191C05AC150}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
