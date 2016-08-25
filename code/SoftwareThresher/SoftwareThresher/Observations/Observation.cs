@@ -2,5 +2,6 @@
 {
     public interface Observation
     {
+        bool Passed { get; }
     }
 }

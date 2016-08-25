@@ -72,6 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configurations\" />
+    <Folder Include="Reporting\" />
     <Folder Include="Tasks\" />
   </ItemGroup>
   <Choose>
