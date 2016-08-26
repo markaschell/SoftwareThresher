@@ -1,10 +1,12 @@
-﻿namespace SoftwareThresher
+﻿using System.Linq;
+
+namespace SoftwareThresher
 {
     class Program
     {
         static void Main(string[] args)
         {
-            new TaskProcessor().Run();
+            new TaskProcessor().Run(args.First());
         }
     }
 }

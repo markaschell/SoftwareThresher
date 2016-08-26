@@ -9,29 +9,36 @@ namespace SoftwareThresher
     public class TaskProcessor
     {
         IConfigurationLoader configurationLoader;
-        IReportFactory reportFactory;
+        IReport report;
 
-        public TaskProcessor(IConfigurationLoader configurationLoader, IReportFactory reportFactory)
+        public TaskProcessor(IConfigurationLoader configurationLoader, IReport report)
         {
             this.configurationLoader = configurationLoader;
-            this.reportFactory = reportFactory;
+            this.report = report;
         }
 
-        public TaskProcessor() : this(new ConfigurationLoader(), new ReportFactory())
+        public TaskProcessor() : this(new ConfigurationLoader(), new Report())
         {
         }
 
-        public void Run()
+        public void Run(string configurationFilename)
         {
-            var configuration = configurationLoader.Load();
-            var report = reportFactory.Create();
+            var configuration = configurationLoader.Load(configurationFilename);
+            report.Start(configurationFilename);
 
-            var observations = new List<Observation>();
-            foreach(var task in configuration.Tasks)
+            try
             {
-                observations = task.Execute(observations.Where(o => o.Passed).ToList());
+                var observations = new List<Observation>();
+                foreach (var task in configuration.Tasks)
+                {
+                    observations = task.Execute(observations.Where(o => o.Passed).ToList());
 
-                report.WriteResults(task.ReportTitleForErrors, observations.Where(o => !o.Passed).ToList());
+                    report.WriteResults(task.ReportTitleForErrors, observations.Where(o => !o.Passed).ToList());
+                }
+            }
+            finally
+            {
+                report.Finialize();
             }
         }
     }
