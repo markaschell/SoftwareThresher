@@ -80,8 +80,8 @@ namespace SoftwareThresherTests
             Received.InOrder(() =>
             {
                 report.Start(configurationnFilename);
-                report.WriteResults(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation));
-                report.Finialize();
+                report.WriteResults(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation), 2);
+                report.Complete();
             });
         }
 
@@ -102,7 +102,7 @@ namespace SoftwareThresherTests
             }
             catch (Exception e)
             {
-                report.Received().Finialize();
+                report.Received().Complete();
 
                 Assert.AreSame(exception, e);
             }

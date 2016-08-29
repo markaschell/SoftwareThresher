@@ -53,11 +53,15 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+          <Private>False</Private>
+        </Reference>
       </ItemGroup>
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Reporting\ReportDataTests.cs" />
+    <Compile Include="Reporting\ReportTests.cs" />
     <Compile Include="TaskProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -72,7 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Configurations\" />
-    <Folder Include="Reporting\" />
+    <Folder Include="Observations\" />
     <Folder Include="Tasks\" />
   </ItemGroup>
   <Choose>

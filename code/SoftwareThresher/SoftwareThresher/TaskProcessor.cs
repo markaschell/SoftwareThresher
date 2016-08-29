@@ -33,12 +33,12 @@ namespace SoftwareThresher
                 {
                     observations = task.Execute(observations.Where(o => o.Passed).ToList());
 
-                    report.WriteResults(task.ReportTitleForErrors, observations.Where(o => !o.Passed).ToList());
+                    report.WriteResults(task.ReportTitleForErrors, observations.Where(o => !o.Passed).ToList(), observations.Count);
                 }
             }
             finally
             {
-                report.Finialize();
+                report.Complete();
             }
         }
     }

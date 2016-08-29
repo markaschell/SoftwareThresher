@@ -3,8 +3,8 @@ using SoftwareThresher.Tasks;
 
 namespace SoftwareThresher.Configuration
 {
-    public class Configuration
+    public interface Configuration
     {
-        public List<Task> Tasks { get; }
+        List<Task> Tasks { get; }
     }
 }
