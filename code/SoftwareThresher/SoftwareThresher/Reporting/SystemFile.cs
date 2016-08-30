@@ -26,7 +26,6 @@ namespace SoftwareThresher.Reporting
         public void Close()
         {
             streamWriter.Close();
-            streamWriter.Dispose();
             streamWriter = null;
         }
     }

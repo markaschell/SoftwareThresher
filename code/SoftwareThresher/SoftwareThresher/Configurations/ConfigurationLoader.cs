@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SoftwareThresher.Configuration
+namespace SoftwareThresher.Configurations
 {
     public interface IConfigurationLoader
     {
@@ -9,6 +9,17 @@ namespace SoftwareThresher.Configuration
 
     public class ConfigurationLoader : IConfigurationLoader
     {
+        IXmlDocumentReader xmlDocumentReader;
+
+        public ConfigurationLoader(IXmlDocumentReader xmlDocumentReader)
+        {
+            this.xmlDocumentReader = xmlDocumentReader;
+        }
+
+        public ConfigurationLoader() : this(new XmlDocumentReader())
+        {
+        }
+
         public Configuration Load(string filename)
         {
             throw new NotImplementedException();

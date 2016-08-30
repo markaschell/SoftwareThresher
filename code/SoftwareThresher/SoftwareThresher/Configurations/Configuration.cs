@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SoftwareThresher.Tasks;
 
-namespace SoftwareThresher.Configuration
+namespace SoftwareThresher.Configurations
 {
     public interface Configuration
     {
