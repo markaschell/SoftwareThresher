@@ -45,6 +45,8 @@
   <ItemGroup>
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationLoader.cs" />
+    <Compile Include="Configurations\XmlDocument.cs" />
+    <Compile Include="Configurations\XmlTask.cs" />
     <Compile Include="Observations\Observation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

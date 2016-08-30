@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher;
-using SoftwareThresher.Configuration;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
 using SoftwareThresher.Tasks;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SoftwareThresher.Configuration;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
 
