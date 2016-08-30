@@ -40,6 +40,7 @@ namespace SoftwareThresherTests.Reporting
                 file.Create(reportName + ".html");
                 file.Write("<html><head></head><body>");
                 file.Write(time);
+                file.Write("");
             });
         }
 
@@ -51,7 +52,21 @@ namespace SoftwareThresherTests.Reporting
 
             report.WriteResults(header, new List<Observation> { observation }, 3);
 
-            file.Received().Write("<h3>" + header + "</h3> - 1 of 3");
+            file.Received().Write("<h3>" + header + "</h3> (1 of 3)");
+        }
+
+        [TestMethod]
+        public void WriteResults_ObservationData()
+        {
+            var name = "Issue";
+            var location = "It is here";
+            var observation = Substitute.For<Observation>();
+            observation.Name.Returns(name);
+            observation.Location.Returns(location);
+
+            report.WriteResults("", new List<Observation> { observation }, 0);
+
+            file.Received().Write(name + " - " + location);
         }
 
         [TestMethod]
@@ -61,7 +76,7 @@ namespace SoftwareThresherTests.Reporting
 
             report.WriteResults("", new List<Observation> { observation, observation }, 0);
 
-            file.Received(3).Write(Arg.Any<string>());
+            file.Received(4).Write(Arg.Any<string>());
         }
 
         [TestMethod]

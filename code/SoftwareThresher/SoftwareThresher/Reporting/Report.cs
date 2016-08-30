@@ -32,6 +32,7 @@ namespace SoftwareThresher.Reporting
 
             file.Write("<html><head></head><body>");
             file.Write(reportData.GetTimestamp());
+            file.Write("");
         }
 
         public void WriteResults(string title, List<Observation> failedObservations, int totalObservations)
@@ -41,13 +42,14 @@ namespace SoftwareThresher.Reporting
                 return;
             }
 
-            file.Write(string.Format("<h3>{0}</h3> - {1} of {2}", title, failedObservations.Count, totalObservations));
+            file.Write(string.Format("<h3>{0}</h3> ({1} of {2})", title, failedObservations.Count, totalObservations));
 
             foreach(var observation in failedObservations)
             {
-                // TODO
-                file.Write("");
+                file.Write(string.Format("{0} - {1}", observation.Name, observation.Location));
             }
+
+            file.Write("");
         }
 
         public void Complete()
