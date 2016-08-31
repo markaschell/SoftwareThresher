@@ -15,7 +15,7 @@ namespace SoftwareThresherTests
     public class TaskProcessorTests
     {
         IConfigurationLoader configurationLoader;
-        Configuration configuration;
+        IConfiguration configuration;
         Task task;
 
         IReport report;
@@ -26,7 +26,7 @@ namespace SoftwareThresherTests
         public void Setup()
         {
             configurationLoader = Substitute.For<IConfigurationLoader>();
-            configuration = Substitute.For<Configuration>();
+            configuration = Substitute.For<IConfiguration>();
             task = Substitute.For<Task>();
 
             report = Substitute.For<IReport>();

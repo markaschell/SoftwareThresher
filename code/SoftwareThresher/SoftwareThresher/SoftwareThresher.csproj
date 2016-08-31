@@ -54,6 +54,7 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Reporting\SystemFile.cs" />
     <Compile Include="TaskProcessor.cs" />
+    <Compile Include="Tasks\FindWindowsFiles.cs" />
     <Compile Include="Tasks\Task.cs" />
   </ItemGroup>
   <ItemGroup>

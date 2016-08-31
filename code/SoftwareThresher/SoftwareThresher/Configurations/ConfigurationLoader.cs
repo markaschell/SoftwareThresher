@@ -1,10 +1,11 @@
 ﻿using System;
+using SoftwareThresher.Tasks;
 
 namespace SoftwareThresher.Configurations
 {
     public interface IConfigurationLoader
     {
-        Configuration Load(string filename);
+        IConfiguration Load(string filename);
     }
 
     public class ConfigurationLoader : IConfigurationLoader
@@ -20,9 +21,24 @@ namespace SoftwareThresher.Configurations
         {
         }
 
-        public Configuration Load(string filename)
+        public IConfiguration Load(string filename)
         {
-            throw new NotImplementedException();
+            var configuration = new Configuration();
+
+            xmlDocumentReader.Open(filename);
+
+            var xmlTask = xmlDocumentReader.GetNextTask();
+            while (xmlTask != null)
+            {
+                var task = Activator.CreateInstance(null, "SoftwareThresher.Tasks." + xmlTask.Name).Unwrap() as Task;
+                configuration.Tasks.Add(task);
+
+                xmlTask = xmlDocumentReader.GetNextTask();
+            }
+
+            xmlDocumentReader.Close();
+
+            return configuration;
         }
     }
 }

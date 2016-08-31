@@ -24,13 +24,16 @@ namespace SoftwareThresher.Configurations
 
         public XmlTask GetNextTask()
         {
+            if (!xmlReader.IsStartElement())
+                return null;
+
             var xmlTask = new XmlTask { Name = xmlReader.Name };
 
             for (var i = 0; i < xmlReader.AttributeCount; i++)
             {
                 xmlReader.MoveToAttribute(i);
                 xmlTask.Attributes.Add(xmlReader.Name, xmlReader.Value);
-            } 
+            }
 
             xmlReader.MoveToElement();
             xmlReader.ReadStartElement();

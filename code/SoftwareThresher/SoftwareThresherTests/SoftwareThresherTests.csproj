@@ -60,6 +60,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Configurations\ConfigurationLoaderTests.cs" />
     <Compile Include="Reporting\ReportDataTests.cs" />
     <Compile Include="Reporting\ReportTests.cs" />
     <Compile Include="TaskProcessorTests.cs" />
@@ -75,7 +76,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Configurations\" />
     <Folder Include="Observations\" />
     <Folder Include="Tasks\" />
   </ItemGroup>
