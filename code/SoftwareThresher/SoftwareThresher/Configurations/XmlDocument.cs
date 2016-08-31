@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System;
+using System.Xml;
 
 namespace SoftwareThresher.Configurations
 {
@@ -16,6 +17,11 @@ namespace SoftwareThresher.Configurations
 
         public void Open(string filename)
         {
+            if (xmlReader != null)
+            {
+                throw new InvalidOperationException("Opening an xml document while the last one is still open.");
+            }
+
             xmlReader = XmlReader.Create(filename);
 
             xmlReader.ReadToFollowing("tasks");

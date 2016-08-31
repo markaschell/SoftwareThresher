@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace SoftwareThresher.Reporting
 {
@@ -15,6 +16,11 @@ namespace SoftwareThresher.Reporting
 
         public void Create(string filename)
         {
+            if (streamWriter != null)
+            {
+                throw new InvalidOperationException("Creating a document when the last one is still open.");
+            }
+
             streamWriter = new StreamWriter(filename);
             streamWriter.AutoFlush = true;
         }
@@ -23,6 +29,7 @@ namespace SoftwareThresher.Reporting
         {
             streamWriter.WriteLineAsync(text);
         }
+
         public void Close()
         {
             streamWriter.Close();
