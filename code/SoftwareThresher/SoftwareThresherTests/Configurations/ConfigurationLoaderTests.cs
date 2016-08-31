@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Configurations;
@@ -39,19 +40,19 @@ namespace SoftwareThresherTests.Configurations
         [TestMethod]
         public void Start_OneTask()
         {
-            var xmlTask = new XmlTask { Name = "FindWindowsFiles" };
-            xmlDocumentReader.GetNextTask().Returns(xmlTask, (XmlTask)null);
+            var taskType = typeof(FindWindowsFiles);
+            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
 
             var result = configurationLoader.Load("");
 
             Assert.AreEqual(1, result.Tasks.Count);
-            Assert.AreEqual(typeof(FindWindowsFiles), result.Tasks.First().GetType());
+            Assert.AreEqual(taskType, result.Tasks.First().GetType());
         }
 
         [TestMethod]
         public void Start_MultipleTasks()
         {
-            var xmlTask = new XmlTask { Name = "FindWindowsFiles" };
+            var xmlTask = new XmlTask { Name = typeof(FindWindowsFiles).Name };
             xmlDocumentReader.GetNextTask().Returns(xmlTask, xmlTask, null);
 
             var result = configurationLoader.Load("");
@@ -59,6 +60,24 @@ namespace SoftwareThresherTests.Configurations
             xmlDocumentReader.Received(3).GetNextTask();
 
             Assert.AreEqual(2, result.Tasks.Count);
+        }
+
+        [TestMethod]
+        public void Start_InvalidTaskType_ThrowsException()
+        {
+            var taskType = typeof(Configuration);
+            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name });
+
+            try
+            {
+                var result = configurationLoader.Load("");
+
+                Assert.Fail("Should have thrown an exception.");
+            }
+            catch (NotSupportedException e)
+            {
+                Assert.AreEqual(taskType.Name + " is not a supported task type.", e.Message);
+            }
         }
     }
 }

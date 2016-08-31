@@ -30,8 +30,15 @@ namespace SoftwareThresher.Configurations
             var xmlTask = xmlDocumentReader.GetNextTask();
             while (xmlTask != null)
             {
-                var task = Activator.CreateInstance(null, "SoftwareThresher.Tasks." + xmlTask.Name).Unwrap() as Task;
-                configuration.Tasks.Add(task);
+
+                try
+                {
+                    configuration.Tasks.Add((Task)Activator.CreateInstance(null, "SoftwareThresher.Tasks." + xmlTask.Name).Unwrap());
+                }
+                catch (Exception e)
+                {
+                    throw new NotSupportedException(string.Format("{0} is not a supported task type.", xmlTask.Name));
+                }
 
                 xmlTask = xmlDocumentReader.GetNextTask();
             }
