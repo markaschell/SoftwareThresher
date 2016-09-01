@@ -6,5 +6,10 @@ namespace SoftwareThresher.Configurations
     {
         public string Name { get; set; }
         public Dictionary<string, string> Attributes { get; set; }
+
+        public XmlTask()
+        {
+            Attributes = new Dictionary<string, string>();
+        }
     }
 }

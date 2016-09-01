@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
@@ -78,6 +79,60 @@ namespace SoftwareThresherTests.Configurations
             {
                 Assert.AreEqual(taskType.Name + " is not a supported task type.", e.Message);
             }
+        }
+
+        [TestMethod]
+        public void Start_SetsProperties()
+        {
+            var locationPropertyName = "Location";
+            var locationValue = "C:/temp/";
+            var searchPropertName = "SearchPattern";
+            var searchValue = "*.cs";
+            var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue }, { searchPropertName, searchValue } };
+            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindWindowsFiles).Name, Attributes = attributes }, (XmlTask)null);
+
+            var result = configurationLoader.Load("");
+
+            var task = (FindWindowsFiles)result.Tasks.First();
+            Assert.AreEqual(locationValue, task.Location);
+            Assert.AreEqual(searchValue, task.SearchPattern);
+        }
+
+        [TestMethod]
+        public void Start_InvalidAttribute_ThrowsException()
+        {
+            var taskTypeName = typeof(FindWindowsFiles).Name;
+
+            var invalidPropertyName = "BAD NAME";
+            var attributes = new Dictionary<string, string> { { invalidPropertyName, "" } };
+            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskTypeName, Attributes = attributes });
+
+            try
+            {
+                var result = configurationLoader.Load("");
+
+                Assert.Fail("Should have thrown an exception.");
+            }
+            catch (NotSupportedException e)
+            {
+                Assert.AreEqual(invalidPropertyName + " is not a supported attribute for task type " + taskTypeName + ".", e.Message);
+            }
+        }
+
+        [TestMethod]
+        public void Start_SetsPropertyIgnoresCase()
+        {
+            var taskType = typeof(FindWindowsFiles);
+
+            var locationPropertyName = "location";
+            var locationValue = "C:/temp/";
+            var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue } };
+            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name, Attributes = attributes }, (XmlTask)null);
+
+            var result = configurationLoader.Load("");
+
+            var task = (FindWindowsFiles)result.Tasks.First();
+            Assert.AreEqual(locationValue, task.Location);
         }
     }
 }

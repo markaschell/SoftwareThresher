@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using SoftwareThresher.Tasks;
 
 namespace SoftwareThresher.Configurations
@@ -23,29 +24,61 @@ namespace SoftwareThresher.Configurations
 
         public IConfiguration Load(string filename)
         {
-            var configuration = new Configuration();
-
             xmlDocumentReader.Open(filename);
+            var configuration = LoadConfiguration();
+            xmlDocumentReader.Close();
+
+            return configuration;
+        }
+
+        private Configuration LoadConfiguration()
+        {
+            var configuration = new Configuration();
 
             var xmlTask = xmlDocumentReader.GetNextTask();
             while (xmlTask != null)
             {
-
-                try
-                {
-                    configuration.Tasks.Add((Task)Activator.CreateInstance(null, "SoftwareThresher.Tasks." + xmlTask.Name).Unwrap());
-                }
-                catch (Exception e)
-                {
-                    throw new NotSupportedException(string.Format("{0} is not a supported task type.", xmlTask.Name));
-                }
+                var task = CreateTask(xmlTask);
+                SetAttributes(xmlTask, task);
+                configuration.Tasks.Add(task);
 
                 xmlTask = xmlDocumentReader.GetNextTask();
             }
 
-            xmlDocumentReader.Close();
-
             return configuration;
+        }
+
+        private static Task CreateTask(XmlTask xmlTask)
+        {
+            try
+            {
+                return (Task)Activator.CreateInstance(null, "SoftwareThresher.Tasks." + xmlTask.Name).Unwrap();
+            }
+            catch (Exception)
+            {
+                throw new NotSupportedException(string.Format("{0} is not a supported task type.", xmlTask.Name));
+            }
+        }
+
+        private static void SetAttributes(XmlTask xmlTask, Task task)
+        {
+            foreach (var attributeName in xmlTask.Attributes.Keys)
+            {
+                SetAttribute(xmlTask, task, attributeName);
+            }
+        }
+
+        private static void SetAttribute(XmlTask xmlTask, Task task, string attributeName)
+        {
+            try
+            {
+                var property = task.GetType().GetProperty(attributeName, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+                property.SetValue(task, xmlTask.Attributes[attributeName]);
+            }
+            catch (Exception)
+            {
+                throw new NotSupportedException(string.Format("{0} is not a supported attribute for task type {1}.", attributeName, xmlTask.Name));
+            }
         }
     }
 }

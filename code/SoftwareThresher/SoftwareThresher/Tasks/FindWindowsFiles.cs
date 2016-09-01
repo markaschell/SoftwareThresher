@@ -6,6 +6,9 @@ namespace SoftwareThresher.Tasks
 {
     public class FindWindowsFiles : Task
     {
+        public string Location { get; set; }
+        public string SearchPattern { get; set; }
+
         public string ReportTitleForErrors
         {
             get
