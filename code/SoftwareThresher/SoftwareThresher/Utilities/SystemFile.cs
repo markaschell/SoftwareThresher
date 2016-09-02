@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace SoftwareThresher.Reporting
+namespace SoftwareThresher.Utilities
 {
     public interface ISystemFile
     {

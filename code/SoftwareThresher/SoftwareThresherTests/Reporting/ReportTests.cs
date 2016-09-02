@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
+using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests.Reporting
 {

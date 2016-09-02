@@ -11,16 +11,16 @@ namespace SoftwareThresherTests.Configurations
     [TestClass]
     public class ConfigurationLoaderTests
     {
-        IXmlDocumentReader xmlDocumentReader;
+        ITaskReader taskReader;
 
         ConfigurationLoader configurationLoader;
 
         [TestInitialize]
         public void Setup()
         {
-            xmlDocumentReader = Substitute.For<IXmlDocumentReader>();
+            taskReader = Substitute.For<ITaskReader>();
 
-            configurationLoader = new ConfigurationLoader(xmlDocumentReader);
+            configurationLoader = new ConfigurationLoader(taskReader);
         }
 
         [TestMethod]
@@ -32,9 +32,9 @@ namespace SoftwareThresherTests.Configurations
 
             Received.InOrder(() =>
             {
-                xmlDocumentReader.Open(filename);
-                xmlDocumentReader.GetNextTask();
-                xmlDocumentReader.Close();
+                taskReader.Open(filename);
+                taskReader.GetNextTask();
+                taskReader.Close();
             });
         }
 
@@ -42,7 +42,7 @@ namespace SoftwareThresherTests.Configurations
         public void Start_OneTask()
         {
             var taskType = typeof(FindWindowsFiles);
-            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
+            taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
 
             var result = configurationLoader.Load("");
 
@@ -54,11 +54,11 @@ namespace SoftwareThresherTests.Configurations
         public void Start_MultipleTasks()
         {
             var xmlTask = new XmlTask { Name = typeof(FindWindowsFiles).Name };
-            xmlDocumentReader.GetNextTask().Returns(xmlTask, xmlTask, null);
+            taskReader.GetNextTask().Returns(xmlTask, xmlTask, null);
 
             var result = configurationLoader.Load("");
 
-            xmlDocumentReader.Received(3).GetNextTask();
+            taskReader.Received(3).GetNextTask();
 
             Assert.AreEqual(2, result.Tasks.Count);
         }
@@ -67,7 +67,7 @@ namespace SoftwareThresherTests.Configurations
         public void Start_InvalidTaskType_ThrowsException()
         {
             var taskType = typeof(Configuration);
-            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name });
+            taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name });
 
             try
             {
@@ -89,7 +89,7 @@ namespace SoftwareThresherTests.Configurations
             var searchPropertName = "SearchPattern";
             var searchValue = "*.cs";
             var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue }, { searchPropertName, searchValue } };
-            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindWindowsFiles).Name, Attributes = attributes }, (XmlTask)null);
+            taskReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindWindowsFiles).Name, Attributes = attributes }, (XmlTask)null);
 
             var result = configurationLoader.Load("");
 
@@ -105,7 +105,7 @@ namespace SoftwareThresherTests.Configurations
 
             var invalidPropertyName = "BAD NAME";
             var attributes = new Dictionary<string, string> { { invalidPropertyName, "" } };
-            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskTypeName, Attributes = attributes });
+            taskReader.GetNextTask().Returns(new XmlTask { Name = taskTypeName, Attributes = attributes });
 
             try
             {
@@ -127,7 +127,7 @@ namespace SoftwareThresherTests.Configurations
             var locationPropertyName = "location";
             var locationValue = "C:/temp/";
             var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue } };
-            xmlDocumentReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name, Attributes = attributes }, (XmlTask)null);
+            taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name, Attributes = attributes }, (XmlTask)null);
 
             var result = configurationLoader.Load("");
 

@@ -11,22 +11,22 @@ namespace SoftwareThresher.Configurations
 
     public class ConfigurationLoader : IConfigurationLoader
     {
-        IXmlDocumentReader xmlDocumentReader;
+        ITaskReader taskReader;
 
-        public ConfigurationLoader(IXmlDocumentReader xmlDocumentReader)
+        public ConfigurationLoader(ITaskReader taskReader)
         {
-            this.xmlDocumentReader = xmlDocumentReader;
+            this.taskReader = taskReader;
         }
 
-        public ConfigurationLoader() : this(new XmlDocumentReader())
+        public ConfigurationLoader() : this(new TaskReader())
         {
         }
 
         public IConfiguration Load(string filename)
         {
-            xmlDocumentReader.Open(filename);
+            taskReader.Open(filename);
             var configuration = LoadConfiguration();
-            xmlDocumentReader.Close();
+            taskReader.Close();
 
             return configuration;
         }
@@ -35,14 +35,14 @@ namespace SoftwareThresher.Configurations
         {
             var configuration = new Configuration();
 
-            var xmlTask = xmlDocumentReader.GetNextTask();
+            var xmlTask = taskReader.GetNextTask();
             while (xmlTask != null)
             {
                 var task = CreateTask(xmlTask);
                 SetAttributes(xmlTask, task);
                 configuration.Tasks.Add(task);
 
-                xmlTask = xmlDocumentReader.GetNextTask();
+                xmlTask = taskReader.GetNextTask();
             }
 
             return configuration;

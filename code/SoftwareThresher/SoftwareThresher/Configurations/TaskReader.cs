@@ -3,15 +3,14 @@ using System.Xml;
 
 namespace SoftwareThresher.Configurations
 {
-    public interface IXmlDocumentReader
+    public interface ITaskReader
     {
         void Open(string filename);
         XmlTask GetNextTask();
         void Close();
-
     }
 
-    public class XmlDocumentReader : IXmlDocumentReader
+    public class TaskReader : ITaskReader
     {
         XmlReader xmlReader;
 
