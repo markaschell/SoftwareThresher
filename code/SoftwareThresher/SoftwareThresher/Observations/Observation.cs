@@ -1,10 +1,12 @@
 ﻿namespace SoftwareThresher.Observations
 {
-    public interface Observation
+    public abstract class Observation
     {
-        bool Passed { get; }
+        public virtual bool Passed { get; protected set; }
 
-        string Name { get; }
-        string Location { get; }
+        public abstract string Name { get; }
+
+        public abstract string Location { get; }
+
     }
 }

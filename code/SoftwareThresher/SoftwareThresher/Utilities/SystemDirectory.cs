@@ -9,7 +9,7 @@ namespace SoftwareThresher.Utilities
         IEnumerable<string> GetFiles(string directory, string searchPattern);
     }
 
-    public class SystemDirectory
+    public class SystemDirectory : ISystemDirectory
     {
         public IEnumerable<string> GetFiles(string directory, string searchPattern)
         {

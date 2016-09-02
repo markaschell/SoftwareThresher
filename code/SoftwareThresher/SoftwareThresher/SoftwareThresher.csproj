@@ -47,6 +47,7 @@
     <Compile Include="Configurations\ConfigurationLoader.cs" />
     <Compile Include="Configurations\TaskReader.cs" />
     <Compile Include="Configurations\XmlTask.cs" />
+    <Compile Include="Observations\FileObservation.cs" />
     <Compile Include="Observations\Observation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
