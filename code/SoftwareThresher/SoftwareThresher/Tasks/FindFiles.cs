@@ -4,7 +4,7 @@ using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Tasks
 {
-    public class FindWindowsFiles : Task
+    public class FindFiles : Task
     {
         public string Location { get; set; }
         public string SearchPattern { get; set; }
@@ -20,6 +20,8 @@ namespace SoftwareThresher.Tasks
         public List<Observation> Execute(List<Observation> observations)
         {
             throw new NotImplementedException();
+
+
         }
     }
 }

@@ -41,7 +41,7 @@ namespace SoftwareThresherTests.Configurations
         [TestMethod]
         public void Start_OneTask()
         {
-            var taskType = typeof(FindWindowsFiles);
+            var taskType = typeof(FindFiles);
             taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
 
             var result = configurationLoader.Load("");
@@ -53,7 +53,7 @@ namespace SoftwareThresherTests.Configurations
         [TestMethod]
         public void Start_MultipleTasks()
         {
-            var xmlTask = new XmlTask { Name = typeof(FindWindowsFiles).Name };
+            var xmlTask = new XmlTask { Name = typeof(FindFiles).Name };
             taskReader.GetNextTask().Returns(xmlTask, xmlTask, null);
 
             var result = configurationLoader.Load("");
@@ -89,11 +89,11 @@ namespace SoftwareThresherTests.Configurations
             var searchPropertName = "SearchPattern";
             var searchValue = "*.cs";
             var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue }, { searchPropertName, searchValue } };
-            taskReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindWindowsFiles).Name, Attributes = attributes }, (XmlTask)null);
+            taskReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindFiles).Name, Attributes = attributes }, (XmlTask)null);
 
             var result = configurationLoader.Load("");
 
-            var task = (FindWindowsFiles)result.Tasks.First();
+            var task = (FindFiles)result.Tasks.First();
             Assert.AreEqual(locationValue, task.Location);
             Assert.AreEqual(searchValue, task.SearchPattern);
         }
@@ -101,7 +101,7 @@ namespace SoftwareThresherTests.Configurations
         [TestMethod]
         public void Start_InvalidAttribute_ThrowsException()
         {
-            var taskTypeName = typeof(FindWindowsFiles).Name;
+            var taskTypeName = typeof(FindFiles).Name;
 
             var invalidPropertyName = "BAD NAME";
             var attributes = new Dictionary<string, string> { { invalidPropertyName, "" } };
@@ -122,7 +122,7 @@ namespace SoftwareThresherTests.Configurations
         [TestMethod]
         public void Start_SetsPropertyIgnoresCase()
         {
-            var taskType = typeof(FindWindowsFiles);
+            var taskType = typeof(FindFiles);
 
             var locationPropertyName = "location";
             var locationValue = "C:/temp/";
@@ -131,7 +131,7 @@ namespace SoftwareThresherTests.Configurations
 
             var result = configurationLoader.Load("");
 
-            var task = (FindWindowsFiles)result.Tasks.First();
+            var task = (FindFiles)result.Tasks.First();
             Assert.AreEqual(locationValue, task.Location);
         }
     }
