@@ -6,12 +6,12 @@ namespace SoftwareThresher.Utilities
 {
     public interface ISystemDirectory
     {
-        IEnumerable<string> GetFiles(string directory, string searchPattern);
+        List<string> GetFiles(string directory, string searchPattern);
     }
 
     public class SystemDirectory : ISystemDirectory
     {
-        public IEnumerable<string> GetFiles(string directory, string searchPattern)
+        public List<string> GetFiles(string directory, string searchPattern)
         {
             return Directory.EnumerateFiles(directory, searchPattern, SearchOption.AllDirectories).ToList();
         }

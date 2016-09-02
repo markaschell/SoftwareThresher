@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.IO;
 
 namespace SoftwareThresher.Observations
 {
@@ -13,19 +13,12 @@ namespace SoftwareThresher.Observations
 
         public override string Location
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get { return Path.GetDirectoryName(filename); }
         }
 
         public override string Name
         {
-            get
-            {
-                throw new NotImplementedException();
-                //Path.GetFileName
-            }
+            get { return Path.GetFileName(filename); }
         }
     }
 }

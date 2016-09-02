@@ -22,12 +22,12 @@ namespace SoftwareThresher.Tasks
 
         public string ReportTitleForErrors
         {
-            get { return "Files Found"; }
+            get { throw new NotImplementedException(); }
         }
 
         public List<Observation> Execute(List<Observation> observations)
         {
-            throw new NotImplementedException();
+            return systemDirectory.GetFiles(Location, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
         }
     }
 }
