@@ -1,25 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SoftwareThresher.Observations;
 
-namespace SoftwareThresher.Tasks
-{
-        public class NotFoundInCSharpProject : Task
-    {
-        public string ReportTitle
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+namespace SoftwareThresher.Tasks {
+      public class NotFoundInCSharpProject : Task {
 
-        public List<Observation> Execute(List<Observation> observations)
-        {
-            throw new NotImplementedException();
-        }
-    }
+      public string ReportTitle { get { return "Items not included in a C# project"; } }
+
+      public List<Observation> Execute(List<Observation> observations) {
+         throw new NotImplementedException();
+      }
+   }
 }
