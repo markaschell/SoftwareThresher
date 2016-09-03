@@ -5,113 +5,101 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresherTests.Reporting
-{
-    [TestClass]
-    public class ReportTests
-    {
-        ISystemFile file;
-        IReportData reportData;
+namespace SoftwareThresherTests.Reporting {
+   [TestClass]
+   public class ReportTests {
+      ISystemFile file;
+      IReportData reportData;
 
-        Report report;
+      Report report;
 
-        [TestInitialize]
-        public void Setup()
-        {
-            file = Substitute.For<ISystemFile>();
-            reportData = Substitute.For<IReportData>();
+      [TestInitialize]
+      public void Setup() {
+         file = Substitute.For<ISystemFile>();
+         reportData = Substitute.For<IReportData>();
 
-            report = new Report(file, reportData);
-        }
+         report = new Report(file, reportData);
+      }
 
-        [TestMethod]
-        public void Start()
-        {
-            var configurationFilename = "This is it";
+      [TestMethod]
+      public void Start() {
+         var configurationFilename = "This is it";
 
-            var reportName = "reportName";
-            var time = "wakie wakie";
-            reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
-            reportData.GetTimestamp().Returns(time);
+         var reportName = "reportName";
+         var time = "wakie wakie";
+         reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
+         reportData.GetTimestamp().Returns(time);
 
-            report.Start(configurationFilename);
+         report.Start(configurationFilename);
 
-            Received.InOrder(() =>
-            {
-                file.Create(reportName + ".html");
-                file.Write("<html><head></head><body>");
-                file.Write(time);
-                file.Write("");
-            });
-        }
+         Received.InOrder(() => {
+            file.Create(reportName + ".html");
+            file.Write("<html><head></head><body>");
+            file.Write(time);
+            file.Write("");
+         });
+      }
 
-        [TestMethod]
-        public void WriteFindResults()
-        {
-            var header = "This is my stupid title";
+      [TestMethod]
+      public void WriteFindResults() {
+         var header = "This is my stupid title";
 
-            report.WriteFindResults(header, 3);
+         report.WriteFindResults(header, 3);
 
-            file.Received().Write("<h3>" + header + "</h3> (3)");
-        }
+         file.Received().Write("<h3>" + header + "</h3> (3)");
+      }
 
-        [TestMethod]
-        public void WriteObservations_WritesHeader()
-        {
-            var header = "This is my stupid title";
-            var observation = Substitute.For<Observation>();
+      [TestMethod]
+      public void WriteObservations_WritesHeader() {
+         var header = "This is my stupid title";
+         var observation = Substitute.For<Observation>();
 
-            report.WriteObservations(header, new List<Observation> { observation }, 3);
+         report.WriteObservations(header, new List<Observation> { observation }, 3);
 
-            file.Received().Write("<h3>" + header + "</h3> (1 of 3)");
-        }
+         file.Received().Write("<h3>" + header + "</h3> (1 of 3)");
+      }
 
-        [TestMethod]
-        public void WriteObservations_ObservationData()
-        {
-            var name = "Issue";
-            var location = "It is here";
-            var observation = Substitute.For<Observation>();
-            observation.Name.Returns(name);
-            observation.Location.Returns(location);
+      [TestMethod]
+      public void WriteObservations_ObservationData() {
+         var name = "Issue";
+         var location = "It is here";
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(name);
+         observation.Location.Returns(location);
 
-            report.WriteObservations("", new List<Observation> { observation }, 0);
+         report.WriteObservations("", new List<Observation> { observation }, 0);
 
-            file.Received().Write(name + " - " + location);
-        }
+         file.Received().Write(name + " - " + location);
+      }
 
-        [TestMethod]
-        public void WriteObservations_MultipleObservations()
-        {
-            var observation = Substitute.For<Observation>();
+      [TestMethod]
+      public void WriteObservations_MultipleObservations() {
+         var observation = Substitute.For<Observation>();
 
-            report.WriteObservations("", new List<Observation> { observation, observation }, 0);
+         report.WriteObservations("", new List<Observation> { observation, observation }, 0);
 
-            file.Received(4).Write(Arg.Any<string>());
-        }
+         file.Received(4).Write(Arg.Any<string>());
+      }
 
-        [TestMethod]
-        public void WriteObservations_NoItems_NothingIsWritten()
-        {
-            report.WriteObservations("testing", new List<Observation>(), 0);
+      [TestMethod]
+      public void WriteObservations_NoItems_NothingIsWritten() {
+         report.WriteObservations("testing", new List<Observation>(), 0);
 
-            file.DidNotReceive().Write(Arg.Any<string>());
-        }
+         file.DidNotReceive().Write(Arg.Any<string>());
+      }
 
-        [TestMethod]
-        public void Complete()
-        {
-            var time = "wakie wakie";
-            reportData.GetTimestamp().Returns(time);
+      [TestMethod]
+      public void Complete() {
+         var time = "wakie wakie";
+         reportData.GetTimestamp().Returns(time);
 
-            report.Complete();
+         report.Complete();
 
-            Received.InOrder(() =>
-            {
-                file.Write(time);
-                file.Write("</body></html>");
-                file.Received().Close();
-            });
-        }
-    }
+         Received.InOrder(() => {
+            file.Write(time);
+            file.Write("</body></html>");
+            file.Received().Close();
+         });
+      }
+   }
 }

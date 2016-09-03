@@ -6,133 +6,118 @@ using NSubstitute;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Tasks;
 
-namespace SoftwareThresherTests.Configurations
-{
-    [TestClass]
-    public class ConfigurationLoaderTests
-    {
-        ITaskReader taskReader;
+namespace SoftwareThresherTests.Configurations {
+   [TestClass]
+   public class ConfigurationLoaderTests {
+      ITaskReader taskReader;
 
-        ConfigurationLoader configurationLoader;
+      ConfigurationLoader configurationLoader;
 
-        [TestInitialize]
-        public void Setup()
-        {
-            taskReader = Substitute.For<ITaskReader>();
+      [TestInitialize]
+      public void Setup() {
+         taskReader = Substitute.For<ITaskReader>();
 
-            configurationLoader = new ConfigurationLoader(taskReader);
-        }
+         configurationLoader = new ConfigurationLoader(taskReader);
+      }
 
-        [TestMethod]
-        public void Start_NoTasks()
-        {
-            var filename = "This is it";
+      [TestMethod]
+      public void Start_NoTasks() {
+         var filename = "This is it";
 
-            configurationLoader.Load(filename);
+         configurationLoader.Load(filename);
 
-            Received.InOrder(() =>
-            {
-                taskReader.Open(filename);
-                taskReader.GetNextTask();
-                taskReader.Close();
-            });
-        }
+         Received.InOrder(() => {
+            taskReader.Open(filename);
+            taskReader.GetNextTask();
+            taskReader.Close();
+         });
+      }
 
-        [TestMethod]
-        public void Start_OneTask()
-        {
-            var taskType = typeof(FindFilesOnDisk);
-            taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
+      [TestMethod]
+      public void Start_OneTask() {
+         var taskType = typeof(FindFilesOnDisk);
+         taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
 
+         var result = configurationLoader.Load("");
+
+         Assert.AreEqual(1, result.Tasks.Count);
+         Assert.AreEqual(taskType, result.Tasks.First().GetType());
+      }
+
+      [TestMethod]
+      public void Start_MultipleTasks() {
+         var xmlTask = new XmlTask { Name = typeof(FindFilesOnDisk).Name };
+         taskReader.GetNextTask().Returns(xmlTask, xmlTask, null);
+
+         var result = configurationLoader.Load("");
+
+         taskReader.Received(3).GetNextTask();
+
+         Assert.AreEqual(2, result.Tasks.Count);
+      }
+
+      [TestMethod]
+      public void Start_InvalidTaskType_ThrowsException() {
+         var taskType = typeof(Configuration);
+         taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name });
+
+         try {
             var result = configurationLoader.Load("");
 
-            Assert.AreEqual(1, result.Tasks.Count);
-            Assert.AreEqual(taskType, result.Tasks.First().GetType());
-        }
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (NotSupportedException e) {
+            Assert.AreEqual(taskType.Name + " is not a supported task type.", e.Message);
+         }
+      }
 
-        [TestMethod]
-        public void Start_MultipleTasks()
-        {
-            var xmlTask = new XmlTask { Name = typeof(FindFilesOnDisk).Name };
-            taskReader.GetNextTask().Returns(xmlTask, xmlTask, null);
+      [TestMethod]
+      public void Start_SetsProperties() {
+         var locationPropertyName = "Location";
+         var locationValue = "C:/temp/";
+         var searchPropertName = "SearchPattern";
+         var searchValue = "*.cs";
+         var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue }, { searchPropertName, searchValue } };
+         taskReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes }, (XmlTask)null);
 
+         var result = configurationLoader.Load("");
+
+         var task = (FindFilesOnDisk)result.Tasks.First();
+         Assert.AreEqual(locationValue, task.Location);
+         Assert.AreEqual(searchValue, task.SearchPattern);
+      }
+
+      [TestMethod]
+      public void Start_InvalidAttribute_ThrowsException() {
+         var taskTypeName = typeof(FindFilesOnDisk).Name;
+
+         var invalidPropertyName = "BAD NAME";
+         var attributes = new Dictionary<string, string> { { invalidPropertyName, "" } };
+         taskReader.GetNextTask().Returns(new XmlTask { Name = taskTypeName, Attributes = attributes });
+
+         try {
             var result = configurationLoader.Load("");
 
-            taskReader.Received(3).GetNextTask();
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (NotSupportedException e) {
+            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for task type " + taskTypeName + ".", e.Message);
+         }
+      }
 
-            Assert.AreEqual(2, result.Tasks.Count);
-        }
+      [TestMethod]
+      public void Start_SetsPropertyIgnoresCase() {
+         var taskType = typeof(FindFilesOnDisk);
 
-        [TestMethod]
-        public void Start_InvalidTaskType_ThrowsException()
-        {
-            var taskType = typeof(Configuration);
-            taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name });
+         var locationPropertyName = "location";
+         var locationValue = "C:/temp/";
+         var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue } };
+         taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name, Attributes = attributes }, (XmlTask)null);
 
-            try
-            {
-                var result = configurationLoader.Load("");
+         var result = configurationLoader.Load("");
 
-                Assert.Fail("Should have thrown an exception.");
-            }
-            catch (NotSupportedException e)
-            {
-                Assert.AreEqual(taskType.Name + " is not a supported task type.", e.Message);
-            }
-        }
-
-        [TestMethod]
-        public void Start_SetsProperties()
-        {
-            var locationPropertyName = "Location";
-            var locationValue = "C:/temp/";
-            var searchPropertName = "SearchPattern";
-            var searchValue = "*.cs";
-            var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue }, { searchPropertName, searchValue } };
-            taskReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes }, (XmlTask)null);
-
-            var result = configurationLoader.Load("");
-
-            var task = (FindFilesOnDisk)result.Tasks.First();
-            Assert.AreEqual(locationValue, task.Location);
-            Assert.AreEqual(searchValue, task.SearchPattern);
-        }
-
-        [TestMethod]
-        public void Start_InvalidAttribute_ThrowsException()
-        {
-            var taskTypeName = typeof(FindFilesOnDisk).Name;
-
-            var invalidPropertyName = "BAD NAME";
-            var attributes = new Dictionary<string, string> { { invalidPropertyName, "" } };
-            taskReader.GetNextTask().Returns(new XmlTask { Name = taskTypeName, Attributes = attributes });
-
-            try
-            {
-                var result = configurationLoader.Load("");
-
-                Assert.Fail("Should have thrown an exception.");
-            }
-            catch (NotSupportedException e)
-            {
-                Assert.AreEqual(invalidPropertyName + " is not a supported attribute for task type " + taskTypeName + ".", e.Message);
-            }
-        }
-
-        [TestMethod]
-        public void Start_SetsPropertyIgnoresCase()
-        {
-            var taskType = typeof(FindFilesOnDisk);
-
-            var locationPropertyName = "location";
-            var locationValue = "C:/temp/";
-            var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue } };
-            taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name, Attributes = attributes }, (XmlTask)null);
-
-            var result = configurationLoader.Load("");
-
-            var task = (FindFilesOnDisk)result.Tasks.First();
-            Assert.AreEqual(locationValue, task.Location);
-        }
-    }
+         var task = (FindFilesOnDisk)result.Tasks.First();
+         Assert.AreEqual(locationValue, task.Location);
+      }
+   }
 }

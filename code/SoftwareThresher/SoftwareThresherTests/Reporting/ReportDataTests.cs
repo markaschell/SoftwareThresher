@@ -2,50 +2,44 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareThresher.Reporting;
 
-namespace SoftwareThresherTests.Reporting
-{
-    [TestClass]
-    public class ReportDataTests
-    {
-        ReportData reportData;
+namespace SoftwareThresherTests.Reporting {
+   [TestClass]
+   public class ReportDataTests {
+      ReportData reportData;
 
-        [TestInitialize]
-        public void Setup()
-        {
-            reportData = new ReportData();
-        }
+      [TestInitialize]
+      public void Setup() {
+         reportData = new ReportData();
+      }
 
-        [TestMethod]
-        public void GetFileNameWithoutExtesion_RemovesExtenstionAndAddsDateTime()
-        {
-            var configurationFilename = "input";
+      [TestMethod]
+      public void GetFileNameWithoutExtesion_RemovesExtenstionAndAddsDateTime() {
+         var configurationFilename = "input";
 
-            var filename = reportData.GetFileNameWithoutExtesion(configurationFilename + ".xml");
+         var filename = reportData.GetFileNameWithoutExtesion(configurationFilename + ".xml");
 
-            Assert.IsTrue(filename.StartsWith(configurationFilename + "_"));
-        }
-        
-        [TestMethod]
-        public void GetFileNameWithoutExtesion_NoExtenstionReturnsSameValue()
-        {
-            var configurationFilename = "input";
+         Assert.IsTrue(filename.StartsWith(configurationFilename + "_"));
+      }
 
-            var filename = reportData.GetFileNameWithoutExtesion(configurationFilename);
+      [TestMethod]
+      public void GetFileNameWithoutExtesion_NoExtenstionReturnsSameValue() {
+         var configurationFilename = "input";
 
-            Assert.IsTrue(filename.Contains(configurationFilename + "_"));
-        }
+         var filename = reportData.GetFileNameWithoutExtesion(configurationFilename);
 
-        [TestMethod]
-        public void GetFileNameWithoutExtesion_AddsDateTime()
-        {
-            var configurationFilename = "input";
-            var now = DateTime.Now;
+         Assert.IsTrue(filename.Contains(configurationFilename + "_"));
+      }
 
-            var filename = reportData.GetFileNameWithoutExtesion(configurationFilename + ".xml");
+      [TestMethod]
+      public void GetFileNameWithoutExtesion_AddsDateTime() {
+         var configurationFilename = "input";
+         var now = DateTime.Now;
 
-            // filename + "_" + date and time down to millisecond
-            Assert.AreEqual(5 + 1 + 8 + 9, filename.Length);
-            Assert.IsTrue(filename.Contains("_" + now.Year.ToString("0000") + now.Month.ToString("00") + now.Day.ToString("00") + now.Hour.ToString("00") + now.Minute.ToString("00")));
-        }
-    }
+         var filename = reportData.GetFileNameWithoutExtesion(configurationFilename + ".xml");
+
+         // filename + "_" + date and time down to millisecond
+         Assert.AreEqual(5 + 1 + 8 + 9, filename.Length);
+         Assert.IsTrue(filename.Contains("_" + now.Year.ToString("0000") + now.Month.ToString("00") + now.Day.ToString("00") + now.Hour.ToString("00") + now.Minute.ToString("00")));
+      }
+   }
 }
