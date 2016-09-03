@@ -46,18 +46,28 @@ namespace SoftwareThresherTests.Reporting
         }
 
         [TestMethod]
-        public void WriteResults_WritesHeader()
+        public void WriteFindResults()
+        {
+            var header = "This is my stupid title";
+
+            report.WriteFindResults(header, 3);
+
+            file.Received().Write("<h3>" + header + "</h3> (3)");
+        }
+
+        [TestMethod]
+        public void WriteObservations_WritesHeader()
         {
             var header = "This is my stupid title";
             var observation = Substitute.For<Observation>();
 
-            report.WriteResults(header, new List<Observation> { observation }, 3);
+            report.WriteObservations(header, new List<Observation> { observation }, 3);
 
             file.Received().Write("<h3>" + header + "</h3> (1 of 3)");
         }
 
         [TestMethod]
-        public void WriteResults_ObservationData()
+        public void WriteObservations_ObservationData()
         {
             var name = "Issue";
             var location = "It is here";
@@ -65,25 +75,25 @@ namespace SoftwareThresherTests.Reporting
             observation.Name.Returns(name);
             observation.Location.Returns(location);
 
-            report.WriteResults("", new List<Observation> { observation }, 0);
+            report.WriteObservations("", new List<Observation> { observation }, 0);
 
             file.Received().Write(name + " - " + location);
         }
 
         [TestMethod]
-        public void WriteResults_MultipleObservations()
+        public void WriteObservations_MultipleObservations()
         {
             var observation = Substitute.For<Observation>();
 
-            report.WriteResults("", new List<Observation> { observation, observation }, 0);
+            report.WriteObservations("", new List<Observation> { observation, observation }, 0);
 
             file.Received(4).Write(Arg.Any<string>());
         }
 
         [TestMethod]
-        public void WriteResults_NoItems_NothingIsWritten()
+        public void WriteObservations_NoItems_NothingIsWritten()
         {
-            report.WriteResults("testing", new List<Observation>(), 0);
+            report.WriteObservations("testing", new List<Observation>(), 0);
 
             file.DidNotReceive().Write(Arg.Any<string>());
         }

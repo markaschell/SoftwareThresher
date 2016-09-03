@@ -7,7 +7,8 @@ namespace SoftwareThresher.Reporting
     public interface IReport
     {
         void Start(string configurationFilename);
-        void WriteResults(string title, List<Observation> failedObservations ,int totalObservations);
+        void WriteFindResults(string title, int observations);
+        void WriteObservations(string title, List<Observation> failedObservations ,int totalObservations);
         void Complete();
     }
 
@@ -35,14 +36,20 @@ namespace SoftwareThresher.Reporting
             file.Write("");
         }
 
-        public void WriteResults(string title, List<Observation> failedObservations, int totalObservations)
+        const string HeaderNameFormat = "<h3>{0}</h3>";
+        public void WriteFindResults(string title, int observations)
+        {
+            file.Write(string.Format(HeaderNameFormat + " ({1})", title, observations));
+        }
+
+        public void WriteObservations(string title, List<Observation> failedObservations, int totalObservations)
         {
             if (failedObservations.Count == 0)
             {
                 return;
             }
 
-            file.Write(string.Format("<h3>{0}</h3> ({1} of {2})", title, failedObservations.Count, totalObservations));
+            file.Write(string.Format(HeaderNameFormat + " ({1} of {2})", title, failedObservations.Count, totalObservations));
 
             foreach(var observation in failedObservations)
             {

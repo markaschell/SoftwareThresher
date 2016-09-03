@@ -5,8 +5,12 @@ namespace SoftwareThresher.Tasks
 {
     public interface Task
     {
-        string ReportTitleForErrors { get; }
+        string ReportTitle { get; }
 
         List<Observation> Execute(List<Observation> observations);
+    }
+
+    public interface FindTask : Task
+    {
     }
 }

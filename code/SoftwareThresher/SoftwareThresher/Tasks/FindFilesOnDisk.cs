@@ -5,24 +5,26 @@ using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Tasks
 {
-    public class FindFiles : Task
+    public class FindFilesOnDisk : Task, FindTask
     {
         public string Location { get; set; }
+
+        // TODO - default this?
         public string SearchPattern { get; set; }
 
         ISystemDirectory systemDirectory;
 
-        public FindFiles() : this(new SystemDirectory())
+        public FindFilesOnDisk() : this(new SystemDirectory())
         { }
 
-        public FindFiles(ISystemDirectory systemDirectory)
+        public FindFilesOnDisk(ISystemDirectory systemDirectory)
         {
             this.systemDirectory = systemDirectory;
         }
 
-        public string ReportTitleForErrors
+        public string ReportTitle
         {
-            get { throw new NotImplementedException(); }
+            get { return "Found File on Disk"; }
         }
 
         public List<Observation> Execute(List<Observation> observations)

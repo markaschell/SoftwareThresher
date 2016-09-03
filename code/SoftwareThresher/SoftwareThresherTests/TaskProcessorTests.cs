@@ -53,12 +53,52 @@ namespace SoftwareThresherTests
 
             taskProcessor.Run(configurationnFilename);
 
-
             task2.Received().Execute(Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == passedObservation));
         }
 
         [TestMethod]
-        public void Run_ReportsErrors()
+        public void Run_ForFindTask_WritesFindResults()
+        {
+            var configurationnFilename = "config this";
+
+            var findTask = Substitute.For<FindTask>();
+            configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
+            configuration.Tasks.Returns(new List<Task> { findTask });
+
+            var title = "This is it";
+            findTask.ReportTitle.Returns(title);
+
+            findTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
+
+            taskProcessor.Run(configurationnFilename);
+
+            Received.InOrder(() =>
+            {
+                report.Start(configurationnFilename);
+                report.WriteFindResults(title, 2);
+                report.Complete();
+            });
+        }
+
+        [TestMethod]
+        public void Run_ForFindTask_ReportsNewOnly()
+        {
+            var configurationnFilename = "config this";
+
+            var findTask = Substitute.For<FindTask>();
+            configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
+            configuration.Tasks.Returns(new List<Task> { task, findTask });
+
+            task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>() });
+            findTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
+
+            taskProcessor.Run(configurationnFilename);
+
+            report.Received().WriteFindResults(Arg.Any<string>(), 1);
+        }
+
+        [TestMethod]
+        public void Run_Task_WriteObservations()
         {
             var configurationnFilename = "config this";
 
@@ -66,7 +106,7 @@ namespace SoftwareThresherTests
             configuration.Tasks.Returns(new List<Task> { task });
 
             var title = "This is it";
-            task.ReportTitleForErrors.Returns(title);
+            task.ReportTitle.Returns(title);
 
             var passedObservation = Substitute.For<Observation>();
             passedObservation.Passed.Returns(true);
@@ -80,7 +120,7 @@ namespace SoftwareThresherTests
             Received.InOrder(() =>
             {
                 report.Start(configurationnFilename);
-                report.WriteResults(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation), 2);
+                report.WriteObservations(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation), 2);
                 report.Complete();
             });
         }

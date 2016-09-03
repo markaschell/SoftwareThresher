@@ -3,6 +3,7 @@ using System.Linq;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
+using SoftwareThresher.Tasks;
 
 namespace SoftwareThresher
 {
@@ -31,9 +32,17 @@ namespace SoftwareThresher
                 var observations = new List<Observation>();
                 foreach (var task in configuration.Tasks)
                 {
+                    var orginalNumberOfObservations = observations.Count;
                     observations = task.Execute(observations.Where(o => o.Passed).ToList());
 
-                    report.WriteResults(task.ReportTitleForErrors, observations.Where(o => !o.Passed).ToList(), observations.Count);
+                    if (task is FindTask)
+                    {
+                        report.WriteFindResults(task.ReportTitle, observations.Count - orginalNumberOfObservations);
+                    }
+                    else
+                    {
+                        report.WriteObservations(task.ReportTitle, observations.Where(o => !o.Passed).ToList(), observations.Count);
+                    }
                 }
             }
             finally

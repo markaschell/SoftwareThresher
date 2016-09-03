@@ -53,11 +53,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporting\Report.cs" />
     <Compile Include="Reporting\ReportData.cs" />
-    <Compile Include="Tasks\FilterFiles.cs" />
     <Compile Include="Utilities\SystemDirectory.cs" />
     <Compile Include="Utilities\SystemFile.cs" />
     <Compile Include="TaskProcessor.cs" />
-    <Compile Include="Tasks\FindFiles.cs" />
+    <Compile Include="Tasks\FindFilesOnDisk.cs" />
     <Compile Include="Tasks\NotFoundInCSharpProject.cs" />
     <Compile Include="Tasks\Task.cs" />
   </ItemGroup>
