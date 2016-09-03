@@ -7,47 +7,42 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Tasks;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresherTests.Tasks
-{
-    [TestClass]
-    public class FindFilesOnDiskTests
-    {
-        ISystemDirectory directory;
+namespace SoftwareThresherTests.Tasks {
+   [TestClass]
+   public class FindFilesOnDiskTests {
+      ISystemDirectory directory;
 
-        FindFilesOnDisk findFilesOnDisk;
+      FindFilesOnDisk findFilesOnDisk;
 
-        [TestInitialize]
-        public void Setup()
-        {
-            directory = Substitute.For<ISystemDirectory>();
+      [TestInitialize]
+      public void Setup() {
+         directory = Substitute.For<ISystemDirectory>();
 
-            findFilesOnDisk = new FindFilesOnDisk(directory);
-        }
+         findFilesOnDisk = new FindFilesOnDisk(directory);
+      }
 
-        [TestMethod]
-        public void Execute_CreatesFileObservations()
-        {
-            var location = "location";
-            var pattern = "kljasdf";
-            findFilesOnDisk.Location = location;
-            findFilesOnDisk.SearchPattern = pattern;
+      [TestMethod]
+      public void Execute_CreatesFileObservations() {
+         var location = "location";
+         var pattern = "kljasdf";
+         findFilesOnDisk.Location = location;
+         findFilesOnDisk.SearchPattern = pattern;
 
-            directory.GetFiles(location, pattern).Returns(new List<string> { "one" });
+         directory.GetFiles(location, pattern).Returns(new List<string> { "one" });
 
-            var results = findFilesOnDisk.Execute(new List<Observation>());
+         var results = findFilesOnDisk.Execute(new List<Observation>());
 
-            Assert.AreEqual(1, results.Count);
-            Assert.AreEqual(typeof(FileObservation), results.First().GetType());
-        }
+         Assert.AreEqual(1, results.Count);
+         Assert.AreEqual(typeof(FileObservation), results.First().GetType());
+      }
 
-        [TestMethod]
-        public void Execute_AddsToPassedInObservations()
-        {
-            directory.GetFiles("", "").ReturnsForAnyArgs(new List<string> { "one" });
+      [TestMethod]
+      public void Execute_AddsToPassedInObservations() {
+         directory.GetFiles("", "").ReturnsForAnyArgs(new List<string> { "one" });
 
-            var results = findFilesOnDisk.Execute(new List<Observation> { new FileObservation("") });
+         var results = findFilesOnDisk.Execute(new List<Observation> { new FileObservation("") });
 
-            Assert.AreEqual(2, results.Count);
-        }
-    }
+         Assert.AreEqual(2, results.Count);
+      }
+   }
 }
