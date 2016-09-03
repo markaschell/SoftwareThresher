@@ -10,7 +10,7 @@ namespace SoftwareThresher.Tasks
         List<Observation> Execute(List<Observation> observations);
     }
 
-    public interface FindTask : Task
+    public interface NoDetailsInReport : Task
     {
     }
 }

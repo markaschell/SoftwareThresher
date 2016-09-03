@@ -35,7 +35,7 @@ namespace SoftwareThresher
                     var orginalNumberOfObservations = observations.Count;
                     observations = task.Execute(observations.Where(o => o.Passed).ToList());
 
-                    if (task is FindTask)
+                    if (task is NoDetailsInReport)
                     {
                         report.WriteFindResults(task.ReportTitle, observations.Count - orginalNumberOfObservations);
                     }

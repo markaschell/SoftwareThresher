@@ -1,21 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Tasks
 {
-        public class NotFoundInCSharpProject : Task
+    class Filter : Task, NoDetailsInReport
     {
-        public string ReportTitle
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public string ReportTitle { get { return "Items Filtered"; } }
 
         public List<Observation> Execute(List<Observation> observations)
         {

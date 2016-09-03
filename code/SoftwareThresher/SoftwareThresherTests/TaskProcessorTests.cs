@@ -61,14 +61,14 @@ namespace SoftwareThresherTests
         {
             var configurationnFilename = "config this";
 
-            var findTask = Substitute.For<FindTask>();
+            var noDetailsInReportTask = Substitute.For<NoDetailsInReport>();
             configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
-            configuration.Tasks.Returns(new List<Task> { findTask });
+            configuration.Tasks.Returns(new List<Task> { noDetailsInReportTask });
 
             var title = "This is it";
-            findTask.ReportTitle.Returns(title);
+            noDetailsInReportTask.ReportTitle.Returns(title);
 
-            findTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
+            noDetailsInReportTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
 
             taskProcessor.Run(configurationnFilename);
 
@@ -85,12 +85,12 @@ namespace SoftwareThresherTests
         {
             var configurationnFilename = "config this";
 
-            var findTask = Substitute.For<FindTask>();
+            var noDetailsInReportTask = Substitute.For<NoDetailsInReport>();
             configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
-            configuration.Tasks.Returns(new List<Task> { task, findTask });
+            configuration.Tasks.Returns(new List<Task> { task, noDetailsInReportTask });
 
             task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>() });
-            findTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
+            noDetailsInReportTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
 
             taskProcessor.Run(configurationnFilename);
 

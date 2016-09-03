@@ -5,7 +5,7 @@ using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Tasks
 {
-    public class FindFilesOnDisk : Task, FindTask
+    public class FindFilesOnDisk : Task, NoDetailsInReport
     {
         public string Location { get; set; }
 
@@ -22,14 +22,15 @@ namespace SoftwareThresher.Tasks
             this.systemDirectory = systemDirectory;
         }
 
-        public string ReportTitle
-        {
-            get { return "Found File on Disk"; }
-        }
+        public string ReportTitle { get { return "Found File on Disk"; } }
 
         public List<Observation> Execute(List<Observation> observations)
         {
-            return systemDirectory.GetFiles(Location, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
+            var foundItems = systemDirectory.GetFiles(Location, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
+
+            observations.AddRange(foundItems);
+
+            return observations;
         }
     }
 }
