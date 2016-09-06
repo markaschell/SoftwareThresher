@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Tasks;
@@ -27,9 +28,10 @@ namespace SoftwareThresherTests.Tasks {
       public void Execute_DoesNotFilterItem() {
          regExFilter.FilterPattern = "a";
 
-         var result = regExFilter.Execute(new List<Observation> { new FileObservation("this is it") });
+         var results = regExFilter.Execute(new List<Observation> { new FileObservation("this is it") });
 
-         Assert.AreEqual(1, result.Count);
+         Assert.AreEqual(1, results.Count);
+         Assert.IsFalse(results.First().Failed);
       }
    }
 }

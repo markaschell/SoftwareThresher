@@ -34,6 +34,7 @@ namespace SoftwareThresherTests.Tasks {
 
          Assert.AreEqual(1, results.Count);
          Assert.AreEqual(typeof(FileObservation), results.First().GetType());
+         Assert.IsFalse(results.First().Failed);
       }
 
       [TestMethod]

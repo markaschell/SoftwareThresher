@@ -40,9 +40,9 @@ namespace SoftwareThresherTests {
          configuration.Tasks.Returns(new List<Task> { task, task2 });
 
          var passedObservation = Substitute.For<Observation>();
-         passedObservation.Passed.Returns(true);
+         passedObservation.Failed.Returns(false);
          var failedObservation = Substitute.For<Observation>();
-         failedObservation.Passed.Returns(false);
+         failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Is<List<Observation>>(l => l.Count == 0)).Returns(new List<Observation> { failedObservation, passedObservation });
          task2.Execute(Arg.Is<List<Observation>>(l => l.Count == 1)).Returns(new List<Observation>());
@@ -101,9 +101,9 @@ namespace SoftwareThresherTests {
          task.ReportTitle.Returns(title);
 
          var passedObservation = Substitute.For<Observation>();
-         passedObservation.Passed.Returns(true);
+         passedObservation.Failed.Returns(false);
          var failedObservation = Substitute.For<Observation>();
-         failedObservation.Passed.Returns(false);
+         failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { failedObservation, passedObservation });
 

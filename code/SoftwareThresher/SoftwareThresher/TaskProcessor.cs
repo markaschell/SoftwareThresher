@@ -26,13 +26,13 @@ namespace SoftwareThresher {
             var observations = new List<Observation>();
             foreach (var task in configuration.Tasks) {
                var orginalNumberOfObservations = observations.Count;
-               observations = task.Execute(observations.Where(o => o.Passed).ToList());
+               observations = task.Execute(observations.Where(o => !o.Failed).ToList());
 
                if (task is NoDetailsInReport) {
                   report.WriteFindResults(task.ReportTitle, observations.Count - orginalNumberOfObservations);
                }
                else {
-                  report.WriteObservations(task.ReportTitle, observations.Where(o => !o.Passed).ToList(), observations.Count);
+                  report.WriteObservations(task.ReportTitle, observations.Where(o => o.Failed).ToList(), observations.Count);
                }
             }
          }
