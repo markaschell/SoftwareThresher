@@ -2,4 +2,5 @@
 <tasks>
   <FindFilesOnDisk Directory=".\..\..\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
   <RegExFilter FilterPattern="\\([O|o]bj\\|[B|b]in\\|[O|o]bj$|[B|b]in$)" />
+  <NotReferencedByCsprojFile Directory=".\..\..\TestProject" FileFilterPattern="*.csproj" ObservationNameRegExStringFormat="&lt;Compile Include=&quot;=.*{0}\.cs&quot; \/&gt;"></NotReferencedByCsprojFile>
 </tasks>
