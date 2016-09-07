@@ -16,7 +16,7 @@ namespace SoftwareThresher.Tasks {
          this.systemDirectory = systemDirectory;
       }
 
-      public string ReportTitle { get { return "Found File on Disk"; } }
+      public string ReportTitle { get { return "Found Files on Disk"; } }
 
       public List<Observation> Execute(List<Observation> observations) {
          var foundItems = systemDirectory.GetFiles(Directory, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
