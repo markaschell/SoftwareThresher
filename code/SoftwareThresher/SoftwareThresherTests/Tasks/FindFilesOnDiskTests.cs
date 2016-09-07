@@ -10,25 +10,25 @@ using SoftwareThresher.Utilities;
 namespace SoftwareThresherTests.Tasks {
    [TestClass]
    public class FindFilesOnDiskTests {
-      ISystemDirectory directory;
+      ISystemDirectory systemDirectory;
 
       FindFilesOnDisk findFilesOnDisk;
 
       [TestInitialize]
       public void Setup() {
-         directory = Substitute.For<ISystemDirectory>();
+         systemDirectory = Substitute.For<ISystemDirectory>();
 
-         findFilesOnDisk = new FindFilesOnDisk(directory);
+         findFilesOnDisk = new FindFilesOnDisk(systemDirectory);
       }
 
       [TestMethod]
       public void Execute_CreatesFileObservations() {
-         var location = "location";
+         var directory = "location";
          var pattern = "kljasdf";
-         findFilesOnDisk.Directory = location;
+         findFilesOnDisk.Directory = directory;
          findFilesOnDisk.SearchPattern = pattern;
 
-         directory.GetFiles(location, pattern).Returns(new List<string> { "one" });
+         systemDirectory.GetFiles(directory, pattern).Returns(new List<string> { "one" });
 
          var results = findFilesOnDisk.Execute(new List<Observation>());
 
@@ -39,7 +39,7 @@ namespace SoftwareThresherTests.Tasks {
 
       [TestMethod]
       public void Execute_AddsToPassedInObservations() {
-         directory.GetFiles("", "").ReturnsForAnyArgs(new List<string> { "one" });
+         systemDirectory.GetFiles("", "").ReturnsForAnyArgs(new List<string> { "one" });
 
          var results = findFilesOnDisk.Execute(new List<Observation> { new FileObservation("") });
 

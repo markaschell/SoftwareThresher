@@ -73,11 +73,11 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Start_SetsProperties() {
-         var locationPropertyName = "Location";
+         var directoryPropertyName = "Directory";
          var locationValue = "C:/temp/";
          var searchPropertName = "SearchPattern";
          var searchValue = "*.cs";
-         var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue }, { searchPropertName, searchValue } };
+         var attributes = new Dictionary<string, string> { { directoryPropertyName, locationValue }, { searchPropertName, searchValue } };
          taskReader.GetNextTask().Returns(new XmlTask { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes }, (XmlTask)null);
 
          var result = configurationLoader.Load("");
@@ -109,9 +109,9 @@ namespace SoftwareThresherTests.Configurations {
       public void Start_SetsPropertyIgnoresCase() {
          var taskType = typeof(FindFilesOnDisk);
 
-         var locationPropertyName = "location";
+         var directoryPropertyName = "directory";
          var locationValue = "C:/temp/";
-         var attributes = new Dictionary<string, string> { { locationPropertyName, locationValue } };
+         var attributes = new Dictionary<string, string> { { directoryPropertyName, locationValue } };
          taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name, Attributes = attributes }, (XmlTask)null);
 
          var result = configurationLoader.Load("");
