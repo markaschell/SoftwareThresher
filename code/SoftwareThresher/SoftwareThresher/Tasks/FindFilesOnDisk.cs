@@ -4,7 +4,7 @@ using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Tasks {
    public class FindFilesOnDisk : Task, NoDetailsInReport {
-      public string Location { get; set; }
+      public string Directory { get; set; }
 
       public string SearchPattern { get; set; }
 
@@ -19,7 +19,7 @@ namespace SoftwareThresher.Tasks {
       public string ReportTitle { get { return "Found File on Disk"; } }
 
       public List<Observation> Execute(List<Observation> observations) {
-         var foundItems = systemDirectory.GetFiles(Location, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
+         var foundItems = systemDirectory.GetFiles(Directory, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
 
          observations.AddRange(foundItems);
 

@@ -25,7 +25,7 @@ namespace SoftwareThresherTests.Tasks {
       public void Execute_CreatesFileObservations() {
          var location = "location";
          var pattern = "kljasdf";
-         findFilesOnDisk.Location = location;
+         findFilesOnDisk.Directory = location;
          findFilesOnDisk.SearchPattern = pattern;
 
          directory.GetFiles(location, pattern).Returns(new List<string> { "one" });

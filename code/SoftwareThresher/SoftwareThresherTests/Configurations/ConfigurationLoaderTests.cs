@@ -83,7 +83,7 @@ namespace SoftwareThresherTests.Configurations {
          var result = configurationLoader.Load("");
 
          var task = (FindFilesOnDisk)result.Tasks.First();
-         Assert.AreEqual(locationValue, task.Location);
+         Assert.AreEqual(locationValue, task.Directory);
          Assert.AreEqual(searchValue, task.SearchPattern);
       }
 
@@ -117,7 +117,7 @@ namespace SoftwareThresherTests.Configurations {
          var result = configurationLoader.Load("");
 
          var task = (FindFilesOnDisk)result.Tasks.First();
-         Assert.AreEqual(locationValue, task.Location);
+         Assert.AreEqual(locationValue, task.Directory);
       }
    }
 }

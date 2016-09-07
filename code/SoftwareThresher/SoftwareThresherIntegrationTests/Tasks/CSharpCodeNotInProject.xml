@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tasks>
-  <FindFilesOnDisk Location=".\..\..\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
+  <FindFilesOnDisk Directory=".\..\..\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
   <RegExFilter FilterPattern="\\([O|o]bj\\|[B|b]in\\|[O|o]bj$|[B|b]in$)" />
 </tasks>
