@@ -15,7 +15,7 @@ namespace SoftwareThresherTests.Observations {
 
       [TestMethod]
       public void Name_NameWithExtension() {
-         var name = "name";
+         var name = "name.txt";
 
          var observation = new FileObservation(name);
 
