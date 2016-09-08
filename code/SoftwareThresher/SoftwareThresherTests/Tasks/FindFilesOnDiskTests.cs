@@ -10,13 +10,13 @@ using SoftwareThresher.Utilities;
 namespace SoftwareThresherTests.Tasks {
    [TestClass]
    public class FindFilesOnDiskTests {
-      ISystemDirectory systemDirectory;
+      Search systemDirectory;
 
       FindFilesOnDisk findFilesOnDisk;
 
       [TestInitialize]
       public void Setup() {
-         systemDirectory = Substitute.For<ISystemDirectory>();
+         systemDirectory = Substitute.For<Search>();
 
          findFilesOnDisk = new FindFilesOnDisk(systemDirectory);
       }

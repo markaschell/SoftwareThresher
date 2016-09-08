@@ -3,16 +3,17 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Tasks {
+   // TODO - change this to not on Disk?
    public class FindFilesOnDisk : Task, NoDetailsInReport {
       public string Directory { get; set; }
 
       public string SearchPattern { get; set; }
 
-      ISystemDirectory systemDirectory;
+      Search systemDirectory;
 
-      public FindFilesOnDisk() : this(new SystemDirectory()) { }
+      public FindFilesOnDisk() : this(new FileSystemSearch()) { }
 
-      public FindFilesOnDisk(ISystemDirectory systemDirectory) {
+      public FindFilesOnDisk(Search systemDirectory) {
          this.systemDirectory = systemDirectory;
       }
 
