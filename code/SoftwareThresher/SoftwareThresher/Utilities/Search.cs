@@ -2,9 +2,8 @@
 
 namespace SoftwareThresher.Utilities {
    public interface Search {
-      // TODO - should this return an observation
-      List<string> GetFiles(string location, string searchPattern);
+      List<string> GetFiles(string directory, string searchPattern);
 
-      List<Reference> FindInFile(string location, string fileSearchPattern, string textSearchPattern);
+      List<string> GetReferencesInFile(string filename, string searchPattern);
    }
 }

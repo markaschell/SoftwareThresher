@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System;
 using System.IO;
 using System.Linq;
 
 namespace SoftwareThresher.Utilities {
    public class FileSystemSearch : Search {
-      public List<string> GetFiles(string location, string searchPattern) {
-         return Directory.EnumerateFiles(location, searchPattern, SearchOption.AllDirectories).ToList();
+      public List<string> GetFiles(string directory, string searchPattern) {
+         return Directory.EnumerateFiles(directory, searchPattern, SearchOption.AllDirectories).ToList();
       }
-      public List<Reference> FindInFile(string location, string fileSearchPattern, string textSearchPattern) {
+
+      public List<string> GetReferencesInFile(string filename, string searchPattern) {
          throw new NotImplementedException();
       }
    }

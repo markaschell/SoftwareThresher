@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace SoftwareThresher.Utilities {
    // TODO - finish
    public class OpenGrokSearch : Search {
-      public List<string> GetFiles(string location, string searchPattern) {
+      public List<string> GetFiles(string directory, string searchPattern) {
          throw new NotImplementedException();
       }
 
-      public List<Reference> FindInFile(string location, string fileSearchPattern, string textSearchPattern) {
+      public List<string> GetReferencesInFile(string filename, string searchPattern) {
          throw new NotImplementedException();
       }
    }
