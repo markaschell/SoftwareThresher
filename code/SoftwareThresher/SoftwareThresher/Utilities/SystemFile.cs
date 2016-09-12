@@ -21,7 +21,7 @@ namespace SoftwareThresher.Utilities {
       }
 
       public void Write(string text) {
-         streamWriter.WriteLineAsync(text);
+         streamWriter.WriteLine(text);
       }
 
       public void Close() {

@@ -30,9 +30,9 @@ namespace SoftwareThresher.Reporting {
          file.Write("");
       }
 
-      const string HeaderNameFormat = "<h3>{0}</h3>";
       public void WriteFindResults(string title, int observations) {
-         file.Write(string.Format(HeaderNameFormat + " ({1})", title, observations));
+         file.Write(string.Format("<h3>{0} ({1})</h3>", title, observations));
+         file.Write("");
       }
 
       public void WriteObservations(string title, List<Observation> failedObservations, int totalObservations) {
@@ -40,7 +40,7 @@ namespace SoftwareThresher.Reporting {
             return;
          }
 
-         file.Write(string.Format(HeaderNameFormat + " ({1} of {2})", title, failedObservations.Count, totalObservations));
+         file.Write(string.Format("<h3>{0} ({1} of {2})</h3>", title, failedObservations.Count, totalObservations));
 
          foreach (var observation in failedObservations) {
             file.Write(string.Format("{0} - {1}", observation.Name, observation.Location));

@@ -33,8 +33,8 @@ namespace SoftwareThresher.Configurations {
             xmlTask.Attributes.Add(xmlReader.Name, xmlReader.Value);
          }
 
-         xmlReader.MoveToElement();
-         xmlReader.ReadStartElement();
+         xmlReader.Read();
+         xmlReader.Read();
 
          return xmlTask;
       }

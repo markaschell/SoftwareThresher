@@ -46,7 +46,10 @@ namespace SoftwareThresherTests.Reporting {
 
          report.WriteFindResults(header, 3);
 
-         file.Received().Write("<h3>" + header + "</h3> (3)");
+         Received.InOrder(() => {
+            file.Write("<h3>" + header + " (3)</h3>");
+            file.Write("");
+         });
       }
 
       [TestMethod]
@@ -56,7 +59,7 @@ namespace SoftwareThresherTests.Reporting {
 
          report.WriteObservations(header, new List<Observation> { observation }, 3);
 
-         file.Received().Write("<h3>" + header + "</h3> (1 of 3)");
+         file.Received().Write("<h3>" + header + " (1 of 3)</h3>");
       }
 
       [TestMethod]
