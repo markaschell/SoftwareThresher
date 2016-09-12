@@ -24,14 +24,14 @@ namespace SoftwareThresher.Tasks {
       }
 
       public List<Observation> Execute(List<Observation> observations) {
-         // TODO - Add option to search via Opengrok - via an enum for auto discovery and a factory
-         // TODO - Combine path with the csproj and the path in the return to make sure they are the same
          observations.ForEach(o => o.Failed = true);
 
          var compileConfigurationFiles = search.GetFiles(Directory, CompileConfigurationFileSearchPattern);
 
          foreach (var file in compileConfigurationFiles) {
             var references = search.GetReferencesInFile(file, TextSearchPattern);
+
+            // TODO - Combine path with the csproj and the path in the return to make sure they are the same
 
 
          }
