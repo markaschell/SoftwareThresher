@@ -53,7 +53,7 @@ namespace SoftwareThresherTests.Tasks {
 
       [TestMethod]
       public void Execute_NoReferencesFound_ObservationFailed() {
-         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "" });
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
          search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string>());
 
          var observation = Substitute.For<Observation>();
@@ -63,37 +63,15 @@ namespace SoftwareThresherTests.Tasks {
       }
 
       [TestMethod]
-      public void Execute_ReferenceMatchesObservation_ObservationPasses() {
-         var searchPattern = "search pattern";
-         notCompiled.TextSearchPattern = searchPattern;
-
-         var projectDirectory = "Base Directory";
-         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { projectDirectory + "/" });
-
-         var filename = "filenname";
-         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + filename });
-
-         var observation = Substitute.For<Observation>();
-         observation.Location.Returns(projectDirectory);
-         observation.Name.Returns(filename);
-
-         var results = notCompiled.Execute(new List<Observation> { observation });
-
-         Assert.IsFalse(results.First().Failed);
-      }
-
-      [TestMethod]
       public void Execute_NamesDoNotMatch_ObservationFailed() {
          var searchPattern = "search pattern";
          notCompiled.TextSearchPattern = searchPattern;
 
-         var projectDirectory = "Base Directory";
-         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { projectDirectory + "/" });
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
 
          search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + "Filenname" });
 
          var observation = Substitute.For<Observation>();
-         observation.Location.Returns(projectDirectory);
          observation.Name.Returns("filenname");
 
          var results = notCompiled.Execute(new List<Observation> { observation });
@@ -124,6 +102,212 @@ namespace SoftwareThresherTests.Tasks {
          var results = notCompiled.Execute(new List<Observation> { observation1, observation2 });
 
          Assert.IsTrue(results.TrueForAll(o => o.Failed == false));
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresBeforeSearchPattern_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "extra" + searchPattern + filename });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresQuotesAfterFilenameInConfigFile_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + filename + "\"" });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresSpaceAfterFilenameInConfigFile_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + filename + " kssdafkj" });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresTabAfterFilenameInConfigFile_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + filename + "\tkssdafkj" });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_ActualFileIsLongerThanInConfigFile_ObservationsFails() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + filename });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(filename + "extra");
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsTrue(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_ConfigFilenameIsLongerThanObservation_ObservationsFails() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + filename + "extra" });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsTrue(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_NothingAfterTheSearchPattern_ObservationsFails() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern });
+
+         var observation = Substitute.For<Observation>();
+         observation.Name.Returns("filename");
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsTrue(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_MatchingSubPathNoConfigDirectory_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         var subPath = "Task";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + subPath + @"\" + filename });
+
+         var observation = Substitute.For<Observation>();
+         observation.Location.Returns(subPath);
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_MatchingSubPath_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         var projectDirectory = "Base Directory";
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { projectDirectory + "/" });
+
+         var filename = "filenname";
+         var subPath = "Task";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + subPath + @"\" + filename });
+
+         var observation = Substitute.For<Observation>();
+         observation.Location.Returns(projectDirectory + '\\' + subPath);
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_MatchingSubPathWithDoubleSlashesInReferenceFile_ObservationsPasses() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         var projectDirectory = "Base Directory";
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { projectDirectory + "/" });
+
+         var filename = "filenname";
+         var subPath = "Task";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + subPath + @"\\" + filename });
+
+         var observation = Substitute.For<Observation>();
+         observation.Location.Returns(projectDirectory + '\\' + subPath);
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_NonMatchingSubPath_ObservationsFails() {
+         var searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { "file" });
+
+         var filename = "filenname";
+         search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + @"Task\" + filename });
+
+         var observation = Substitute.For<Observation>();
+         observation.Location.Returns("other");
+         observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsTrue(results.First().Failed);
       }
    }
 }

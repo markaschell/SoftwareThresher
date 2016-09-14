@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
@@ -30,16 +31,19 @@ namespace SoftwareThresher.Tasks {
          var compileConfigurationFiles = search.GetFiles(Directory, CompileConfigurationFileSearchPattern);
 
          foreach (var file in compileConfigurationFiles) {
+            var baseDirectory = new FileObservation(file).Location;
             var references = search.GetReferencesInFile(file, TextSearchPattern);
 
-            // TODO - Combine path with the csproj and the path in the return to make sure they are the same
-            // TODO - Test that text in front of the search is ignored, text after the filename, if one filename is larger than the other, with path that matches or does not match
-            var compiledConfigurationFileObservation = new FileObservation(file);
-
             foreach (var reference in references) {
+               var referenceObject = reference.Substring(reference.IndexOf(TextSearchPattern) + TextSearchPattern.Length).Split(' ', '\t', '"').First();
+
+               if (string.IsNullOrEmpty(referenceObject))
+                  continue;
+
+               var referenceObservation = new FileObservation(referenceObject);
+
                foreach (var observation in observations) {
-                  var nameOfObjectReferenced = reference.Substring(reference.IndexOf(TextSearchPattern) + TextSearchPattern.Length, observation.Name.Length);
-                  if (compiledConfigurationFileObservation.Location == observation.Location && nameOfObjectReferenced == observation.Name) {
+                  if (Path.Combine(baseDirectory, referenceObservation.Location) == observation.Location && referenceObservation.Name == observation.Name) {
                      observation.Failed = false;
                   }
                }
