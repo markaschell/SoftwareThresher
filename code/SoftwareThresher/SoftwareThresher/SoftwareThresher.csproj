@@ -58,7 +58,8 @@
     <Compile Include="Utilities\OpenGrokSearch.cs" />
     <Compile Include="Utilities\Search.cs" />
     <Compile Include="Utilities\FileSystemSearch.cs" />
-    <Compile Include="Utilities\SystemFile.cs" />
+    <Compile Include="Utilities\SystemFileReader.cs" />
+    <Compile Include="Utilities\SystemFileWriter.cs" />
     <Compile Include="TaskProcessor.cs" />
     <Compile Include="Tasks\FindFilesOnDisk.cs" />
     <Compile Include="Tasks\Task.cs" />
