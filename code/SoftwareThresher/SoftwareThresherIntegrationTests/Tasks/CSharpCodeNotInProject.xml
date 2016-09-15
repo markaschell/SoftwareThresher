@@ -2,5 +2,5 @@
 <tasks>
   <FindFilesOnDisk Directory=".\..\..\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
   <Filter LocationSearchPattern="\\([O|o]bj\\|[B|b]in\\|[O|o]bj$|[B|b]in$)" />
-  <NotCompiled CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
+  <NotCompiled Directory=".\..\..\TestProject" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
 </tasks>

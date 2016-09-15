@@ -5,7 +5,7 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Searches;
 
 namespace SoftwareThresher.Tasks {
-   public class NotCompiled {
+   public class NotCompiled : Task {
 
       public string Directory { get; set; }
 
