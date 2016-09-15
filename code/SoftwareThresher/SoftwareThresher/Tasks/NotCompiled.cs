@@ -11,6 +11,7 @@ namespace SoftwareThresher.Tasks {
 
       public string CompileConfigurationFileSearchPattern { get; set; }
 
+      // NOTE - RegEx format for FileSystemSearch
       public string TextSearchPattern { get; set; }
 
       // Assumes that all code files are referenced by a compile configuration file that is higher up the directory structure and not in a sibling folder stucture
