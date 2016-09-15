@@ -8,14 +8,14 @@ using SoftwareThresher.Utilities;
 namespace SoftwareThresherTests.Reporting {
    [TestClass]
    public class ReportTests {
-      ISystemFile file;
+      ISystemFileWriter file;
       IReportData reportData;
 
       Report report;
 
       [TestInitialize]
       public void Setup() {
-         file = Substitute.For<ISystemFile>();
+         file = Substitute.For<ISystemFileWriter>();
          reportData = Substitute.For<IReportData>();
 
          report = new Report(file, reportData);

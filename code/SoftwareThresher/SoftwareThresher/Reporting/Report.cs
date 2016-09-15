@@ -11,12 +11,12 @@ namespace SoftwareThresher.Reporting {
    }
 
    public class Report : IReport {
-      ISystemFile file;
+      ISystemFileWriter file;
       IReportData reportData;
 
-      public Report() : this(new SystemFile(), new ReportData()) { }
+      public Report() : this(new SystemFileWriter(), new ReportData()) { }
 
-      public Report(ISystemFile file, IReportData reportData) {
+      public Report(ISystemFileWriter file, IReportData reportData) {
          this.file = file;
          this.reportData = reportData;
       }

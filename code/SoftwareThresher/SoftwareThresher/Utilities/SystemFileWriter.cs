@@ -2,13 +2,13 @@
 using System.IO;
 
 namespace SoftwareThresher.Utilities {
-   public interface ISystemFile {
+   public interface ISystemFileWriter {
       void Create(string filename);
       void Write(string text);
       void Close();
    }
 
-   public class SystemFile : ISystemFile {
+   public class SystemFileWriter : ISystemFileWriter {
       StreamWriter streamWriter;
 
       public void Create(string filename) {
