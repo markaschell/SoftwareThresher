@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 
-namespace SoftwareThresher.Utilities {
+namespace SoftwareThresher.Searches {
    public class FileSystemSearch : Search {
       public List<string> GetFiles(string directory, string searchPattern) {
          return Directory.EnumerateFiles(directory, searchPattern, SearchOption.AllDirectories).ToList();

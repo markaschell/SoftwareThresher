@@ -55,9 +55,9 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Tasks\Filter.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
-    <Compile Include="Utilities\OpenGrokSearch.cs" />
-    <Compile Include="Utilities\Search.cs" />
-    <Compile Include="Utilities\FileSystemSearch.cs" />
+    <Compile Include="Searches\OpenGrokSearch.cs" />
+    <Compile Include="Searches\Search.cs" />
+    <Compile Include="Searches\FileSystemSearch.cs" />
     <Compile Include="Utilities\SystemFileReader.cs" />
     <Compile Include="Utilities\SystemFileWriter.cs" />
     <Compile Include="TaskProcessor.cs" />

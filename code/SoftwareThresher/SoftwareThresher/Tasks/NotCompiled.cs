@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Utilities;
+using SoftwareThresher.Searches;
 
 namespace SoftwareThresher.Tasks {
    public class NotCompiled {

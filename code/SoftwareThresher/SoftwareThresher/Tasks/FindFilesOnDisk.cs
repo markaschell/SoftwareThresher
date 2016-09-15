@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Utilities;
+using SoftwareThresher.Searches;
 
 namespace SoftwareThresher.Tasks {
    public class FindFilesOnDisk : Task, NoDetailsInReport {

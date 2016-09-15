@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SoftwareThresher.Utilities {
+namespace SoftwareThresher.Searches {
    public interface Search {
       List<string> GetFiles(string directory, string searchPattern);
 
