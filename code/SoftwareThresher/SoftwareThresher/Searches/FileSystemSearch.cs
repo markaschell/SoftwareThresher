@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Linq;
 using SoftwareThresher.Utilities;
+using System.Text.RegularExpressions;
 
 namespace SoftwareThresher.Searches {
    public class FileSystemSearch : Search {
@@ -20,7 +21,25 @@ namespace SoftwareThresher.Searches {
       }
 
       public List<string> GetReferencesInFile(string filename, string searchPattern) {
-         throw new NotImplementedException();
+         try {
+            var references = new List<string>();
+
+            systemFileReader.Open(filename);
+
+            string line = systemFileReader.ReadLine();
+            while (line != null) {
+               if (Regex.IsMatch(line, searchPattern)) {
+                  references.Add(line);
+               }
+
+               line = systemFileReader.ReadLine();
+            };
+
+            return references;
+         }
+         finally {
+            systemFileReader.Close();
+         }
       }
    }
 }

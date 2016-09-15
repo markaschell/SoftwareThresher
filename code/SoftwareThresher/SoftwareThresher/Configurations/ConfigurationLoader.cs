@@ -18,11 +18,14 @@ namespace SoftwareThresher.Configurations {
       }
 
       public IConfiguration Load(string filename) {
-         taskReader.Open(filename);
-         var configuration = LoadConfiguration();
-         taskReader.Close();
+         try {
 
-         return configuration;
+            taskReader.Open(filename);
+            return LoadConfiguration();
+         }
+         finally {
+            taskReader.Close();
+         }
       }
 
       private Configuration LoadConfiguration() {

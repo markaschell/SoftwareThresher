@@ -34,6 +34,36 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
+      public void Start_OpenThrowsException_CloseStillCalled() {
+         var exception = new Exception();
+         taskReader.When(r => r.Open(Arg.Any<string>())).Do(x => { throw exception; });
+
+         try {
+            configurationLoader.Load("");
+         }
+         catch (Exception e) {
+            Assert.AreSame(exception, e);
+         }
+
+         taskReader.Received().Close();
+      }
+
+      [TestMethod]
+      public void Start_GetNextTaskThrowsException_CloseStillCalled() {
+         var exception = new Exception();
+         taskReader.When(r => r.GetNextTask()).Do(x => { throw exception; });
+
+         try {
+            configurationLoader.Load("");
+         }
+         catch (Exception e) {
+            Assert.AreSame(exception, e);
+         }
+
+         taskReader.Received().Close();
+      }
+
+      [TestMethod]
       public void Start_OneTask() {
          var taskType = typeof(FindFilesOnDisk);
          taskReader.GetNextTask().Returns(new XmlTask { Name = taskType.Name }, (XmlTask)null);
