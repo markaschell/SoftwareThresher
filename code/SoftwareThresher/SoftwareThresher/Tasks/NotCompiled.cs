@@ -29,29 +29,28 @@ namespace SoftwareThresher.Tasks {
       public List<Observation> Execute(List<Observation> observations) {
          observations.ForEach(o => o.Failed = true);
 
-         var compileConfigurationFiles = search.GetFiles(Directory, CompileConfigurationFileSearchPattern);
-
-         foreach (var file in compileConfigurationFiles) {
-            var baseDirectory = new FileObservation(file).Location;
-            var references = search.GetReferencesInFile(file, TextSearchPattern);
-
-            foreach (var reference in references) {
-               var referenceObject = reference.Substring(reference.IndexOf(TextSearchPattern) + TextSearchPattern.Length).Split(' ', '\t', '"').First();
-
-               if (string.IsNullOrEmpty(referenceObject))
-                  continue;
-
-               var referenceObservation = new FileObservation(referenceObject);
-
-               foreach (var observation in observations) {
-                  if (Path.Combine(baseDirectory, referenceObservation.Location) == observation.Location && referenceObservation.Name == observation.Name) {
-                     observation.Failed = false;
-                  }
-               }
-            }
-         }
+         search.GetFiles(Directory, CompileConfigurationFileSearchPattern).ForEach(file => MarkObservationsPassedForFile(observations, file));
 
          return observations;
+      }
+
+      void MarkObservationsPassedForFile(IEnumerable<Observation> observations, string file) {
+         var fileDirectory = new FileObservation(file).Location;
+         var observationsWithSameDirectory = observations.Where(o => o.Location.Contains(fileDirectory));
+
+         search.GetReferencesInFile(file, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, fileDirectory, r));
+      }
+
+      void MarkObservationsPassedForReference(IEnumerable<Observation> observations, string fileDirectory, string reference) {
+         var referenceObject = reference.Substring(reference.IndexOf(TextSearchPattern) + TextSearchPattern.Length).Split(' ', '\t', '"').First();
+
+         if (string.IsNullOrEmpty(referenceObject))
+            return;
+
+         var referenceObservation = new FileObservation(referenceObject);
+         var directory = Path.Combine(fileDirectory, referenceObservation.Location);
+
+         observations.Where(o => o.Location == directory && referenceObservation.Name == o.Name).ToList().ForEach(o => o.Failed = false);
       }
    }
 }
