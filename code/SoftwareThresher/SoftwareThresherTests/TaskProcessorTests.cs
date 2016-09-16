@@ -69,7 +69,7 @@ namespace SoftwareThresherTests {
 
          Received.InOrder(() => {
             report.Start(configurationnFilename);
-            report.WriteFindResults(title, 2);
+            report.WriteFindResults(title, 2, Arg.Any<TimeSpan>());
             report.Complete();
          });
       }
@@ -87,7 +87,7 @@ namespace SoftwareThresherTests {
 
          taskProcessor.Run(configurationnFilename);
 
-         report.Received().WriteFindResults(Arg.Any<string>(), 1);
+         report.Received().WriteFindResults(Arg.Any<string>(), 1, Arg.Any<TimeSpan>());
       }
 
       [TestMethod]
@@ -111,7 +111,7 @@ namespace SoftwareThresherTests {
 
          Received.InOrder(() => {
             report.Start(configurationnFilename);
-            report.WriteObservations(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation), 2);
+            report.WriteObservations(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation), 2, Arg.Any<TimeSpan>());
             report.Complete();
          });
       }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
@@ -26,16 +27,13 @@ namespace SoftwareThresherTests.Reporting {
          var configurationFilename = "This is it";
 
          var reportName = "reportName";
-         var time = "wakie wakie";
          reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
-         reportData.GetTimestamp().Returns(time);
 
          report.Start(configurationFilename);
 
          Received.InOrder(() => {
             file.Create(reportName + ".html");
             file.Write("<html><head></head><body>");
-            file.Write(time);
             file.Write("");
          });
       }
@@ -44,10 +42,10 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteFindResults() {
          var header = "This is my stupid title";
 
-         report.WriteFindResults(header, 3);
+         report.WriteFindResults(header, 3, new TimeSpan(9, 7, 5, 3, 1));
 
          Received.InOrder(() => {
-            file.Write("<h3>" + header + " (3)</h3>");
+            file.Write("<h3>" + header + "</h3> (3) in 9.07:05:03.0010000");
             file.Write("");
          });
       }
@@ -57,9 +55,9 @@ namespace SoftwareThresherTests.Reporting {
          var header = "This is my stupid title";
          var observation = Substitute.For<Observation>();
 
-         report.WriteObservations(header, new List<Observation> { observation }, 3);
+         report.WriteObservations(header, new List<Observation> { observation }, 3, new TimeSpan(9, 7, 5, 3, 1));
 
-         file.Received().Write("<h3>" + header + " (1 of 3)</h3>");
+         file.Received().Write("<h3>" + header + "</h3> (1 of 3) in 9.07:05:03.0010000");
       }
 
       [TestMethod]
@@ -70,7 +68,7 @@ namespace SoftwareThresherTests.Reporting {
          observation.Name.Returns(name);
          observation.Location.Returns(location);
 
-         report.WriteObservations("", new List<Observation> { observation }, 0);
+         report.WriteObservations("", new List<Observation> { observation }, 0, new TimeSpan());
 
          file.Received().Write(name + " - " + location);
       }
@@ -79,27 +77,24 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_MultipleObservations() {
          var observation = Substitute.For<Observation>();
 
-         report.WriteObservations("", new List<Observation> { observation, observation }, 0);
+         report.WriteObservations("", new List<Observation> { observation, observation }, 0, new TimeSpan());
 
          file.Received(4).Write(Arg.Any<string>());
       }
 
       [TestMethod]
       public void WriteObservations_NoItems_NothingIsWritten() {
-         report.WriteObservations("testing", new List<Observation>(), 0);
+         report.WriteObservations("testing", new List<Observation>(), 0, new TimeSpan());
 
          file.DidNotReceive().Write(Arg.Any<string>());
       }
 
       [TestMethod]
       public void Complete() {
-         var time = "wakie wakie";
-         reportData.GetTimestamp().Returns(time);
 
          report.Complete();
 
          Received.InOrder(() => {
-            file.Write(time);
             file.Write("</body></html>");
             file.Received().Close();
          });

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
@@ -26,13 +28,16 @@ namespace SoftwareThresher {
             var observations = new List<Observation>();
             foreach (var task in configuration.Tasks) {
                var orginalNumberOfObservations = observations.Count;
+
+               var stopWatch = Stopwatch.StartNew();
                observations = task.Execute(observations.Where(o => !o.Failed).ToList());
+               stopWatch.Stop();
 
                if (task is NoDetailsInReport) {
-                  report.WriteFindResults(task.ReportTitle, observations.Count - orginalNumberOfObservations);
+                  report.WriteFindResults(task.ReportTitle, observations.Count - orginalNumberOfObservations, stopWatch.Elapsed);
                }
                else {
-                  report.WriteObservations(task.ReportTitle, observations.Where(o => o.Failed).ToList(), observations.Count);
+                  report.WriteObservations(task.ReportTitle, observations.Where(o => o.Failed).ToList(), observations.Count, stopWatch.Elapsed);
                }
             }
          }
