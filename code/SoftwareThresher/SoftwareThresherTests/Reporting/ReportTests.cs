@@ -45,7 +45,7 @@ namespace SoftwareThresherTests.Reporting {
          report.WriteFindResults(header, 3, new TimeSpan(9, 7, 5, 3, 1));
 
          Received.InOrder(() => {
-            file.Write("<h3>" + header + "</h3> (3) in 9.07:05:03.0010000");
+            file.Write("<h3 style=\"display: inline;\">" + header + " (3)</h3> in 9.07:05:03.0010000<br /><br />");
             file.Write("");
          });
       }
@@ -57,7 +57,7 @@ namespace SoftwareThresherTests.Reporting {
 
          report.WriteObservations(header, new List<Observation> { observation }, 3, new TimeSpan(9, 7, 5, 3, 1));
 
-         file.Received().Write("<h3>" + header + "</h3> (1 of 3) in 9.07:05:03.0010000");
+         file.Received().Write("<h3 style=\"display: inline;\">" + header + " (1 of 3)</h3> in 9.07:05:03.0010000<br />");
       }
 
       [TestMethod]
@@ -70,7 +70,7 @@ namespace SoftwareThresherTests.Reporting {
 
          report.WriteObservations("", new List<Observation> { observation }, 0, new TimeSpan());
 
-         file.Received().Write(name + " - " + location);
+         file.Received().Write("<span style=\"white-space: nowrap;\">" + name + " - " + location + "</span><br />");
       }
 
       [TestMethod]
