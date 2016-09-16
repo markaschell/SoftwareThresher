@@ -16,10 +16,12 @@ namespace SoftwareThresher.Searches {
          this.systemFileReader = systemFileReader;
       }
 
+      // TODO - Do we want to return Observations?
       public List<string> GetFiles(string directory, string searchPattern) {
          return Directory.EnumerateFiles(directory, searchPattern, SearchOption.AllDirectories).ToList();
       }
 
+      // TODO - Do we want to get an Observation?
       public List<string> GetReferencesInFile(string filename, string searchPattern) {
          try {
             var references = new List<string>();
