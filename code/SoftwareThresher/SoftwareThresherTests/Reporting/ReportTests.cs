@@ -70,9 +70,10 @@ namespace SoftwareThresherTests.Reporting {
          report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
 
          Received.InOrder(() => {
-            file.Received().Write(Arg.Is<string>(s => s.StartsWith("<h3")));
-            file.Received(2).Write(Arg.Any<string>());
-            file.Received().Write("<br />");
+            file.Write(Arg.Is<string>(s => s.StartsWith("<h3")));
+            file.Write(Arg.Any<string>());
+            file.Write(Arg.Any<string>());
+            file.Write("<br />");
          });
       }
 
