@@ -38,7 +38,7 @@ namespace SoftwareThresher.Tasks {
       void MarkObservationsPassedForFile(IEnumerable<Observation> observations, string file) {
          var fileDirectory = new FileObservation(file).Location;
          // TODO - 2 Performance - use a hashmap or something similar
-         // TODO - this performance does not support the use of relative paths in the found items....Should I need to hanlde this situation?  Or should that be flagged because that is a bad practice.  Should this be reported via some other means?
+         // TODO - this performance does not support the use of relative paths in the found items....Should I need to handle this situation or can I get performance other ways?  Or should that be flagged because that is a bad practice.  Should this be reported via some other means?
          var observationsWithSameDirectory = observations.Where(o => o.Location.StartsWith(fileDirectory));
 
          search.GetReferencesInFile(file, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, fileDirectory, r));
