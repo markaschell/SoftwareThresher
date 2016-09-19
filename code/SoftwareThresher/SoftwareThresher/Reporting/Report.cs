@@ -28,7 +28,6 @@ namespace SoftwareThresher.Reporting {
          file.Create(reportFileName);
 
          file.Write("<html><head></head><body>");
-         file.Write("");
       }
 
       public void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations) {
@@ -42,7 +41,7 @@ namespace SoftwareThresher.Reporting {
             file.Write(string.Format("<span style=\"white-space: nowrap;\">{0} - {1}</span>{2}", observation.Name, observation.Location, NewLine));
          }
 
-         file.Write("");
+         file.Write(NewLine);
       }
 
       public void Complete() {
