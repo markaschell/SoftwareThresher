@@ -53,44 +53,6 @@ namespace SoftwareThresherTests {
       }
 
       [TestMethod]
-      public void Run_ForFindTask_WritesFindResults() {
-         var configurationnFilename = "config this";
-
-         var noDetailsInReportTask = Substitute.For<NoDetailsInReport>();
-         configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
-         configuration.Tasks.Returns(new List<Task> { noDetailsInReportTask });
-
-         var title = "This is it";
-         noDetailsInReportTask.ReportTitle.Returns(title);
-
-         noDetailsInReportTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
-
-         taskProcessor.Run(configurationnFilename);
-
-         Received.InOrder(() => {
-            report.Start(configurationnFilename);
-            report.WriteFindResults(title, 2, Arg.Any<TimeSpan>());
-            report.Complete();
-         });
-      }
-
-      [TestMethod]
-      public void Run_ForFindTask_ReportsNewOnly() {
-         var configurationnFilename = "config this";
-
-         var noDetailsInReportTask = Substitute.For<NoDetailsInReport>();
-         configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
-         configuration.Tasks.Returns(new List<Task> { task, noDetailsInReportTask });
-
-         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>() });
-         noDetailsInReportTask.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { Substitute.For<Observation>(), Substitute.For<Observation>() });
-
-         taskProcessor.Run(configurationnFilename);
-
-         report.Received().WriteFindResults(Arg.Any<string>(), 1, Arg.Any<TimeSpan>());
-      }
-
-      [TestMethod]
       public void Run_Task_WriteObservations() {
          var configurationnFilename = "config this";
 
@@ -105,14 +67,77 @@ namespace SoftwareThresherTests {
          var failedObservation = Substitute.For<Observation>();
          failedObservation.Failed.Returns(true);
 
-         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { failedObservation, passedObservation });
+         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation>());
 
          taskProcessor.Run(configurationnFilename);
 
          Received.InOrder(() => {
             report.Start(configurationnFilename);
-            report.WriteObservations(title, Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation), 2, Arg.Any<TimeSpan>());
+            report.WriteObservations(title, 0, 0, Arg.Any<TimeSpan>(), Arg.Is<List<Observation>>(l => l.Count == 0));
             report.Complete();
+         });
+      }
+
+      [TestMethod]
+      public void Run_Task_WriteFailedObservations() {
+         configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
+         configuration.Tasks.Returns(new List<Task> { task });
+
+         var passedObservation = Substitute.For<Observation>();
+         passedObservation.Failed.Returns(false);
+         var failedObservation = Substitute.For<Observation>();
+         failedObservation.Failed.Returns(true);
+
+         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { passedObservation, failedObservation, passedObservation });
+
+         taskProcessor.Run("");
+
+         report.Received().WriteObservations(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<TimeSpan>(), Arg.Is<List<Observation>>(l => l.Count == 1 && l.First() == failedObservation));
+      }
+
+      [TestMethod]
+      public void Run_Task_WriteDeltaObservations() {
+         var task2 = Substitute.For<Task>();
+
+         configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
+         configuration.Tasks.Returns(new List<Task> { task, task2 });
+
+         var observation = Substitute.For<Observation>();
+         observation.Failed.Returns(false);
+         var failedObservation = Substitute.For<Observation>();
+         failedObservation.Failed.Returns(true);
+
+         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { observation });
+         task2.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { observation, failedObservation, observation, observation });
+
+         taskProcessor.Run("");
+
+         Received.InOrder(() => {
+            report.WriteObservations(Arg.Any<string>(), 1, Arg.Any<int>(), Arg.Any<TimeSpan>(), Arg.Any<List<Observation>>());
+            report.WriteObservations(Arg.Any<string>(), 2, Arg.Any<int>(), Arg.Any<TimeSpan>(), Arg.Any<List<Observation>>());
+         });
+      }
+
+      [TestMethod]
+      public void Run_Task_WritePassedObservations() {
+         var task2 = Substitute.For<Task>();
+
+         configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
+         configuration.Tasks.Returns(new List<Task> { task, task2 });
+
+         var passedObservation = Substitute.For<Observation>();
+         passedObservation.Failed.Returns(false);
+         var failedObservation = Substitute.For<Observation>();
+         failedObservation.Failed.Returns(true);
+
+         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { passedObservation });
+         task2.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { passedObservation, failedObservation, passedObservation });
+
+         taskProcessor.Run("");
+
+         Received.InOrder(() => {
+            report.WriteObservations(Arg.Any<string>(), Arg.Any<int>(), 1, Arg.Any<TimeSpan>(), Arg.Any<List<Observation>>());
+            report.WriteObservations(Arg.Any<string>(), Arg.Any<int>(), 2, Arg.Any<TimeSpan>(), Arg.Any<List<Observation>>());
          });
       }
 

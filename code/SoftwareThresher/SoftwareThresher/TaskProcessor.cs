@@ -5,7 +5,6 @@ using System.Linq;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
-using SoftwareThresher.Tasks;
 
 namespace SoftwareThresher {
    public class TaskProcessor {
@@ -25,6 +24,7 @@ namespace SoftwareThresher {
          report.Start(configurationFilename);
 
          try {
+            // TODO - Performance - Change this to a hashmap?  Not sure how I feel about that
             var observations = new List<Observation>();
             foreach (var task in configuration.Tasks) {
                var orginalNumberOfObservations = observations.Count;
@@ -33,12 +33,9 @@ namespace SoftwareThresher {
                observations = task.Execute(observations.Where(o => !o.Failed).ToList());
                stopWatch.Stop();
 
-               if (task is NoDetailsInReport) {
-                  report.WriteFindResults(task.ReportTitle, observations.Count - orginalNumberOfObservations, stopWatch.Elapsed);
-               }
-               else {
-                  report.WriteObservations(task.ReportTitle, observations.Where(o => o.Failed).ToList(), observations.Count, stopWatch.Elapsed);
-               }
+               var failedObservations = observations.Where(o => o.Failed).ToList();
+               var numberOfPassedObservations = observations.Count - failedObservations.Count;
+               report.WriteObservations(task.ReportTitle, numberOfPassedObservations - orginalNumberOfObservations, numberOfPassedObservations, stopWatch.Elapsed, failedObservations);
             }
          }
          finally {

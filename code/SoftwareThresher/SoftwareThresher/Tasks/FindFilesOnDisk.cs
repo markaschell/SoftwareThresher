@@ -3,7 +3,7 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Searches;
 
 namespace SoftwareThresher.Tasks {
-   public class FindFilesOnDisk : Task, NoDetailsInReport {
+   public class FindFilesOnDisk : Task {
       public string Directory { get; set; }
 
       public string SearchPattern { get; set; }

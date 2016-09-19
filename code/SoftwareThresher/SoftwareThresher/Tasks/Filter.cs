@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Tasks {
-   public class Filter : Task, NoDetailsInReport {
+   public class Filter : Task {
 
       // TODO - make nullable when the next parameter is added
       // NOTE - RegEx format

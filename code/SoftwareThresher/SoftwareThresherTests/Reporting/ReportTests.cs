@@ -39,25 +39,13 @@ namespace SoftwareThresherTests.Reporting {
       }
 
       [TestMethod]
-      public void WriteFindResults() {
-         var header = "This is my stupid title";
-
-         report.WriteFindResults(header, 3, new TimeSpan(9, 7, 5, 3, 1));
-
-         Received.InOrder(() => {
-            file.Write("<h3 style=\"display: inline;\">" + header + " (3)</h3> in 9.07:05:03.0010000<br /><br />");
-            file.Write("");
-         });
-      }
-
-      [TestMethod]
       public void WriteObservations_WritesHeader() {
          var header = "This is my stupid title";
          var observation = Substitute.For<Observation>();
 
-         report.WriteObservations(header, new List<Observation> { observation }, 3, new TimeSpan(9, 7, 5, 3, 1));
+         report.WriteObservations(header, 1, 3, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
-         file.Received().Write("<h3 style=\"display: inline;\">" + header + " (1 of 3)</h3> in 9.07:05:03.0010000<br />");
+         file.Received().Write("<h3 style=\"display: inline;\">" + header + ": 1 = 3</h3> in 9.07:05:03.0010000<br />");
       }
 
       [TestMethod]
@@ -68,7 +56,7 @@ namespace SoftwareThresherTests.Reporting {
          observation.Name.Returns(name);
          observation.Location.Returns(location);
 
-         report.WriteObservations("", new List<Observation> { observation }, 0, new TimeSpan());
+         report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
 
          file.Received().Write("<span style=\"white-space: nowrap;\">" + name + " - " + location + "</span><br />");
       }
@@ -77,14 +65,16 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_MultipleObservations() {
          var observation = Substitute.For<Observation>();
 
-         report.WriteObservations("", new List<Observation> { observation, observation }, 0, new TimeSpan());
+         report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
 
          file.Received(4).Write(Arg.Any<string>());
       }
 
       [TestMethod]
-      public void WriteObservations_NoItems_NothingIsWritten() {
-         report.WriteObservations("testing", new List<Observation>(), 0, new TimeSpan());
+      public void WriteObservations_NoThingAddedOrFailed_NothingIsWritten() {
+         var observation = Substitute.For<Observation>();
+
+         report.WriteObservations("testing", 0, 3, new TimeSpan(), new List<Observation> { observation });
 
          file.DidNotReceive().Write(Arg.Any<string>());
       }
