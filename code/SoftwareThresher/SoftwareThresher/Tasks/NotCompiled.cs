@@ -14,7 +14,6 @@ namespace SoftwareThresher.Tasks {
       // NOTE - RegEx format for FileSystemSearch
       public string TextSearchPattern { get; set; }
 
-      // Assumes that all code files are referenced by a compile configuration file that is higher up the directory structure and not in a sibling folder stucture
       public string ReportTitle { get { return "Not Compiled"; } }
 
       Search search;
@@ -29,6 +28,8 @@ namespace SoftwareThresher.Tasks {
       public List<Observation> Execute(List<Observation> observations) {
          observations.ForEach(o => o.Failed = true);
 
+         // TODO - 1 Performance - Use a hash map for obervations
+         // TODO - Last Performance - multi-threaded
          search.GetFiles(Directory, CompileConfigurationFileSearchPattern).ForEach(file => MarkObservationsPassedForFile(observations, file));
 
          return observations;
@@ -36,7 +37,9 @@ namespace SoftwareThresher.Tasks {
 
       void MarkObservationsPassedForFile(IEnumerable<Observation> observations, string file) {
          var fileDirectory = new FileObservation(file).Location;
-         var observationsWithSameDirectory = observations.Where(o => o.Location.Contains(fileDirectory));
+         // TODO - 2 Performance - use a hashmap or something similar
+         // TODO - this performance does not support the use of relative paths in the found items....Should I need to hanlde this situation?  Or should that be flagged because that is a bad practice.  Should this be reported via some other means?
+         var observationsWithSameDirectory = observations.Where(o => o.Location.StartsWith(fileDirectory));
 
          search.GetReferencesInFile(file, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, fileDirectory, r));
       }
