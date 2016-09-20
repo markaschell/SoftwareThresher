@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestProject
 {
-    public class GoodClass
-
+    public class Filtered
     {
     }
 }

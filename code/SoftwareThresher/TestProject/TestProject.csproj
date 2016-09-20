@@ -40,6 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filter\NotFiltered.cs" />
+    <Compile Include="Filter\Skip\Filtered.cs" />
     <Compile Include="FindFilesOnDisk\GoodClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
