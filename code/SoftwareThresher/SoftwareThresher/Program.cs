@@ -4,7 +4,7 @@ namespace SoftwareThresher {
    class Program {
       static void Main(string[] args) {
          if (args.Count() == 0) {
-
+            new UsageReport().Write();
          }
          else {
             var taskProcessor = new TaskProcessor();
