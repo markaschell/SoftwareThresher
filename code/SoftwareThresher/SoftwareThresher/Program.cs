@@ -3,7 +3,13 @@
 namespace SoftwareThresher {
    class Program {
       static void Main(string[] args) {
-         new TaskProcessor().Run(args.First());
+         if (args.Count() == 0) {
+
+         }
+         else {
+            var taskProcessor = new TaskProcessor();
+            args.ToList().ForEach(a => taskProcessor.Run(a));
+         }
       }
    }
 }
