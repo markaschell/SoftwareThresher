@@ -58,6 +58,7 @@
     <Compile Include="Searches\OpenGrokSearch.cs" />
     <Compile Include="Searches\Search.cs" />
     <Compile Include="Searches\FileSystemSearch.cs" />
+    <Compile Include="UsageReport.cs" />
     <Compile Include="Utilities\SystemFileReader.cs" />
     <Compile Include="Utilities\SystemFileWriter.cs" />
     <Compile Include="TaskProcessor.cs" />
