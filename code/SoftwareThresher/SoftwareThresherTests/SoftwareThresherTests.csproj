@@ -71,6 +71,7 @@
     <Compile Include="Tasks\FilterTests.cs" />
     <Compile Include="Tasks\FindFilesOnDiskTests.cs" />
     <Compile Include="Tasks\NotCompiledTests.cs" />
+    <Compile Include="UsageReportTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
