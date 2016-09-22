@@ -23,7 +23,6 @@ namespace SoftwareThresher {
          report.Start(configurationFilename);
 
          try {
-            // TODO - Performance - Change this to a hashmap?  Not sure how I feel about that
             var observations = new List<Observation>();
             foreach (var task in configuration.Tasks) {
                var orginalNumberOfObservations = observations.Count;

@@ -29,7 +29,6 @@ namespace SoftwareThresher.Tasks {
          observations.ForEach(o => o.Failed = true);
 
          var observationsLookup = observations.ToLookup(o => o.Location);
-         // TODO - Last Performance - multi-threaded
          search.GetFiles(Directory, CompileConfigurationFileSearchPattern).ForEach(file => MarkObservationsPassedForFile(observationsLookup, file));
 
          return observations;
@@ -37,14 +36,12 @@ namespace SoftwareThresher.Tasks {
 
       void MarkObservationsPassedForFile(ILookup<string, Observation> observations, string file) {
          var fileDirectory = new FileObservation(file).Location;
-         // TODO - 2 Performance - use a hashmap or something similar
-         // TODO - this performance does not support the use of relative paths in the found items....Should I need to handle this situation or can I get performance other ways?  Or should that be flagged because that is a bad practice.  Should this be reported via some other means?
-         var observationsWithSameDirectory = observations.Where(o => o.Key.StartsWith(fileDirectory)).SelectMany(g => g);
+         var observationsWithSameDirectory = observations.Where(o => o.Key.StartsWith(fileDirectory)).SelectMany(g => g).ToLookup(o => o.Location);
 
          search.GetReferencesInFile(file, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, fileDirectory, r));
       }
 
-      void MarkObservationsPassedForReference(IEnumerable<Observation> observations, string fileDirectory, string reference) {
+      void MarkObservationsPassedForReference(ILookup<string, Observation> observations, string fileDirectory, string reference) {
          var referenceObject = reference.Substring(reference.IndexOf(TextSearchPattern) + TextSearchPattern.Length).Split(' ', '\t', '"').First();
 
          if (string.IsNullOrEmpty(referenceObject))
@@ -53,7 +50,7 @@ namespace SoftwareThresher.Tasks {
          var referenceObservation = new FileObservation(referenceObject);
          var directory = Path.Combine(fileDirectory, referenceObservation.Location);
 
-         observations.Where(o => o.Location == directory && referenceObservation.Name == o.Name).ToList().ForEach(o => o.Failed = false);
+         observations.Where(o => o.Key == directory).SelectMany(g => g).Where(o => referenceObservation.Name == o.Name).ToList().ForEach(o => o.Failed = false);
       }
    }
 }
