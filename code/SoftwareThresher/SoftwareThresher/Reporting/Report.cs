@@ -37,8 +37,13 @@ namespace SoftwareThresher.Reporting {
 
          file.Write(string.Format("<h3 style=\"display: inline;\">{0}: {1} = {2}</h3> in {3}{4}", title, changeInObservations, numberOfPassedObservations, runningTime.ToString("c"), NewLine));
 
-         foreach (var observation in failedObservations) {
-            file.Write(string.Format("<span style=\"white-space: nowrap;\">{0} - {1}</span>{2}", observation.Name, observation.Location, NewLine));
+         if (failedObservations.Count > 0) {
+            file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
+            file.Write(string.Format("<tr><th>{0}</th><th>{1}</th></tr>", "Name", "Location"));
+            foreach (var observation in failedObservations) {
+               file.Write(string.Format("<tr><td>{0}</td><td>{1}</td></tr>", observation.Name, observation.Location));
+            }
+            file.Write("</table>");
          }
 
          file.Write(NewLine);

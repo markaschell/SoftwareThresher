@@ -60,7 +60,13 @@ namespace SoftwareThresherTests.Reporting {
 
          report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
 
-         file.Received().Write("<span style=\"white-space: nowrap;\">" + name + " - " + location + "</span><br />");
+
+         Received.InOrder(() => {
+            file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
+            file.Write("<tr><th>Name</th><th>Location</th></tr>");
+            file.Write("<tr><td>" + name + "</td><td>" + location + "</td></tr>");
+            file.Write("</table>");
+         });
       }
 
       [TestMethod]
@@ -71,19 +77,31 @@ namespace SoftwareThresherTests.Reporting {
 
          Received.InOrder(() => {
             file.Write(Arg.Is<string>(s => s.StartsWith("<h3")));
+            file.Write(Arg.Is<string>(s => s.Contains("table")));
+            file.Write(Arg.Is<string>(s => s.Contains("th")));
             file.Write(Arg.Any<string>());
             file.Write(Arg.Any<string>());
+            file.Write(Arg.Is<string>(s => s.Contains("table")));
             file.Write("<br />");
          });
       }
 
       [TestMethod]
-      public void WriteObservations_NoThingAddedOrFailed_NothingIsWritten() {
+      public void WriteObservations_NothingAddedOrFailed_NothingIsWritten() {
          var observation = Substitute.For<Observation>();
 
          report.WriteObservations("testing", 0, 3, new TimeSpan(), new List<Observation> { observation });
 
          file.DidNotReceive().Write(Arg.Any<string>());
+      }
+
+      [TestMethod]
+      public void WriteObservations_NoThingFailed_TableIsNotWritten() {
+         var observation = Substitute.For<Observation>();
+
+         report.WriteObservations("testing", 1, 3, new TimeSpan(), new List<Observation>());
+
+         file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));
       }
 
       [TestMethod]
