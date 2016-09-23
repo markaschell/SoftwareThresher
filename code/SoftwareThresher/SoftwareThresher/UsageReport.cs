@@ -21,10 +21,13 @@ namespace SoftwareThresher {
          foreach(var task in tasks) {
             console.WriteLine("\tTask:\t" + task.Name);
 
-            var attributes = task.GetProperties().Where(a => a.CanWrite);
+            var properties = task.GetProperties().Where(a => a.CanWrite);
 
-            foreach(var attribute in attributes) {
-               console.WriteLine(string.Format("\t\tAttribute:\t{0} ({1})", attribute.Name, attribute.PropertyType.Name));
+            foreach(var property in properties) {
+               var noteAttribute = (UsageNoteAttribute)System.Attribute.GetCustomAttributes(property).Where(a => a.GetType() == typeof(UsageNoteAttribute)).FirstOrDefault();
+               var noteText = noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
+
+               console.WriteLine(string.Format("\t\tAttribute:\t{0} ({1}){2}", property.Name, property.PropertyType.Name, noteText));
             }
          }
       }

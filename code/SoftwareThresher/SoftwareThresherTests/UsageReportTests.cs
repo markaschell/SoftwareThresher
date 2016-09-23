@@ -43,7 +43,7 @@ namespace SoftwareThresherTests {
       public void Write_AtLeastOneAttribute() {
          usageReport.Write();
 
-         console.Received().WriteLine("\t\tAttribute:\tLocationSearchPattern (String)");
+         console.Received().WriteLine("\t\tAttribute:\tDirectory (String)");
       }
 
       [TestMethod]
@@ -70,6 +70,13 @@ namespace SoftwareThresherTests {
          usageReport.Write();
 
          console.DidNotReceive().WriteLine(Arg.Is<string>(s => s.Contains(":\tTask")));
+      }
+
+      [TestMethod]
+      public void Write_UsageNote() {
+         usageReport.Write();
+
+         console.Received().WriteLine(Arg.Is<string>(s => s.EndsWith("LocationSearchPattern (String) - Format is RegEx")));
       }
    }
 }

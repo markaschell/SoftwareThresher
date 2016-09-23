@@ -6,7 +6,7 @@ namespace SoftwareThresher.Tasks {
    public class Filter : Task {
 
       // TODO - make nullable when the next parameter is added - make sure the nullable is represented in the usage - Either use ? or if get has an implementation
-      // NOTE - RegEx format
+      [UsageNote("Format is RegEx")]
       public string LocationSearchPattern { get; set; }
 
       public string ReportTitle { get { return "Items Filtered"; } }
