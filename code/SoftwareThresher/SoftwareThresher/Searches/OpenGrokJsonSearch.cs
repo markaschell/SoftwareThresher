@@ -6,6 +6,7 @@ using System.Text;
 
 namespace SoftwareThresher.Searches {
 
+   // TODO - should this implement the same interface?
    public class OpenGrokJsonSearch : Search {
 
       const string TextSearchParameterLabel = "freetext=";
@@ -18,6 +19,7 @@ namespace SoftwareThresher.Searches {
       public List<string> GetFiles(string directory, string searchPattern) {
          // TODO - Add example?
          // TODO - Rename directory include the task parameter?
+         // TODO - use directory to assign the path variable?
          // TODO - Add type as a parameter the the task or define it for all tasks?  Play with injection and how that will work with reflection....Assign parameters in Task or pass into the constructor?  Should we default all of the items in the base?
          // TODO - Could we use "file://" in the directory to search locally and just use the same Search?  Probably not because of the different return types.  Use that to access svn server - wonder which is faster
 
@@ -25,12 +27,13 @@ namespace SoftwareThresher.Searches {
       }
 
       public List<string> GetReferencesInFile(string filename, string searchPattern) {
-         // TODO - since this requires the whole path should we not pass it in to other tasks
          return GetResults(PathSearchParameterLabel + filename + ParameterJoin + TextSearchParameterLabel + searchPattern, (r) => r.line);
       }
 
       List<string> GetResults(string parameters, Converter<OpenGrokJsonSearchResult, string> converter) {
-         // TODO - could opengrok be configured to a different location?  {host}/{webapp_name}/json?freetext
+         // TODO - could opengrok be configured to a different location?  {host}/{webapp_name}/json?freetext - make the host a configuration setting?
+         // TODO - configure the webapp_name - make this the location name?
+         // Does we need to make this configurable at this time?
          var request = WebRequest.Create("http://opengrok/source/json?" + parameters);
 
          using (var response = request.GetResponse()) {
