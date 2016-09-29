@@ -59,10 +59,3 @@ namespace SoftwareThresher.Searches {
       }
    }
 }
-
-
-
-
-
-
-
