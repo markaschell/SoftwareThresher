@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
@@ -55,7 +56,7 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Tasks\Filter.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
-    <Compile Include="Searches\OpenGrokSearch.cs" />
+    <Compile Include="Searches\OpenGrokJsonSearch.cs" />
     <Compile Include="Searches\Search.cs" />
     <Compile Include="Searches\FileSystemSearch.cs" />
     <Compile Include="UsageNoteAttribute.cs" />
