@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Searches;
+using SoftwareThresher.Settings;
 
 namespace SoftwareThresher.Tasks {
    public class FindFilesOnDisk : Task {
@@ -9,8 +9,6 @@ namespace SoftwareThresher.Tasks {
       public string SearchPattern { get; set; }
 
       Search search;
-
-      public FindFilesOnDisk() : this(new FileSystemSearch()) { }
 
       public FindFilesOnDisk(Search systemDirectory) {
          this.search = systemDirectory;

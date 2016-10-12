@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-  <-- format is interface name, followed by type (enum called SearchType) and then any other properties -->
-  <-- 1. Switch current loading over to this including output support  2. Add support for File Search without type  3. Add support for type with Opengrok -->  
+  <!-- TODO 1. Switch current loading over to this including output support  2. Add support for File Search without type  3. Add support for type with Opengrok -->  
   <Search Type="" BaseLocation="" />
   <tasks>
     <FindFilesOnDisk Directory=".\..\code\SoftwareThresher\TestProject" SearchPattern="*.cs" />

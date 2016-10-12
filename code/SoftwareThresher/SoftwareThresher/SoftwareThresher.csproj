@@ -46,7 +46,10 @@
   <ItemGroup>
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationLoader.cs" />
-    <Compile Include="Configurations\TaskReader.cs" />
+    <Compile Include="Configurations\ConfigurationReader.cs" />
+    <Compile Include="Configurations\XmlAttribute.cs" />
+    <Compile Include="Configurations\XmlNode.cs" />
+    <Compile Include="Configurations\XmlSetting.cs" />
     <Compile Include="Configurations\XmlTask.cs" />
     <Compile Include="Observations\FileObservation.cs" />
     <Compile Include="Observations\Observation.cs" />
@@ -56,9 +59,9 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Tasks\Filter.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
-    <Compile Include="Searches\OpenGrokJsonSearch.cs" />
-    <Compile Include="Searches\Search.cs" />
-    <Compile Include="Searches\FileSystemSearch.cs" />
+    <Compile Include="Settings\OpenGrokJsonSearch.cs" />
+    <Compile Include="Settings\Search.cs" />
+    <Compile Include="Settings\FileSystemSearch.cs" />
     <Compile Include="UsageNoteAttribute.cs" />
     <Compile Include="UsageReport.cs" />
     <Compile Include="Utilities\Console.cs" />

@@ -65,7 +65,7 @@
     <Compile Include="Observations\FileObservationTests.cs" />
     <Compile Include="Reporting\ReportDataTests.cs" />
     <Compile Include="Reporting\ReportTests.cs" />
-    <Compile Include="Searches\FileSystemSearchTests.cs" />
+    <Compile Include="Settings\FileSystemSearchTests.cs" />
     <Compile Include="TaskProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\FilterTests.cs" />

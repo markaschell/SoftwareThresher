@@ -1,8 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
+  <settings>
+    <Search Type="FileSystemSearch" BaseLocation=".\..\code\SoftwareThresher" />
+  </settings>
   <tasks>
-    <FindFilesOnDisk Directory=".\..\code\SoftwareThresher\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
+    <FindFilesOnDisk Directory="\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
     <Filter LocationSearchPattern="\\([O|o]bj\\|[B|b]in\\|[O|o]bj$|[B|b]in$)" />
-    <NotCompiled Directory=".\..\code\SoftwareThresher\TestProject" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
+    <NotCompiled Directory="TestProject" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
   </tasks>
 </configuration>

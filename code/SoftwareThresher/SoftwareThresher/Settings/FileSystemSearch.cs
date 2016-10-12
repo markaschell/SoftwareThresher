@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
-using System;
 using System.IO;
 using System.Linq;
 using SoftwareThresher.Utilities;
 using System.Text.RegularExpressions;
 
-namespace SoftwareThresher.Searches {
+namespace SoftwareThresher.Settings {
    public class FileSystemSearch : Search {
 
       ISystemFileReader systemFileReader;
+
+      // TODO - use this
+      public string BaseLocation { private get; set; }
 
       public FileSystemSearch() : this(new SystemFileReader()) { }
 

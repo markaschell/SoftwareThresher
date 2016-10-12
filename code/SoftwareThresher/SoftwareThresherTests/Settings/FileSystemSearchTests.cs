@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using SoftwareThresher.Searches;
+using SoftwareThresher.Settings;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests.Searches {

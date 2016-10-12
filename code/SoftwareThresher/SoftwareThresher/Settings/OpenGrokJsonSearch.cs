@@ -4,9 +4,8 @@ using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace SoftwareThresher.Searches {
+namespace SoftwareThresher.Settings {
 
-   // TODO - should this implement the same interface?
    public class OpenGrokJsonSearch : Search {
 
       const string TextSearchParameterLabel = "freetext=";
@@ -15,6 +14,9 @@ namespace SoftwareThresher.Searches {
       const string PathSearchParameterLabel = "path=";
       //const string HistorySearchParameterLabel = "hist=";
       const string ParameterJoin = "&";
+
+      // TODO - use this
+      public string BaseLocation { private get; set; }
 
       public List<string> GetFiles(string directory, string searchPattern) {
          // TODO - Add example?

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Searches;
+using SoftwareThresher.Settings;
 
 namespace SoftwareThresher.Tasks {
    public class NotCompiled : Task {
@@ -17,9 +17,6 @@ namespace SoftwareThresher.Tasks {
       public string ReportTitle { get { return "Not Compiled"; } }
 
       Search search;
-
-      public NotCompiled() : this(new FileSystemSearch()) {
-      }
 
       public NotCompiled(Search search) {
          this.search = search;
