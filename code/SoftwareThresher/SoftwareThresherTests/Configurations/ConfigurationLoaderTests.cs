@@ -10,6 +10,9 @@ using SoftwareThresher.Tasks;
 namespace SoftwareThresherTests.Configurations {
    [TestClass]
    public class ConfigurationLoaderTests {
+      const string SettingsSectionName = "settings";
+      const string TasksSectionName = "tasks";
+
       IConfigurationReader taskReader;
 
       ConfigurationLoader configurationLoader;
@@ -25,15 +28,14 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_NoSettingsOrTasks() {
          var filename = "This is it";
 
-         taskReader.GetSettings().Returns(new List<XmlSetting>());
-         taskReader.GetTasks().Returns(new List<XmlTask>());
+         taskReader.GetNodes("").ReturnsForAnyArgs(new List<XmlNode>());
 
          configurationLoader.Load(filename);
 
          Received.InOrder(() => {
             taskReader.Open(filename);
-            taskReader.GetSettings();
-            taskReader.GetTasks();
+            taskReader.GetNodes(SettingsSectionName);
+            taskReader.GetNodes(TasksSectionName);
             taskReader.Close();
          });
       }
@@ -57,8 +59,8 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_OneTaskWithNoSettings() {
          var taskType = typeof(Filter);
 
-         taskReader.GetSettings().Returns(new List<XmlSetting>());
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskType.Name } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
          var result = configurationLoader.Load("");
 
@@ -68,10 +70,10 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_MultipleTasks() {
-         var xmlTask = new XmlTask { Name = typeof(Filter).Name };
+         var xmlTask = new XmlNode { Name = typeof(Filter).Name };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting>());
-         taskReader.GetTasks().Returns(new List<XmlTask> { xmlTask, xmlTask });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { xmlTask, xmlTask });
 
          var result = configurationLoader.Load("");
 
@@ -80,8 +82,8 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_TaskWithOneSetting() {
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = "Search", Type = typeof(FileSystemSearch).Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = typeof(FindFilesOnDisk).Name } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FindFilesOnDisk).Name } });
 
          var result = configurationLoader.Load("");
 
@@ -91,12 +93,12 @@ namespace SoftwareThresherTests.Configurations {
       // TODO - test with mulitple settings - no task exist yet with multiple
 
       [TestMethod]
-      public void Load_InvalidSettingType_ThrowsException() {
+      public void Load_InvalidSetting_ThrowsException() {
          var settingType = typeof(Configuration);
          var taskType = typeof(FindFilesOnDisk);
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = typeof(Search).Name, Type = settingType.Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask>());
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
             var result = configurationLoader.Load("");
@@ -104,25 +106,7 @@ namespace SoftwareThresherTests.Configurations {
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(settingType.Name + " is not a supported setting type.", e.Message);
-         }
-      }
-
-      [TestMethod]
-      public void Load_SettingTypeIsSettingName_ThrowsException() {
-         var settingName = typeof(Search).Name;
-         var taskType = typeof(FindFilesOnDisk);
-
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = settingName, Type = settingName } });
-         taskReader.GetTasks().Returns(new List<XmlTask>());
-
-         try {
-            var result = configurationLoader.Load("");
-
-            Assert.Fail("Should have thrown an exception.");
-         }
-         catch (NotSupportedException e) {
-            Assert.AreEqual(settingName + " is not a supported setting type.", e.Message);
+            Assert.AreEqual(settingType.Name + " is not a supported setting.", e.Message);
          }
       }
 
@@ -130,8 +114,8 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_SetsSettingProperty() {
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "BaseLocation", Value = "" } };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = typeof(Search).Name, Type = typeof(FileSystemSearch).Name, Attributes = attributes } });
-         taskReader.GetTasks().Returns(new List<XmlTask>());
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name, Attributes = attributes } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          var result = configurationLoader.Load("");
       }
@@ -140,59 +124,22 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_SetsSettingPropertyIgnoresCase() {
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "baselocation", Value = "" } };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = typeof(Search).Name, Type = typeof(FileSystemSearch).Name, Attributes = attributes } });
-         taskReader.GetTasks().Returns(new List<XmlTask>());
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name, Attributes = attributes } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          var result = configurationLoader.Load("");
       }
 
       // TODO - test with mulitple settings attributes - no setting with multiple exists yet
-
-      [TestMethod]
-      public void Load_InvalidSettingName_ThrowsException() {
-         var settingName = "klsadf";
-         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "baselocation", Value = "" } };
-
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = settingName, Type = typeof(FileSystemSearch).Name, Attributes = attributes } });
-         taskReader.GetTasks().Returns(new List<XmlTask>());
-
-         try {
-            var result = configurationLoader.Load("");
-
-            Assert.Fail("Should have thrown an exception.");
-         }
-         catch (NotSupportedException e) {
-            Assert.AreEqual("Unsupported type " + settingName + ".", e.Message);
-         }
-      }
-
-      //[TestMethod]
-      //public void Load_SettingNameHasTypeName_ThrowsException() {
-      //   var settingTypeName = typeof(FileSystemSearch).Name;
-      //   var taskTypeName = typeof(FindFilesOnDisk).Name;
-
-      //   taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = settingTypeName, Type = settingTypeName } });
-      //   taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskTypeName } });
-
-      //   try {
-      //      var result = configurationLoader.Load("");
-
-      //      Assert.Fail("Should have thrown an exception.");
-      //   }
-      //   catch (ArgumentNullException e) {
-      //      Assert.AreEqual("Search", e.ParamName);
-      //      Assert.IsTrue(e.Message.StartsWith("The constructor for task " + taskTypeName + " has no defined setting."));
-      //   }
-      //}
-
+      
       [TestMethod]
       public void Load_InvalidSettingAttribute_ThrowsException() {
          var invalidPropertyName = "asdf";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
 
-         var settingName = typeof(Search).Name;
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = settingName, Type = typeof(FileSystemSearch).Name, Attributes = attributes } });
-         taskReader.GetTasks().Returns(new List<XmlTask>());
+         var settingName = typeof(FileSystemSearch).Name;
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingName, Attributes = attributes } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
             var result = configurationLoader.Load("");
@@ -200,7 +147,7 @@ namespace SoftwareThresherTests.Configurations {
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for type " + settingName + ".", e.Message);
+            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + settingName + ".", e.Message);
          }
       }
 
@@ -208,8 +155,8 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_TaskHasParameterWithNoMatchingSetting_ThrowsException() {
          var taskTypeName = typeof(FindFilesOnDisk).Name;
 
-         taskReader.GetSettings().Returns(new List<XmlSetting>());
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskTypeName } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName } });
 
          try {
             var result = configurationLoader.Load("");
@@ -226,9 +173,9 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_TaskHasTwoMatchingSettings_ThrowsException() {
          var taskTypeName = typeof(FindFilesOnDisk).Name;
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = "Search", Type = typeof(FileSystemSearch).Name },
-                                                                 new XmlSetting { Name = "Search", Type = typeof(OpenGrokJsonSearch).Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskTypeName } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name },
+                                                                              new XmlNode { Name = typeof(OpenGrokJsonSearch).Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName } });
 
          try {
             var result = configurationLoader.Load("");
@@ -245,8 +192,8 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_InvalidTaskType_ThrowsException() {
          var taskName = typeof(Configuration).Name;
 
-         taskReader.GetSettings().Returns(new List<XmlSetting>());
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskName } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskName } });
 
          try {
             var result = configurationLoader.Load("");
@@ -254,7 +201,7 @@ namespace SoftwareThresherTests.Configurations {
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual("Unsupported type " + taskName + ".", e.Message);
+            Assert.AreEqual(taskName + " is not a supported task.", e.Message);
          }
       }
 
@@ -267,8 +214,8 @@ namespace SoftwareThresherTests.Configurations {
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = directoryPropertyName, Value = directoryValue },
                                                    new XmlAttribute { Name = searchPropertName, Value = searchValue } };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = "Search", Type = typeof(FileSystemSearch).Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes } });
 
          var result = configurationLoader.Load("");
 
@@ -284,8 +231,8 @@ namespace SoftwareThresherTests.Configurations {
          var invalidPropertyName = "BAD NAME";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = "Search", Type = typeof(FileSystemSearch).Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskTypeName, Attributes = attributes } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName, Attributes = attributes } });
 
          try {
             var result = configurationLoader.Load("");
@@ -293,7 +240,7 @@ namespace SoftwareThresherTests.Configurations {
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for type " + taskTypeName + ".", e.Message);
+            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + taskTypeName + ".", e.Message);
          }
       }
 
@@ -306,8 +253,8 @@ namespace SoftwareThresherTests.Configurations {
          var reportTileTaskBaseAttribute = typeof(Task).GetProperty("ReportTitle").Name ;
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = reportTileTaskBaseAttribute } };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = "Search", Type = typeof(FileSystemSearch).Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = taskTypeName, Attributes = attributes } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName, Attributes = attributes } });
 
          try {
             var result = configurationLoader.Load("");
@@ -315,7 +262,7 @@ namespace SoftwareThresherTests.Configurations {
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(reportTileTaskBaseAttribute + " is not a supported attribute for type " + taskTypeName + ".", e.Message);
+            Assert.AreEqual(reportTileTaskBaseAttribute + " is not a supported attribute for " + taskTypeName + ".", e.Message);
          }
       }
 
@@ -326,8 +273,8 @@ namespace SoftwareThresherTests.Configurations {
 
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = directoryPropertyName, Value = directoryValue } };
 
-         taskReader.GetSettings().Returns(new List<XmlSetting> { new XmlSetting { Name = "Search", Type = typeof(FileSystemSearch).Name } });
-         taskReader.GetTasks().Returns(new List<XmlTask> { new XmlTask { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes } });
+         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
+         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes } });
 
          var result = configurationLoader.Load("");
 

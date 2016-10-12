@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 
 namespace SoftwareThresher.Configurations {
-   public interface XmlNode {
-      string Name { get; set; }
-      List<XmlAttribute> Attributes { get; set; }
+   public class XmlNode {
+      public string Name { get; set; }
+      public List<XmlAttribute> Attributes { get; set; }
+
+      public XmlNode() {
+         Attributes = new List<XmlAttribute>();
+      }
    }
 }

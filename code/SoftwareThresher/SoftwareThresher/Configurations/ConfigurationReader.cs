@@ -5,8 +5,7 @@ using System.Xml;
 namespace SoftwareThresher.Configurations {
    public interface IConfigurationReader {
       void Open(string filename);
-      List<XmlSetting> GetSettings();
-      List<XmlTask> GetTasks();
+      List<XmlNode> GetNodes(string sectionName);
       void Close();
    }
 
@@ -21,28 +20,22 @@ namespace SoftwareThresher.Configurations {
          xmlReader = XmlReader.Create(filename);
       }
 
-      public List<XmlSetting> GetSettings() {
-         MoveToFirstChildNode("settings");
+      public List<XmlNode> GetNodes(string sectionName) {
+         MoveToFirstChildNode(sectionName);
 
-         var settings = new List<XmlSetting>();
+         var nodes = new List<XmlNode>();
          while (xmlReader.IsStartElement()) {
-            var xmlSetting = new XmlSetting { Name = xmlReader.Name };
+            var xmlNode = new XmlNode { Name = xmlReader.Name };
 
             for (var i = 0; i < xmlReader.AttributeCount; i++) {
                xmlReader.MoveToAttribute(i);
-
-               if (xmlReader.Name == "Type") {
-                  xmlSetting.Type = xmlReader.Value;
-               }
-               else {
-                  xmlSetting.Attributes.Add(new XmlAttribute { Name = xmlReader.Name, Value = xmlReader.Value });
-               }
+               xmlNode.Attributes.Add(new XmlAttribute { Name = xmlReader.Name, Value = xmlReader.Value });
             }
 
             MoveToNextNode();
          }
 
-         return settings;
+         return nodes;
       }
 
       private void MoveToFirstChildNode(string sectionName) {
@@ -53,24 +46,6 @@ namespace SoftwareThresher.Configurations {
       private void MoveToNextNode() {
          xmlReader.Read();
          xmlReader.Read();
-      }
-
-      public List<XmlTask> GetTasks() {
-         MoveToFirstChildNode("tasks");
-
-         var tasks = new List<XmlTask>();
-         while (xmlReader.IsStartElement()) {
-            var xmlTask = new XmlTask { Name = xmlReader.Name };
-
-            for (var i = 0; i < xmlReader.AttributeCount; i++) {
-               xmlReader.MoveToAttribute(i);
-               xmlTask.Attributes.Add(new XmlAttribute { Name = xmlReader.Name, Value = xmlReader.Value });
-            }
-
-            MoveToNextNode();
-         }
-
-         return tasks;
       }
 
       public void Close() {

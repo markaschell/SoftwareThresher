@@ -9,9 +9,10 @@ namespace SoftwareThresher.Configurations {
       IConfiguration Load(string filename);
    }
 
-   // TODO - split into seperate classes?  Test all together?
    public class ConfigurationLoader : IConfigurationLoader {
       const BindingFlags FindBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly;
+      const string SettingsSectionName = "settings";
+      const string TasksSectionName = "tasks";
       const string SettingsNamespace = "SoftwareThresher.Settings.";
       const string TasksNamespace = "SoftwareThresher.Tasks.";
 
@@ -39,9 +40,9 @@ namespace SoftwareThresher.Configurations {
 
          var settings = LoadSettings();
 
-         foreach (var xmlTask in taskReader.GetTasks()) {
+         foreach (var xmlTask in taskReader.GetNodes(TasksSectionName)) {
             var task = CreateTask(xmlTask.Name, settings);
-            SetAttributes(xmlTask.Attributes, TasksNamespace, xmlTask.Name, task);
+            SetAttributes(xmlTask, task);
             configuration.Tasks.Add(task);
          }
 
@@ -51,52 +52,37 @@ namespace SoftwareThresher.Configurations {
       private List<object> LoadSettings() {
          var settings = new List<object>();
 
-         foreach (var xmlSetting in taskReader.GetSettings()) {
-            var setting = CreateSetting(xmlSetting.Type);
-            SetAttributes(xmlSetting.Attributes, SettingsNamespace, xmlSetting.Name, setting);
+         foreach (var xmlSetting in taskReader.GetNodes(SettingsSectionName)) {
+            var setting = CreateSetting(xmlSetting.Name);
+            SetAttributes(xmlSetting, setting);
             settings.Add(setting);
          }
 
          return settings;
       }
 
-      private static object CreateSetting(string settingType) {
+      private static object CreateSetting(string settingName) {
          try {
-            return Activator.CreateInstance(null, SettingsNamespace + settingType).Unwrap();
+            return Activator.CreateInstance(null, SettingsNamespace + settingName).Unwrap();
          }
          catch (Exception) {
-            throw new NotSupportedException(string.Format("{0} is not a supported setting type.", settingType));
+            throw new NotSupportedException(string.Format("{0} is not a supported setting.", settingName));
          }
       }
 
-      // TODO - object for the combination of the namespace and the type?
-      private static void SetAttributes(List<XmlAttribute> attributeValues, string fromNamespace, string fromType, object toObject) {
-         var typeToGetPropertiesFrom = GetType(fromNamespace, fromType);
-
-         foreach (var attribute in attributeValues) {
-            SetAttribute(attribute, typeToGetPropertiesFrom, toObject);
+      private static void SetAttributes(XmlNode input, object output) {
+         foreach (var attribute in input.Attributes) {
+            SetAttribute(attribute, output, input.Name);
          }
       }
 
-      private static Type GetType(string fromNamespace, string fromType) {
-         var type = Type.GetType(fromNamespace + fromType);
-
-         if (type == null) {
-            // TODO - message that indicates the setting or task - pass down an enum?
-            throw new NotSupportedException(string.Format("Unsupported type {0}.", fromType));
-         }
-
-         return type;
-      }
-
-      private static void SetAttribute(XmlAttribute attribute, Type typeToGetPropertiesFrom, object objectToSetAttributesOn) {
+      private static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName) {
          try {
-            var property = typeToGetPropertiesFrom.GetProperty(attribute.Name, FindBindingFlags);
-            property.SetValue(objectToSetAttributesOn, attribute.Value);
+            var property = output.GetType().GetProperty(attribute.Name, FindBindingFlags);
+            property.SetValue(output, attribute.Value);
          }
          catch (Exception) {
-            // TODO - message that indicates the setting or task - pass down an enum?
-            throw new NotSupportedException(string.Format("{0} is not a supported attribute for type {1}.", attribute.Name, typeToGetPropertiesFrom.Name));
+            throw new NotSupportedException(string.Format("{0} is not a supported attribute for {1}.", attribute.Name, xmlNodeName));
          }
       }
 
@@ -108,8 +94,13 @@ namespace SoftwareThresher.Configurations {
       }
 
       private static ConstructorInfo GetTaskConstuctor(string taskName) {
-         var typeOfTask = GetType(TasksNamespace, taskName);
-         return typeOfTask.GetConstructors(FindBindingFlags).Single();
+         var type = Type.GetType(TasksNamespace + taskName);
+
+         if (type == null) {
+            throw new NotSupportedException(string.Format("{0} is not a supported task.", taskName));
+         }
+
+         return type.GetConstructors(FindBindingFlags).Single();
       }
 
       private static List<object> GetTaskParameterValues(ConstructorInfo constructor, List<object> settings, string taskName) {
