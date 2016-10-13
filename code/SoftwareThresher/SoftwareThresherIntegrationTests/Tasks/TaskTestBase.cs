@@ -6,21 +6,21 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace SoftwareThresherIntegrationTests.Tasks {
    public class TaskTestBase {
 
-      protected TestReport report;
+      protected TestReport Report;
 
       TaskProcessor taskProcessor;
 
       [TestInitialize]
       public void Setup() {
-         report = new TestReport();
+         Report = new TestReport();
 
-         taskProcessor = new TaskProcessor(new ConfigurationLoader(), report);
+         taskProcessor = new TaskProcessor(new ConfigurationLoader(), Report);
       }
 
       protected void RunTest(string configurationFileName) {
          taskProcessor.Run("../../Tasks/" + configurationFileName);
       }
 
-      public ReportItem LastReportItem { get { return report.LastReportItem; } }
+      public ReportItem LastReportItem => Report.LastReportItem;
    }
 }

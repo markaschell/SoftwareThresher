@@ -16,8 +16,7 @@ namespace SoftwareThresher.Utilities {
             throw new InvalidOperationException("Creating a document when the last one is still open.");
          }
 
-         streamWriter = new StreamWriter(filename);
-         streamWriter.AutoFlush = true;
+         streamWriter = new StreamWriter(filename) { AutoFlush = true };
       }
 
       public void Write(string text) {

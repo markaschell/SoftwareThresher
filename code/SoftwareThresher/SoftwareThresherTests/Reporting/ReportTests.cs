@@ -40,7 +40,6 @@ namespace SoftwareThresherTests.Reporting {
       [TestMethod]
       public void WriteObservations_WritesHeader() {
          var header = "This is my stupid title";
-         var observation = Substitute.For<Observation>();
 
          report.WriteObservations(header, 1, 3, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
@@ -97,8 +96,6 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void WriteObservations_NoThingFailed_TableIsNotWritten() {
-         var observation = Substitute.For<Observation>();
-
          report.WriteObservations("testing", 1, 3, new TimeSpan(), new List<Observation>());
 
          file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));

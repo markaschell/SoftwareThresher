@@ -3,7 +3,7 @@
 namespace SoftwareThresher {
    class Program {
       static void Main(string[] args) {
-         if (args.Count() == 0) {
+         if (!args.Any()) {
             new UsageReport().Write();
          }
          else {

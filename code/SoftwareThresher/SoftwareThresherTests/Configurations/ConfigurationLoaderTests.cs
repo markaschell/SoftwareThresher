@@ -95,13 +95,12 @@ namespace SoftwareThresherTests.Configurations {
       [TestMethod]
       public void Load_InvalidSetting_ThrowsException() {
          var settingType = typeof(Configuration);
-         var taskType = typeof(FindFilesOnDisk);
 
          taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name } });
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -117,7 +116,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name, Attributes = attributes } });
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
-         var result = configurationLoader.Load("");
+         configurationLoader.Load("");
       }
 
       [TestMethod]
@@ -127,14 +126,14 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name, Attributes = attributes } });
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
-         var result = configurationLoader.Load("");
+         configurationLoader.Load("");
       }
 
       // TODO - test with mulitple settings attributes - no setting with multiple exists yet
       
       [TestMethod]
       public void Load_InvalidSettingAttribute_ThrowsException() {
-         var invalidPropertyName = "asdf";
+         const string invalidPropertyName = "asdf";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
 
          var settingName = typeof(FileSystemSearch).Name;
@@ -142,7 +141,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -159,7 +158,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName } });
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -178,7 +177,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName } });
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -196,7 +195,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskName } });
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -235,7 +234,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName, Attributes = attributes } });
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -257,7 +256,7 @@ namespace SoftwareThresherTests.Configurations {
          taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName, Attributes = attributes } });
 
          try {
-            var result = configurationLoader.Load("");
+            configurationLoader.Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }

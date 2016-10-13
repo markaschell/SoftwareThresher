@@ -6,8 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace SoftwareThresher.Settings {
    public class FileSystemSearch : Search {
-
-      ISystemFileReader systemFileReader;
+      readonly ISystemFileReader systemFileReader;
 
       // TODO - use this
       public string BaseLocation { private get; set; }
@@ -37,7 +36,7 @@ namespace SoftwareThresher.Settings {
                }
 
                line = systemFileReader.ReadLine();
-            };
+            }
 
             return references;
          }

@@ -16,7 +16,7 @@ namespace SoftwareThresher.Configurations {
       const string SettingsNamespace = "SoftwareThresher.Settings.";
       const string TasksNamespace = "SoftwareThresher.Tasks.";
 
-      IConfigurationReader taskReader;
+      readonly IConfigurationReader taskReader;
 
       public ConfigurationLoader(IConfigurationReader taskReader) {
          this.taskReader = taskReader;
@@ -66,7 +66,7 @@ namespace SoftwareThresher.Configurations {
             return Activator.CreateInstance(null, SettingsNamespace + settingName).Unwrap();
          }
          catch (Exception) {
-            throw new NotSupportedException(string.Format("{0} is not a supported setting.", settingName));
+            throw new NotSupportedException($"{settingName} is not a supported setting.");
          }
       }
 
@@ -82,7 +82,7 @@ namespace SoftwareThresher.Configurations {
             property.SetValue(output, attribute.Value);
          }
          catch (Exception) {
-            throw new NotSupportedException(string.Format("{0} is not a supported attribute for {1}.", attribute.Name, xmlNodeName));
+            throw new NotSupportedException($"{attribute.Name} is not a supported attribute for {xmlNodeName}.");
          }
       }
 
@@ -97,7 +97,7 @@ namespace SoftwareThresher.Configurations {
          var type = Type.GetType(TasksNamespace + taskName);
 
          if (type == null) {
-            throw new NotSupportedException(string.Format("{0} is not a supported task.", taskName));
+            throw new NotSupportedException($"{taskName} is not a supported task.");
          }
 
          return type.GetConstructors(FindBindingFlags).Single();
@@ -108,22 +108,22 @@ namespace SoftwareThresher.Configurations {
          foreach (var parameter in constructor.GetParameters()) {
             var parameterValues = GetTaskParameterValue(settings, parameter.ParameterType);
 
-            if (parameterValues.Count() > 1) {
-               throw new ArgumentNullException(parameter.ParameterType.Name, string.Format("Multiple matching settings found for task {0}.", taskName));
+            if (parameterValues.Count > 1) {
+               throw new ArgumentNullException(parameter.ParameterType.Name, $"Multiple matching settings found for task {taskName}.");
             }
-            else if (parameterValues.Count() == 0) {
-               throw new ArgumentNullException(parameter.ParameterType.Name, string.Format("The constructor for task {0} has no defined setting.", taskName));
+
+            if (!parameterValues.Any()) {
+               throw new ArgumentNullException(parameter.ParameterType.Name, $"The constructor for task {taskName} has no defined setting.");
             }
-            else {
-               values.Add(parameterValues.First());
-            }
+
+            values.Add(parameterValues.First());
          }
 
          return values;
       }
 
-      private static IEnumerable<object> GetTaskParameterValue(List<object> settings, Type parameterType) {
-         return settings.Where(o => parameterType.IsAssignableFrom(o.GetType()));
+      private static List<object> GetTaskParameterValue(IEnumerable<object> settings, Type parameterType) {
+         return settings.Where(parameterType.IsInstanceOfType).ToList();
       }
    }
 }

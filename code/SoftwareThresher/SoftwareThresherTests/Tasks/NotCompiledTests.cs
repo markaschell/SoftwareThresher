@@ -30,7 +30,7 @@ namespace SoftwareThresherTests.Tasks {
 
          search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string>());
 
-         var results = notCompiled.Execute(new List<Observation>());
+         notCompiled.Execute(new List<Observation>());
 
          search.Received().GetFiles(directory, fileSearchPattern);
       }
@@ -45,7 +45,7 @@ namespace SoftwareThresherTests.Tasks {
          search.GetFiles(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string> { filenanme1, filenanme2 });
          search.GetReferencesInFile(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<string>());
 
-         var results = notCompiled.Execute(new List<Observation>());
+         notCompiled.Execute(new List<Observation>());
 
          search.Received().GetReferencesInFile(filenanme2, textSearchPattern);
          search.Received().GetReferencesInFile(filenanme2, textSearchPattern);

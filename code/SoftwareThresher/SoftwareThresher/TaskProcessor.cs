@@ -7,8 +7,8 @@ using SoftwareThresher.Reporting;
 
 namespace SoftwareThresher {
    public class TaskProcessor {
-      IConfigurationLoader configurationLoader;
-      IReport report;
+      readonly IConfigurationLoader configurationLoader;
+      readonly IReport report;
 
       public TaskProcessor(IConfigurationLoader configurationLoader, IReport report) {
          this.configurationLoader = configurationLoader;

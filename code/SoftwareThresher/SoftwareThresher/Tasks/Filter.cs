@@ -9,7 +9,7 @@ namespace SoftwareThresher.Tasks {
       [UsageNote("Format is RegEx")]
       public string LocationSearchPattern { get; set; }
 
-      public string ReportTitle { get { return "Items Filtered"; } }
+      public string ReportTitle => "Items Filtered";
 
       public List<Observation> Execute(List<Observation> observations) {
          var regex = new Regex(LocationSearchPattern, RegexOptions.RightToLeft | RegexOptions.Singleline);

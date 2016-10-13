@@ -14,9 +14,9 @@ namespace SoftwareThresher.Tasks {
       // NOTE - RegEx format for FileSystemSearch
       public string TextSearchPattern { get; set; }
 
-      public string ReportTitle { get { return "Not Compiled"; } }
+      public string ReportTitle => "Not Compiled";
 
-      Search search;
+      readonly Search search;
 
       public NotCompiled(Search search) {
          this.search = search;

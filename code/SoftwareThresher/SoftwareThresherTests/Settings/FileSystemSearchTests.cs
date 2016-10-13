@@ -5,7 +5,7 @@ using NSubstitute;
 using SoftwareThresher.Settings;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresherTests.Searches {
+namespace SoftwareThresherTests.Settings {
    [TestClass]
    public class FileSystemSearchTests {
       ISystemFileReader reader;

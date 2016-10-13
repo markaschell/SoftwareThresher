@@ -8,13 +8,13 @@ namespace SoftwareThresher.Tasks {
 
       public string SearchPattern { get; set; }
 
-      Search search;
+      readonly Search search;
 
-      public FindFilesOnDisk(Search systemDirectory) {
-         this.search = systemDirectory;
+      public FindFilesOnDisk(Search search) {
+         this.search = search;
       }
 
-      public string ReportTitle { get { return "Found Files on Disk"; } }
+      public string ReportTitle => "Found Files on Disk";
 
       public List<Observation> Execute(List<Observation> observations) {
          var foundItems = search.GetFiles(Directory, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));

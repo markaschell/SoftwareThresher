@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using SoftwareThresher.Tasks;
 using SoftwareThresher.Utilities;
+using Console = SoftwareThresher.Utilities.Console;
 
 namespace SoftwareThresher {
    public class UsageReport {
-
-      IConsole console;
+      readonly IConsole console;
 
       public UsageReport() : this(new Console()) { }
 
@@ -18,16 +19,16 @@ namespace SoftwareThresher {
 
          var tasks = System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterfaces().Contains(typeof(Task)));
 
-         foreach(var task in tasks) {
+         foreach (var task in tasks) {
             console.WriteLine("\tTask:\t" + task.Name);
 
             var properties = task.GetProperties().Where(a => a.CanWrite);
 
-            foreach(var property in properties) {
-               var noteAttribute = (UsageNoteAttribute)System.Attribute.GetCustomAttributes(property).Where(a => a.GetType() == typeof(UsageNoteAttribute)).FirstOrDefault();
+            foreach (var property in properties) {
+               var noteAttribute = (UsageNoteAttribute)Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(UsageNoteAttribute));
                var noteText = noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
 
-               console.WriteLine(string.Format("\t\tAttribute:\t{0} ({1}){2}", property.Name, property.PropertyType.Name, noteText));
+               console.WriteLine($"\t\tAttribute:\t{property.Name} ({property.PropertyType.Name}){noteText}");
             }
          }
       }
