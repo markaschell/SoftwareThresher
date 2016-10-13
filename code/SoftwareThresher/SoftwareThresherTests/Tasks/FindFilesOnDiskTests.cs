@@ -27,7 +27,7 @@ namespace SoftwareThresherTests.Tasks {
          findFilesOnDisk.Directory = directory;
          findFilesOnDisk.SearchPattern = pattern;
 
-         systemDirectory.GetFiles(directory, pattern).Returns(new List<string> { "one" });
+         systemDirectory.GetObservations(directory, pattern).Returns(new List<Observation> { new FileObservation("one") });
 
          var results = findFilesOnDisk.Execute(new List<Observation>());
 
@@ -38,7 +38,7 @@ namespace SoftwareThresherTests.Tasks {
 
       [TestMethod]
       public void Execute_AddsToPassedInObservations() {
-         systemDirectory.GetFiles("", "").ReturnsForAnyArgs(new List<string> { "one" });
+         systemDirectory.GetObservations("", "").ReturnsForAnyArgs(new List<Observation> { new FileObservation("one") });
 
          var results = findFilesOnDisk.Execute(new List<Observation> { new FileObservation("") });
 

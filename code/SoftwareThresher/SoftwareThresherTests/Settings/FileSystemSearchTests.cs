@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using SoftwareThresher.Observations;
 using SoftwareThresher.Settings;
 using SoftwareThresher.Utilities;
 
@@ -21,15 +22,15 @@ namespace SoftwareThresherTests.Settings {
 
       [TestMethod]
       public void GetReferencesInFile_OpensReadsAndClosesFile() {
-         const string filename = "filename";
+         var observation = new FileObservation("file");
          const string searchText = "find it";
 
          reader.ReadLine().Returns((string)null);
 
-         search.GetReferencesInFile(filename, searchText);
+         search.GetReferenceLine(observation, searchText);
 
          Received.InOrder(() => {
-            reader.Open(filename);
+            reader.Open(observation.ToString());
             reader.ReadLine();
             reader.Close();
          });
@@ -41,7 +42,7 @@ namespace SoftwareThresherTests.Settings {
          reader.When(r => r.Open(Arg.Any<string>())).Do(x => { throw exception; });
 
          try {
-            search.GetReferencesInFile("", "");
+            search.GetReferenceLine(new FileObservation("file"), "");
          }
          catch (Exception e) {
             Assert.AreSame(exception, e);
@@ -56,7 +57,7 @@ namespace SoftwareThresherTests.Settings {
          reader.When(r => r.ReadLine()).Do(x => { throw exception; });
 
          try {
-            search.GetReferencesInFile("", "");
+            search.GetReferenceLine(new FileObservation("file"), "");
          }
          catch (Exception e) {
             Assert.AreSame(exception, e);
@@ -69,7 +70,7 @@ namespace SoftwareThresherTests.Settings {
       public void GetReferencesInFile_ReadsUntilEndOfFile() {
          reader.ReadLine().Returns("DEC", "HEX", null);
 
-         search.GetReferencesInFile("", "");
+         search.GetReferenceLine(new FileObservation("file"), "");
 
          reader.Received(3).ReadLine();
       }
@@ -81,7 +82,7 @@ namespace SoftwareThresherTests.Settings {
 
          reader.ReadLine().Returns(line, (string)null);
 
-         var results = search.GetReferencesInFile("", pattern);
+         var results = search.GetReferenceLine(new FileObservation("file"), pattern);
 
          Assert.AreEqual(1, results.Count);
          Assert.AreEqual(line, results.First());
@@ -95,7 +96,7 @@ namespace SoftwareThresherTests.Settings {
 
          reader.ReadLine().Returns(line1, line2, null);
 
-         var results = search.GetReferencesInFile("", pattern);
+         var results = search.GetReferenceLine(new FileObservation("file"), pattern);
 
          Assert.AreEqual(2, results.Count);
       }
@@ -104,7 +105,7 @@ namespace SoftwareThresherTests.Settings {
       public void GetReferencesInFile_PatternDoesNotMatches_LineNotReturned() {
          reader.ReadLine().Returns("Other", (string)null);
 
-         var results = search.GetReferencesInFile("", "Test");
+         var results = search.GetReferenceLine(new FileObservation("file"), "Test");
 
          Assert.AreEqual(0, results.Count);
       }

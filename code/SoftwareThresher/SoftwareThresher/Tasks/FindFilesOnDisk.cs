@@ -17,7 +17,7 @@ namespace SoftwareThresher.Tasks {
       public string ReportTitle => "Found Files on Disk";
 
       public List<Observation> Execute(List<Observation> observations) {
-         var foundItems = search.GetFiles(Directory, SearchPattern).ConvertAll(f => (Observation)new FileObservation(f));
+         var foundItems = search.GetObservations(Directory, SearchPattern);
 
          observations.AddRange(foundItems);
 

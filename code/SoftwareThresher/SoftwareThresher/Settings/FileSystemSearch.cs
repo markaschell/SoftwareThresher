@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using SoftwareThresher.Utilities;
 using System.Text.RegularExpressions;
+using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Settings {
    public class FileSystemSearch : Search {
@@ -16,17 +17,16 @@ namespace SoftwareThresher.Settings {
          this.systemFileReader = systemFileReader;
       }
 
-      // TODO - Do we want to return Observations?
-      public List<string> GetFiles(string directory, string searchPattern) {
-         return Directory.EnumerateFiles(BaseLocation + "/" + directory, searchPattern, SearchOption.AllDirectories).ToList();
+      public List<Observation> GetObservations(string directory, string searchPattern) {
+         return Directory.EnumerateFiles(BaseLocation + Path.DirectorySeparatorChar + directory, searchPattern, SearchOption.AllDirectories).ToList()
+                         .ConvertAll(f => (Observation)new FileObservation(f));
       }
 
-      // TODO - Do we want to get an Observation?
-      public List<string> GetReferencesInFile(string filename, string searchPattern) {
+      public List<string> GetReferenceLine(Observation observation, string searchPattern) {
          try {
             var references = new List<string>();
 
-            systemFileReader.Open(filename);
+            systemFileReader.Open(observation.ToString());
 
             string line = systemFileReader.ReadLine();
             while (line != null) {

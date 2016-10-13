@@ -26,16 +26,15 @@ namespace SoftwareThresher.Tasks {
          observations.ForEach(o => o.Failed = true);
 
          var observationsLookup = observations.ToLookup(o => o.Location);
-         search.GetFiles(Directory, CompileConfigurationFileSearchPattern).ForEach(file => MarkObservationsPassedForFile(observationsLookup, file));
+         search.GetObservations(Directory, CompileConfigurationFileSearchPattern).ForEach(o => MarkObservationsPassedForFile(observationsLookup, o));
 
          return observations;
       }
 
-      void MarkObservationsPassedForFile(ILookup<string, Observation> observations, string file) {
-         var fileDirectory = new FileObservation(file).Location;
-         var observationsWithSameDirectory = observations.Where(o => o.Key.StartsWith(fileDirectory)).SelectMany(g => g).ToLookup(o => o.Location);
+      void MarkObservationsPassedForFile(ILookup<string, Observation> observations, Observation observation) {
+         var observationsWithSameDirectory = observations.Where(o => o.Key.StartsWith(observation.Location)).SelectMany(g => g).ToLookup(o => o.Location);
 
-         search.GetReferencesInFile(file, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, fileDirectory, r));
+         search.GetReferenceLine(observation, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, observation.Location, r));
       }
 
       void MarkObservationsPassedForReference(ILookup<string, Observation> observations, string fileDirectory, string reference) {

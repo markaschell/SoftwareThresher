@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Settings {
 
@@ -18,21 +19,22 @@ namespace SoftwareThresher.Settings {
       // TODO - use this
       public string BaseLocation { private get; set; }
 
-      public List<string> GetFiles(string directory, string searchPattern) {
+      public List<Observation> GetObservations(string directory, string searchPattern) {
          // TODO - Add example?
          // TODO - Rename directory include the task parameter?
          // TODO - use directory to assign the path variable?
          // TODO - Add type as a parameter the the task or define it for all tasks?  Play with injection and how that will work with reflection....Assign parameters in Task or pass into the constructor?  Should we default all of the items in the base?
          // TODO - Could we use "file://" in the directory to search locally and just use the same Search?  Probably not because of the different return types.  Use that to access svn server - wonder which is faster
 
-         return GetResults(TextSearchParameterLabel + searchPattern, (r) => r.path);
+         // TODO - I do not think we want a FileObservation here
+         return GetResults(TextSearchParameterLabel + searchPattern).ConvertAll(r => (Observation)new FileObservation(r.path));
       }
 
-      public List<string> GetReferencesInFile(string filename, string searchPattern) {
-         return GetResults(PathSearchParameterLabel + filename + ParameterJoin + TextSearchParameterLabel + searchPattern, (r) => r.line);
+      public List<string> GetReferenceLine(Observation observation, string searchPattern) {
+         return GetResults(PathSearchParameterLabel + observation + ParameterJoin + TextSearchParameterLabel + searchPattern).ConvertAll(r => r.line);
       }
 
-      List<string> GetResults(string parameters, Converter<OpenGrokJsonSearchResult, string> converter) {
+      List<OpenGrokJsonSearchResult> GetResults(string parameters) {
          // TODO - could opengrok be configured to a different location?  {host}/{webapp_name}/json?freetext - make the host a configuration setting?
          // TODO - configure the webapp_name - make this the location name?
          // Does we need to make this configurable at this time?
@@ -42,7 +44,7 @@ namespace SoftwareThresher.Settings {
             var serializer = new DataContractJsonSerializer(typeof(OpenGrokJsonSearchResponse));
             var searchResponse = (OpenGrokJsonSearchResponse)serializer.ReadObject(response.GetResponseStream());
 
-            return searchResponse.results.ConvertAll(converter);
+            return searchResponse.results;
          }
       }
 

@@ -5,6 +5,5 @@
       public abstract string Name { get; }
 
       public abstract string Location { get; }
-
    }
 }
