@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<tasks>
-  <FindFilesOnDisk Directory=".\..\..\..\TestProject\NotCompiled" SearchPattern="*.cs"></FindFilesOnDisk>
-  <NotCompiled Directory=".\..\..\..\TestProject" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
-</tasks>
+<configuration>
+  <settings>
+    <FileSystemSearch BaseLocation=".\..\..\..\TestProject" />
+  </settings>
+  <tasks>
+    <FindFilesOnDisk Directory="NotCompiled" SearchPattern="*.cs"></FindFilesOnDisk>
+    <NotCompiled Directory="" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
+  </tasks>
+</configuration>

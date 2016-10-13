@@ -21,8 +21,8 @@ namespace SoftwareThresherTests.Settings {
 
       [TestMethod]
       public void GetReferencesInFile_OpensReadsAndClosesFile() {
-         var filename = "filename";
-         var searchText = "find it";
+         const string filename = "filename";
+         const string searchText = "find it";
 
          reader.ReadLine().Returns((string)null);
 

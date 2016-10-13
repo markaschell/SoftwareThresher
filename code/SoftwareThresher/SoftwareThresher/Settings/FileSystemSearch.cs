@@ -8,7 +8,6 @@ namespace SoftwareThresher.Settings {
    public class FileSystemSearch : Search {
       readonly ISystemFileReader systemFileReader;
 
-      // TODO - use this
       public string BaseLocation { private get; set; }
 
       public FileSystemSearch() : this(new SystemFileReader()) { }
@@ -19,7 +18,7 @@ namespace SoftwareThresher.Settings {
 
       // TODO - Do we want to return Observations?
       public List<string> GetFiles(string directory, string searchPattern) {
-         return Directory.EnumerateFiles(directory, searchPattern, SearchOption.AllDirectories).ToList();
+         return Directory.EnumerateFiles(BaseLocation + "/" + directory, searchPattern, SearchOption.AllDirectories).ToList();
       }
 
       // TODO - Do we want to get an Observation?

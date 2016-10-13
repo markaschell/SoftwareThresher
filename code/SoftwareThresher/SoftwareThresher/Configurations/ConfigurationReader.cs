@@ -32,6 +32,7 @@ namespace SoftwareThresher.Configurations {
                xmlNode.Attributes.Add(new XmlAttribute { Name = xmlReader.Name, Value = xmlReader.Value });
             }
 
+            nodes.Add(xmlNode);
             MoveToNextNode();
          }
 
