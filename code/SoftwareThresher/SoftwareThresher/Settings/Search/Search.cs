@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using SoftwareThresher.Observations;
 
-namespace SoftwareThresher.Settings {
+namespace SoftwareThresher.Settings.Search {
    public interface Search : Setting {
       string BaseLocation { set; }
 

@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Tasks;
-using SoftwareThresher.Settings;
+using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresherTests.Tasks {
    [TestClass]

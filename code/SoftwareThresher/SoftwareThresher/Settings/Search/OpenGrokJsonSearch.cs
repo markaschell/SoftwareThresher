@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using SoftwareThresher.Observations;
 
-namespace SoftwareThresher.Settings {
+namespace SoftwareThresher.Settings.Search {
 
    public class OpenGrokJsonSearch : Search {
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using SoftwareThresher.Settings;
 using SoftwareThresher.Tasks;
 
 namespace SoftwareThresher.Configurations {
@@ -53,8 +54,8 @@ namespace SoftwareThresher.Configurations {
          return configuration;
       }
 
-      List<object> LoadSettings() {
-         var settings = new List<object>();
+      List<Setting> LoadSettings() {
+         var settings = new List<Setting>();
 
          foreach (var xmlSetting in taskReader.GetNodes(SettingsSectionName)) {
             var setting = CreateSetting(xmlSetting.Name);
@@ -65,11 +66,11 @@ namespace SoftwareThresher.Configurations {
          return settings;
       }
 
-      object CreateSetting(string settingName) {
+      Setting CreateSetting(string settingName) {
          try {
             var settingType = settingTypes.Single(t => t.Name == settingName);
 
-            return Activator.CreateInstance(settingType);
+            return (Setting)Activator.CreateInstance(settingType);
          }
          catch (Exception) {
             throw new NotSupportedException($"{settingName} is not a supported setting.");
@@ -92,7 +93,7 @@ namespace SoftwareThresher.Configurations {
          }
       }
 
-      Task CreateTask(string taskName, List<object> settings) {
+      Task CreateTask(string taskName, List<Setting> settings) {
          var constructor = GetTaskConstuctor(taskName);
          var parameterValues = GetTaskParameterValues(constructor, settings, taskName);
 
@@ -113,7 +114,7 @@ namespace SoftwareThresher.Configurations {
          }
       }
 
-      static List<object> GetTaskParameterValues(ConstructorInfo constructor, List<object> settings, string taskName) {
+      static List<object> GetTaskParameterValues(ConstructorInfo constructor, List<Setting> settings, string taskName) {
          var values = new List<object>();
          foreach (var parameter in constructor.GetParameters()) {
             var parameterValues = GetTaskParameterValue(settings, parameter.ParameterType);

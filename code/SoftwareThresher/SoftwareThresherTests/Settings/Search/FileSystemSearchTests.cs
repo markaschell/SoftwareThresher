@@ -3,10 +3,10 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Settings;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresherTests.Settings {
+namespace SoftwareThresherTests.Settings.Search {
    [TestClass]
    public class FileSystemSearchTests {
       ISystemFileReader reader;

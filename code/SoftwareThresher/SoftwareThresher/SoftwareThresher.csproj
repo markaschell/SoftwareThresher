@@ -59,9 +59,9 @@
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Tasks\Filter.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
-    <Compile Include="Settings\OpenGrokJsonSearch.cs" />
-    <Compile Include="Settings\Search.cs" />
-    <Compile Include="Settings\FileSystemSearch.cs" />
+    <Compile Include="Settings\Search\OpenGrokJsonSearch.cs" />
+    <Compile Include="Settings\Search\Search.cs" />
+    <Compile Include="Settings\Search\FileSystemSearch.cs" />
     <Compile Include="UsageNoteAttribute.cs" />
     <Compile Include="UsageReport.cs" />
     <Compile Include="Utilities\Console.cs" />

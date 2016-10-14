@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Settings;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Tasks;
 
 namespace SoftwareThresherTests.Configurations {

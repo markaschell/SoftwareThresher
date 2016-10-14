@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SoftwareThresher.Utilities;
 using System.Text.RegularExpressions;
 using SoftwareThresher.Observations;
+using SoftwareThresher.Utilities;
 
-namespace SoftwareThresher.Settings {
+namespace SoftwareThresher.Settings.Search {
    public class FileSystemSearch : Search {
       readonly ISystemFileReader systemFileReader;
 

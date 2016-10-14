@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Settings;
+using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Tasks {
    public class FindFilesOnDisk : Task {

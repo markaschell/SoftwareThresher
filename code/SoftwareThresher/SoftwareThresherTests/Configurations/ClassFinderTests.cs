@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Settings;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Tasks;
 
 namespace SoftwareThresherTests.Configurations {
