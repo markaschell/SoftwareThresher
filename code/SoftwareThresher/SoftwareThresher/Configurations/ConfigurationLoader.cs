@@ -13,16 +13,20 @@ namespace SoftwareThresher.Configurations {
       const BindingFlags FindBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly;
       const string SettingsSectionName = "settings";
       const string TasksSectionName = "tasks";
-      const string SettingsNamespace = "SoftwareThresher.Settings.";
-      const string TasksNamespace = "SoftwareThresher.Tasks.";
 
       readonly IConfigurationReader taskReader;
 
-      public ConfigurationLoader(IConfigurationReader taskReader) {
+      readonly IEnumerable<Type> taskTypes;
+      readonly IEnumerable<Type> settingTypes;
+
+      public ConfigurationLoader(IConfigurationReader taskReader, IClassFinder classFinder) {
          this.taskReader = taskReader;
+
+         taskTypes = classFinder.TaskTypes;
+         settingTypes = classFinder.SettingTypes;
       }
 
-      public ConfigurationLoader() : this(new ConfigurationReader()) {
+      public ConfigurationLoader() : this(new ConfigurationReader(), new ClassFinder()) {
       }
 
       public IConfiguration Load(string filename) {
@@ -35,7 +39,7 @@ namespace SoftwareThresher.Configurations {
          }
       }
 
-      private Configuration LoadConfiguration() {
+      Configuration LoadConfiguration() {
          var configuration = new Configuration();
 
          var settings = LoadSettings();
@@ -49,7 +53,7 @@ namespace SoftwareThresher.Configurations {
          return configuration;
       }
 
-      private List<object> LoadSettings() {
+      List<object> LoadSettings() {
          var settings = new List<object>();
 
          foreach (var xmlSetting in taskReader.GetNodes(SettingsSectionName)) {
@@ -61,22 +65,24 @@ namespace SoftwareThresher.Configurations {
          return settings;
       }
 
-      private static object CreateSetting(string settingName) {
+      object CreateSetting(string settingName) {
          try {
-            return Activator.CreateInstance(null, SettingsNamespace + settingName).Unwrap();
+            var settingType = settingTypes.Single(t => t.Name == settingName);
+
+            return Activator.CreateInstance(settingType);
          }
          catch (Exception) {
             throw new NotSupportedException($"{settingName} is not a supported setting.");
          }
       }
 
-      private static void SetAttributes(XmlNode input, object output) {
+      static void SetAttributes(XmlNode input, object output) {
          foreach (var attribute in input.Attributes) {
             SetAttribute(attribute, output, input.Name);
          }
       }
 
-      private static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName) {
+      static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName) {
          try {
             var property = output.GetType().GetProperty(attribute.Name, FindBindingFlags);
             property.SetValue(output, attribute.Value);
@@ -86,24 +92,28 @@ namespace SoftwareThresher.Configurations {
          }
       }
 
-      private static Task CreateTask(string taskName, List<object> settings) {
+      Task CreateTask(string taskName, List<object> settings) {
          var constructor = GetTaskConstuctor(taskName);
          var parameterValues = GetTaskParameterValues(constructor, settings, taskName);
 
          return (Task)constructor.Invoke(parameterValues.ToArray());
       }
 
-      private static ConstructorInfo GetTaskConstuctor(string taskName) {
-         var type = Type.GetType(TasksNamespace + taskName);
+      ConstructorInfo GetTaskConstuctor(string taskName)
+      {
+         try
+         {
+            var taskType = taskTypes.Single(t => t.Name == taskName);
 
-         if (type == null) {
+            return taskType.GetConstructors(FindBindingFlags).Single();
+         }
+         catch (Exception)
+         {
             throw new NotSupportedException($"{taskName} is not a supported task.");
          }
-
-         return type.GetConstructors(FindBindingFlags).Single();
       }
 
-      private static List<object> GetTaskParameterValues(ConstructorInfo constructor, List<object> settings, string taskName) {
+      static List<object> GetTaskParameterValues(ConstructorInfo constructor, List<object> settings, string taskName) {
          var values = new List<object>();
          foreach (var parameter in constructor.GetParameters()) {
             var parameterValues = GetTaskParameterValue(settings, parameter.ParameterType);
@@ -122,7 +132,7 @@ namespace SoftwareThresher.Configurations {
          return values;
       }
 
-      private static List<object> GetTaskParameterValue(IEnumerable<object> settings, Type parameterType) {
+      static List<object> GetTaskParameterValue(IEnumerable<object> settings, Type parameterType) {
          return settings.Where(parameterType.IsInstanceOfType).ToList();
       }
    }
