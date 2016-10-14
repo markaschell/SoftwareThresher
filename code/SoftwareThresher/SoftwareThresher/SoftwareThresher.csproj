@@ -62,8 +62,8 @@
     <Compile Include="Settings\Search\OpenGrokJsonSearch.cs" />
     <Compile Include="Settings\Search\Search.cs" />
     <Compile Include="Settings\Search\FileSystemSearch.cs" />
-    <Compile Include="UsageNoteAttribute.cs" />
-    <Compile Include="UsageReport.cs" />
+    <Compile Include="Configurations\UsageNoteAttribute.cs" />
+    <Compile Include="Configurations\UsageReport.cs" />
     <Compile Include="Utilities\Console.cs" />
     <Compile Include="Utilities\SystemFileReader.cs" />
     <Compile Include="Utilities\SystemFileWriter.cs" />

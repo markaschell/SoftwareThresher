@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using SoftwareThresher;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresherTests {
+namespace SoftwareThresherTests.Configurations {
    [TestClass]
    public class UsageReportTests {
       IConsole console;

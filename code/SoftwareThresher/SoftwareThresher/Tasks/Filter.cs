@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Tasks {

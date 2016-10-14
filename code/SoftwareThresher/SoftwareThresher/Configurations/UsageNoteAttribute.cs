@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SoftwareThresher {
+namespace SoftwareThresher.Configurations {
    [AttributeUsage(AttributeTargets.Property)]
    public class UsageNoteAttribute : Attribute {
 

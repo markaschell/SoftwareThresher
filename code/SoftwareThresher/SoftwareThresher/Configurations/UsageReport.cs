@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
-using SoftwareThresher.Configurations;
 using SoftwareThresher.Utilities;
 using Console = SoftwareThresher.Utilities.Console;
 
-namespace SoftwareThresher {
+namespace SoftwareThresher.Configurations {
    public class UsageReport {
       readonly IConsole console;
       readonly IClassFinder classFinder;
