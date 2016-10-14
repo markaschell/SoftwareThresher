@@ -6,7 +6,7 @@ namespace SoftwareThresherTests.Observations {
    public class FileObservationTests {
       [TestMethod]
       public void Name_JustName() {
-         var name = "name";
+         const string name = "name";
 
          var observation = new FileObservation(name);
 
@@ -15,7 +15,7 @@ namespace SoftwareThresherTests.Observations {
 
       [TestMethod]
       public void Name_NameWithExtension() {
-         var name = "name.txt";
+         const string name = "name.txt";
 
          var observation = new FileObservation(name);
 
@@ -24,7 +24,7 @@ namespace SoftwareThresherTests.Observations {
 
       [TestMethod]
       public void Name_NameWithPath() {
-         var name = "name";
+         const string name = "name";
 
          var observation = new FileObservation(@"C:\Directory\" + name);
 
@@ -40,7 +40,7 @@ namespace SoftwareThresherTests.Observations {
 
       [TestMethod]
       public void Location_JustName() {
-         var name = "name";
+         const string name = "name";
 
          var observation = new FileObservation(name);
 
@@ -49,7 +49,7 @@ namespace SoftwareThresherTests.Observations {
 
       [TestMethod]
       public void Location_PathWithName() {
-         var path = @"C:\Directory";
+         const string path = @"C:\Directory";
 
          var observation = new FileObservation(path + @"\name");
 
@@ -58,11 +58,38 @@ namespace SoftwareThresherTests.Observations {
 
       [TestMethod]
       public void Location_JustPath() {
-         var path = @"C:\Directory";
+         const string path = @"C:\Directory";
 
          var observation = new FileObservation(path + @"\");
 
          Assert.AreEqual(path, observation.Location);
+      }
+
+      [TestMethod]
+      public void ToString_CombinesLocationAndFilenanme() {
+         const string filename = @"C:\Directory\name.txt";
+
+         var observation = new FileObservation(filename);
+
+         Assert.AreEqual(filename, observation.ToString());
+      }
+
+      [TestMethod]
+      public void ToString_JustPath() {
+         const string path = @"C:\Directory\";
+
+         var observation = new FileObservation(path);
+
+         Assert.AreEqual(path, observation.ToString());
+      }
+
+      [TestMethod]
+      public void ToString_JustFile() {
+         const string file = @"test.txt";
+
+         var observation = new FileObservation(file);
+
+         Assert.AreEqual(file, observation.ToString());
       }
 
    }

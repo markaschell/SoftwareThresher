@@ -5,7 +5,6 @@ using SoftwareThresher.Observations;
 namespace SoftwareThresher.Tasks {
    public class Filter : Task {
 
-      // TODO - make nullable when the next parameter is added - make sure the nullable is represented in the usage - Either use ? or if get has an implementation
       [UsageNote("Format is RegEx")]
       public string LocationSearchPattern { get; set; }
 

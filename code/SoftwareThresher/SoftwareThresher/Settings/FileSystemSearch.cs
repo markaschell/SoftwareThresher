@@ -17,8 +17,11 @@ namespace SoftwareThresher.Settings {
          this.systemFileReader = systemFileReader;
       }
 
-      public List<Observation> GetObservations(string directory, string searchPattern) {
-         return Directory.EnumerateFiles(BaseLocation + Path.DirectorySeparatorChar + directory, searchPattern, SearchOption.AllDirectories).ToList()
+      public List<Observation> GetObservations(string directory, string searchPattern)
+      {
+         var path = string.IsNullOrEmpty(BaseLocation) ? directory : BaseLocation + Path.DirectorySeparatorChar + directory;
+
+         return Directory.EnumerateFiles(path, searchPattern, SearchOption.AllDirectories).ToList()
                          .ConvertAll(f => (Observation)new FileObservation(f));
       }
 

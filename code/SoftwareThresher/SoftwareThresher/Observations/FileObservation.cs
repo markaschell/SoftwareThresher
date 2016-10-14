@@ -12,8 +12,9 @@ namespace SoftwareThresher.Observations {
 
       public override string Name => Path.GetFileName(filename);
 
-      public override string ToString() {
-         return Location + Path.DirectorySeparatorChar + Name;
+      public override string ToString()
+      {
+         return string.IsNullOrEmpty(Location) ? Name : Location + Path.DirectorySeparatorChar + Name;
       }
    }
 }

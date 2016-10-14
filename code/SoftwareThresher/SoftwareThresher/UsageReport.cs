@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Linq;
-using SoftwareThresher.Tasks;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Utilities;
 using Console = SoftwareThresher.Utilities.Console;
 
 namespace SoftwareThresher {
    public class UsageReport {
       readonly IConsole console;
+      readonly IClassFinder classFinder;
 
-      public UsageReport() : this(new Console()) { }
+      public UsageReport() : this(new Console(), new ClassFinder()) { }
 
-      public UsageReport(IConsole console) {
+      public UsageReport(IConsole console, IClassFinder classFinder)
+      {
          this.console = console;
+         this.classFinder = classFinder;
       }
 
       public void Write() {
          console.WriteLine("Usage: SoftwareThresher.exe config.xml [config.xml]");
 
-         var tasks = System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(type => type.GetInterfaces().Contains(typeof(Task)));
-
-         foreach (var task in tasks) {
+         foreach (var task in classFinder.TaskTypes) {
             console.WriteLine("\tTask:\t" + task.Name);
 
             var properties = task.GetProperties().Where(a => a.CanWrite);

@@ -21,7 +21,8 @@ namespace SoftwareThresherTests.Configurations {
       public void Setup() {
          taskReader = Substitute.For<IConfigurationReader>();
 
-         configurationLoader = new ConfigurationLoader(taskReader);
+         // TODO - mock this
+         configurationLoader = new ConfigurationLoader(taskReader, new ClassFinder());
       }
 
       [TestMethod]
@@ -227,7 +228,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_InvalidTaskAttribute_ThrowsException() {
          var taskTypeName = typeof(FindFilesOnDisk).Name;
 
-         var invalidPropertyName = "BAD NAME";
+         const string invalidPropertyName = "BAD NAME";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
 
          taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });

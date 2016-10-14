@@ -61,6 +61,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Configurations\ClassFinderTests.cs" />
     <Compile Include="Configurations\ConfigurationLoaderTests.cs" />
     <Compile Include="Observations\FileObservationTests.cs" />
     <Compile Include="Reporting\ReportDataTests.cs" />

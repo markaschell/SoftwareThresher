@@ -2,7 +2,7 @@
 using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Settings {
-   public interface Search {
+   public interface Search : Setting {
       string BaseLocation { set; }
 
       List<Observation> GetObservations(string directory, string searchPattern);

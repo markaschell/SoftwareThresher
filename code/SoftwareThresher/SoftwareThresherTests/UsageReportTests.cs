@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests {
@@ -14,7 +15,8 @@ namespace SoftwareThresherTests {
       public void Setup() {
          console = Substitute.For<IConsole>();
 
-         usageReport = new UsageReport(console);
+         // TODO - mock this
+         usageReport = new UsageReport(console, new ClassFinder());
       }
 
       [TestMethod]
