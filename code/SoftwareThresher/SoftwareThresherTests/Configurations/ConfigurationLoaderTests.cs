@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Configurations;
-using SoftwareThresher.Settings.Search;
-using SoftwareThresher.Tasks;
+using SoftwareThresherTests.Configurations.TypeStubs;
 
 namespace SoftwareThresherTests.Configurations {
    [TestClass]
@@ -13,57 +13,56 @@ namespace SoftwareThresherTests.Configurations {
       const string SettingsSectionName = "settings";
       const string TasksSectionName = "tasks";
 
-      IConfigurationReader taskReader;
-
-      ConfigurationLoader configurationLoader;
+      IClassFinder classFinder;
+      IConfigurationReader configurationReader;
 
       [TestInitialize]
       public void Setup() {
-         taskReader = Substitute.For<IConfigurationReader>();
-
-         // TODO - mock this
-         configurationLoader = new ConfigurationLoader(taskReader, new ClassFinder());
+         classFinder = Substitute.For<IClassFinder>();
+         configurationReader = Substitute.For<IConfigurationReader>();
       }
 
       [TestMethod]
       public void Load_NoSettingsOrTasks() {
-         var filename = "This is it";
+         const string filename = "This is it";
 
-         taskReader.GetNodes("").ReturnsForAnyArgs(new List<XmlNode>());
+         configurationReader.GetNodes("").ReturnsForAnyArgs(new List<XmlNode>());
 
-         configurationLoader.Load(filename);
+         new ConfigurationLoader(classFinder, configurationReader).Load(filename);
 
          Received.InOrder(() => {
-            taskReader.Open(filename);
-            taskReader.GetNodes(SettingsSectionName);
-            taskReader.GetNodes(TasksSectionName);
-            taskReader.Close();
+            configurationReader.Open(filename);
+            configurationReader.GetNodes(SettingsSectionName);
+            configurationReader.GetNodes(TasksSectionName);
+            configurationReader.Close();
          });
       }
 
       [TestMethod]
       public void Load_ExceptionThrown_CloseStillCalled() {
          var exception = new Exception();
-         taskReader.When(r => r.Open(Arg.Any<string>())).Do(x => { throw exception; });
+         configurationReader.When(r => r.Open(Arg.Any<string>())).Do(x => { throw exception; });
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
          }
          catch (Exception e) {
             Assert.AreSame(exception, e);
          }
 
-         taskReader.Received().Close();
+         configurationReader.Received().Close();
       }
 
       [TestMethod]
       public void Load_OneTaskWithNoSettings() {
-         var taskType = typeof(Filter);
+         var taskType = typeof(TestTask);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         var result = configurationLoader.Load("");
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
+
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
 
          Assert.AreEqual(1, result.Tasks.Count);
          Assert.AreEqual(taskType, result.Tasks.First().GetType());
@@ -71,37 +70,44 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_MultipleTasks() {
-         var xmlTask = new XmlNode { Name = typeof(Filter).Name };
+         var taskType = typeof(TestTask);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { xmlTask, xmlTask });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         var result = configurationLoader.Load("");
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name }, new XmlNode { Name = taskType.Name } });
+
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
 
          Assert.AreEqual(2, result.Tasks.Count);
       }
 
       [TestMethod]
-      public void Load_TaskWithOneSetting() {
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FindFilesOnDisk).Name } });
+      public void Load_TaskWithMulipleSettings() {
+         var settingType1 = typeof(TestSettingWithAttributes);
+         var settingType2 = typeof(TestSettingNoAttributes);
+         var taskType = typeof(TestTaskWithTwoSettings);
 
-         var result = configurationLoader.Load("");
+         classFinder.SettingTypes.Returns(new List<Type> { settingType2, settingType1 });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         Assert.AreEqual(1, result.Tasks.Count);
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType1.Name }, new XmlNode { Name = settingType2.Name } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
+
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+         Assert.IsTrue(((TestTaskWithTwoSettings)result.Tasks.First()).SettingsSet);
       }
-
-      // TODO - test with mulitple settings - no task exist yet with multiple
 
       [TestMethod]
       public void Load_InvalidSetting_ThrowsException() {
-         var settingType = typeof(Configuration);
+         var settingType = typeof(TestTask);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -112,91 +118,161 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_SetsSettingProperty() {
-         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "BaseLocation", Value = "" } };
+         var settingType = typeof(TestSettingWithAttributes);
+         var taskType = typeof(TestTaskWithOneSetting);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name, Attributes = attributes } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
+         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         configurationLoader.Load("");
+         var attributeValue = "one";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "Attribute1", Value = attributeValue } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
+
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+         Assert.AreEqual(attributeValue, ((TestTaskWithOneSetting)result.Tasks.First()).Attribute.Attribute1);
       }
 
       [TestMethod]
-      public void Load_SetsSettingPropertyIgnoresCase() {
-         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "baselocation", Value = "" } };
+      public void Load_SetsMultipleSettingProperties() {
+         var settingType = typeof(TestSettingWithAttributes);
+         var taskType = typeof(TestTaskWithOneSetting);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name, Attributes = attributes } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
+         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         configurationLoader.Load("");
+         const string attributeValue1 = "one";
+         const string attributeValue2 = "one";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "Attribute2", Value = attributeValue2 }, new XmlAttribute { Name = "Attribute1", Value = attributeValue1 } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
+
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+         Assert.AreEqual(attributeValue1, ((TestTaskWithOneSetting)result.Tasks.First()).Attribute.Attribute1);
+         Assert.AreEqual(attributeValue2, ((TestTaskWithOneSetting)result.Tasks.First()).Attribute.Attribute2);
       }
 
-      // TODO - test with mulitple settings attributes - no setting with multiple exists yet
-      
       [TestMethod]
       public void Load_InvalidSettingAttribute_ThrowsException() {
+         var settingType = typeof(TestSettingWithAttributes);
+
+         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+
          const string invalidPropertyName = "asdf";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
-
-         var settingName = typeof(FileSystemSearch).Name;
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingName, Attributes = attributes } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + settingName + ".", e.Message);
+            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + settingType.Name + ".", e.Message);
+         }
+      }
+
+      [TestMethod]
+      public void Load_SettingPrivateAttribute_ThrowsException() {
+         var settingType = typeof(TestSettingWithAttributes);
+
+         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+
+         var privateAttribute = settingType.GetProperty("PrivateAttribute", BindingFlags.Instance | BindingFlags.NonPublic).Name;
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = privateAttribute } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
+
+         try {
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (NotSupportedException e) {
+            Assert.AreEqual(privateAttribute + " is not a supported attribute for " + settingType.Name + ".", e.Message);
+         }
+      }
+
+      [TestMethod]
+      public void Load_SettingAttributeWithNoSet_ThrowsException() {
+         var settingType = typeof(TestSettingWithAttributes);
+
+         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+
+         var getOnlyAttribute = settingType.GetProperty("GetOnlyAttribute").Name;
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = getOnlyAttribute } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
+
+         try {
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (NotSupportedException e) {
+            Assert.AreEqual(getOnlyAttribute + " is not a supported attribute for " + settingType.Name + ".", e.Message);
          }
       }
 
       [TestMethod]
       public void Load_TaskHasParameterWithNoMatchingSetting_ThrowsException() {
-         var taskTypeName = typeof(FindFilesOnDisk).Name;
+         var taskType = typeof(TestTaskWithOneSetting);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName } });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
          catch (ArgumentNullException e) {
-            Assert.AreEqual("Search", e.ParamName);
-            Assert.IsTrue(e.Message.StartsWith("The constructor for task " + taskTypeName + " has no defined setting."));
+            Assert.AreEqual(typeof(ITestSettingWithAttributes).Name, e.ParamName);
+            Assert.IsTrue(e.Message.StartsWith("The constructor for task " + taskType.Name + " has no defined setting."));
          }
       }
 
       [TestMethod]
       public void Load_TaskHasTwoMatchingSettings_ThrowsException() {
-         var taskTypeName = typeof(FindFilesOnDisk).Name;
+         var settingType = typeof(TestSettingWithAttributes);
+         var taskType = typeof(TestTaskWithOneSetting);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name },
-                                                                              new XmlNode { Name = typeof(OpenGrokJsonSearch).Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName } });
+         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name },
+                                                                                       new XmlNode { Name = settingType.Name } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
          catch (ArgumentNullException e) {
-            Assert.AreEqual("Search", e.ParamName);
-            Assert.IsTrue(e.Message.StartsWith("Multiple matching settings found for task " + taskTypeName + "."));
+            Assert.AreEqual(typeof(ITestSettingWithAttributes).Name, e.ParamName);
+            Assert.IsTrue(e.Message.StartsWith("Multiple matching settings found for task " + taskType.Name + "."));
          }
       }
 
       [TestMethod]
       public void Load_InvalidTaskType_ThrowsException() {
-         var taskName = typeof(Configuration).Name;
+         var taskName = typeof(TestSettingNoAttributes).Name;
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskName } });
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskName } });
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -207,79 +283,107 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_SetsTaskAttributes() {
-         var directoryPropertyName = "Directory";
-         var directoryValue = "C:/temp/";
-         var searchPropertName = "SearchPattern";
-         var searchValue = "*.cs";
-         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = directoryPropertyName, Value = directoryValue },
-                                                   new XmlAttribute { Name = searchPropertName, Value = searchValue } };
+         var taskType = typeof(TestTask);
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes } });
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         var result = configurationLoader.Load("");
+         const string attribute1Value = "one";
+         const string attribute2Value = "two";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "Attribute2", Value = attribute2Value } ,
+                                                   new XmlAttribute { Name = "Attribute1", Value = attribute1Value } };
 
-         var task = (FindFilesOnDisk)result.Tasks.First();
-         Assert.AreEqual(directoryValue, task.Directory);
-         Assert.AreEqual(searchValue, task.SearchPattern);
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
+
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+         var task = (TestTask)result.Tasks.First();
+         Assert.AreEqual(attribute1Value, task.Attribute1);
+         Assert.AreEqual(attribute2Value, task.Attribute2);
       }
 
       [TestMethod]
       public void Load_InvalidTaskAttribute_ThrowsException() {
-         var taskTypeName = typeof(FindFilesOnDisk).Name;
+         var taskType = typeof(TestTask);
+
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          const string invalidPropertyName = "BAD NAME";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName, Attributes = attributes } });
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + taskTypeName + ".", e.Message);
+            Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + taskType.Name + ".", e.Message);
          }
       }
 
-      // TODO - this test should be split into trying to get property on the base class that has a set and one for a property without a set on the child but neither of them exist yet
-      // TODO - also a private attribute
       [TestMethod]
-      public void Load_BaseClassAttribute_ThrowsException() {
-         var taskTypeName = typeof(FindFilesOnDisk).Name;
+      public void Load_TaskPrivateAttribute_ThrowsException() {
+         var taskType = typeof(TestTask);
 
-         var reportTileTaskBaseAttribute = typeof(Task).GetProperty("ReportTitle").Name ;
-         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = reportTileTaskBaseAttribute } };
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskTypeName, Attributes = attributes } });
+         var privateAttribute = taskType.GetProperty("PrivateAttribute", BindingFlags.Instance | BindingFlags.NonPublic).Name;
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = privateAttribute } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
          try {
-            configurationLoader.Load("");
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
          catch (NotSupportedException e) {
-            Assert.AreEqual(reportTileTaskBaseAttribute + " is not a supported attribute for " + taskTypeName + ".", e.Message);
+            Assert.AreEqual(privateAttribute + " is not a supported attribute for " + taskType.Name + ".", e.Message);
+         }
+      }
+
+      [TestMethod]
+      public void Load_TaskAttributeWithNoSet_ThrowsException() {
+         var taskType = typeof(TestTask);
+
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+
+         var reportTileTaskGetAttribute = taskType.GetProperty("ReportTitle").Name;
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = reportTileTaskGetAttribute } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
+
+         try {
+            new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (NotSupportedException e) {
+            Assert.AreEqual(reportTileTaskGetAttribute + " is not a supported attribute for " + taskType.Name + ".", e.Message);
          }
       }
 
       [TestMethod]
       public void Load_SetsTaskAttributeIgnoresCase() {
-         var directoryPropertyName = "directory";
-         var directoryValue = "C:/temp/";
+         var taskType = typeof(TestTask);
 
-         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = directoryPropertyName, Value = directoryValue } };
+         classFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         taskReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FileSystemSearch).Name } });
-         taskReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = typeof(FindFilesOnDisk).Name, Attributes = attributes } });
+         const string attributeValue = "value";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "attribute1", Value = attributeValue } };
 
-         var result = configurationLoader.Load("");
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
-         var task = (FindFilesOnDisk)result.Tasks.First();
-         Assert.AreEqual(directoryValue, task.Directory);
+         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+
+         var task = (TestTask)result.Tasks.First();
+         Assert.AreEqual(attributeValue, task.Attribute1);
       }
    }
 }

@@ -63,6 +63,11 @@
   <ItemGroup>
     <Compile Include="Configurations\ClassFinderTests.cs" />
     <Compile Include="Configurations\ConfigurationLoaderTests.cs" />
+    <Compile Include="Configurations\TypeStubs\TestSettingNoAttributes.cs" />
+    <Compile Include="Configurations\TypeStubs\TestSettingWithAttributes.cs" />
+    <Compile Include="Configurations\TypeStubs\TestTask.cs" />
+    <Compile Include="Configurations\TypeStubs\TestTaskWithOneSetting.cs" />
+    <Compile Include="Configurations\TypeStubs\TestTaskWithTwoSettings.cs" />
     <Compile Include="Observations\FileObservationTests.cs" />
     <Compile Include="Reporting\ReportDataTests.cs" />
     <Compile Include="Reporting\ReportTests.cs" />

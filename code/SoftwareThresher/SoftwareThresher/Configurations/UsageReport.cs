@@ -8,14 +8,15 @@ namespace SoftwareThresher.Configurations {
       readonly IConsole console;
       readonly IClassFinder classFinder;
 
-      public UsageReport() : this(new Console(), new ClassFinder()) { }
+      public UsageReport() : this(new ClassFinder(), new Console()) { }
 
-      public UsageReport(IConsole console, IClassFinder classFinder)
+      public UsageReport(IClassFinder classFinder, IConsole console)
       {
          this.console = console;
          this.classFinder = classFinder;
       }
 
+      // TODO - Add settings and parameters to Tasks
       public void Write() {
          console.WriteLine("Usage: SoftwareThresher.exe config.xml [config.xml]");
 
