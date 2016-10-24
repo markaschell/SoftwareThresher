@@ -11,7 +11,6 @@ namespace SoftwareThresher.Configurations {
    }
 
    public class ConfigurationLoader : IConfigurationLoader {
-      const BindingFlags FindBindingFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly;
       const string SettingsSectionName = "settings";
       const string TasksSectionName = "tasks";
 
@@ -85,7 +84,7 @@ namespace SoftwareThresher.Configurations {
 
       static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName) {
          try {
-            var property = output.GetType().GetProperty(attribute.Name, FindBindingFlags);
+            var property = output.GetType().GetProperty(attribute.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly);
             property.SetValue(output, attribute.Value);
          }
          catch (Exception) {
