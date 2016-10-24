@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using SoftwareThresher.Utilities;
 using Console = SoftwareThresher.Utilities.Console;
 
@@ -21,18 +23,29 @@ namespace SoftwareThresher.Configurations {
          console.WriteLine("Usage: SoftwareThresher.exe config.xml [config.xml]");
 
          foreach (var task in classFinder.TaskTypes) {
-            var parameters = task.GetConstructors().Single().GetParameters();
-            var parameterText = string.Join(", ", parameters.Select(p => p.ParameterType.Name));
-            console.WriteLine($"\tTask:\t{task.Name}({parameterText})");
+            console.WriteLine($"\tTask:\t{task.Name}({GetParameterText(task)})");
 
-            var properties = task.GetProperties().Where(a => a.CanWrite);
-            foreach (var property in properties) {
-               var noteAttribute = (UsageNoteAttribute)Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(UsageNoteAttribute));
-               var noteText = noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
-
-               console.WriteLine($"\t\tAttribute:\t{property.Name} ({property.PropertyType.Name}){noteText}");
+            foreach (var property in GetProperties(task)) {
+               WriteProperty(property);
             }
          }
+      }
+
+      static string GetParameterText(Type task)
+      {
+         var parameters = task.GetConstructors().Single().GetParameters();
+         return string.Join(", ", parameters.Select(p => p.ParameterType.Name));
+      }
+
+      static IEnumerable<PropertyInfo> GetProperties(Type task) {
+         return task.GetProperties().Where(a => a.CanWrite);
+      }
+
+      void WriteProperty(PropertyInfo property) {
+         var noteAttribute = (UsageNoteAttribute) Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(UsageNoteAttribute));
+         var noteText = noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
+
+         console.WriteLine($"\t\tAttribute:\t{property.Name} ({property.PropertyType.Name}){noteText}");
       }
    }
 }
