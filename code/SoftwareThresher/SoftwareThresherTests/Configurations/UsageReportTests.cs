@@ -38,7 +38,7 @@ namespace SoftwareThresherTests.Configurations {
 
          usageReport.Write();
 
-         console.Received().WriteLine("\tTask:\tTestTask");
+         console.Received().WriteLine("\tTask:\tTestTask()");
       }
 
       [TestMethod]
@@ -49,6 +49,24 @@ namespace SoftwareThresherTests.Configurations {
 
          console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Task")));
          console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Task")));
+      }
+
+      [TestMethod]
+      public void Write_TaskWithOneSetting() {
+         classFinder.TaskTypes.Returns(new List<Type> { typeof(TestTaskWithOneSetting) });
+
+         usageReport.Write();
+
+         console.Received().WriteLine("\tTask:\tTestTaskWithOneSetting(ITestSettingWithAttributes)");
+      }
+
+      [TestMethod]
+      public void Write_TaskWithMultipleSettings() {
+         classFinder.TaskTypes.Returns(new List<Type> { typeof(TestTaskWithTwoSettings) });
+
+         usageReport.Write();
+
+         console.Received().WriteLine(Arg.Is<string>(l => l.EndsWith("(ITestSettingWithAttributes, ITestSettingNoAttributes)")));
       }
 
       [TestMethod]

@@ -106,7 +106,7 @@ namespace SoftwareThresher.Configurations {
          {
             var taskType = taskTypes.Single(t => t.Name == taskName);
 
-            return taskType.GetConstructors(FindBindingFlags).Single();
+            return taskType.GetConstructors().Single();
          }
          catch (Exception)
          {

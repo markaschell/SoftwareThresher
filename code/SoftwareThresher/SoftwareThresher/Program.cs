@@ -2,8 +2,8 @@
 using SoftwareThresher.Configurations;
 
 namespace SoftwareThresher {
-   class Program {
-      static void Main(string[] args) {
+   public class Program {
+      public static void Main(string[] args) {
          if (!args.Any()) {
             new UsageReport().Write();
          }
