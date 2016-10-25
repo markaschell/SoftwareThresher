@@ -9,7 +9,7 @@ namespace SoftwareThresher.Settings.Search {
    public class FileSystemSearch : Search {
       readonly ISystemFileReader systemFileReader;
 
-      public string BaseLocation { get; set; }
+      public string BaseLocation { private get; set; }
 
       public FileSystemSearch() : this(new SystemFileReader()) { }
 
