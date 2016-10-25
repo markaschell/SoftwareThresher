@@ -13,12 +13,12 @@ namespace SoftwareThresherTests.Configurations {
       const string SettingsSectionName = "settings";
       const string TasksSectionName = "tasks";
 
-      IClassFinder classFinder;
+      IAssemblyObjectFinder assemblyObjectFinder;
       IConfigurationReader configurationReader;
 
       [TestInitialize]
       public void Setup() {
-         classFinder = Substitute.For<IClassFinder>();
+         assemblyObjectFinder = Substitute.For<IAssemblyObjectFinder>();
          configurationReader = Substitute.For<IConfigurationReader>();
       }
 
@@ -28,7 +28,7 @@ namespace SoftwareThresherTests.Configurations {
 
          configurationReader.GetNodes("").ReturnsForAnyArgs(new List<XmlNode>());
 
-         new ConfigurationLoader(classFinder, configurationReader).Load(filename);
+         new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load(filename);
 
          Received.InOrder(() => {
             configurationReader.Open(filename);
@@ -44,7 +44,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.When(r => r.Open(Arg.Any<string>())).Do(x => { throw exception; });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
          }
          catch (Exception e) {
             Assert.AreSame(exception, e);
@@ -57,12 +57,12 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_OneTaskWithNoSettings() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          Assert.AreEqual(1, result.Tasks.Count);
          Assert.AreEqual(taskType, result.Tasks.First().GetType());
@@ -72,12 +72,12 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_MultipleTasks() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name }, new XmlNode { Name = taskType.Name } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          Assert.AreEqual(2, result.Tasks.Count);
       }
@@ -88,13 +88,13 @@ namespace SoftwareThresherTests.Configurations {
          var settingType2 = typeof(TestSettingNoAttributes);
          var taskType = typeof(TestTaskWithTwoSettings);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType2, settingType1 });
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType2, settingType1 });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType1.Name }, new XmlNode { Name = settingType2.Name } });
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          Assert.IsTrue(((TestTaskWithTwoSettings)result.Tasks.First()).SettingsSet);
       }
@@ -107,7 +107,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -121,8 +121,8 @@ namespace SoftwareThresherTests.Configurations {
          var settingType = typeof(TestSettingWithAttributes);
          var taskType = typeof(TestTaskWithOneSetting);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType });
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          var attributeValue = "one";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "Attribute1", Value = attributeValue } };
@@ -130,7 +130,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          Assert.AreEqual(attributeValue, ((TestTaskWithOneSetting)result.Tasks.First()).Attribute.Attribute1);
       }
@@ -140,8 +140,8 @@ namespace SoftwareThresherTests.Configurations {
          var settingType = typeof(TestSettingWithAttributes);
          var taskType = typeof(TestTaskWithOneSetting);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType });
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          const string attributeValue1 = "one";
          const string attributeValue2 = "one";
@@ -150,7 +150,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          Assert.AreEqual(attributeValue1, ((TestTaskWithOneSetting)result.Tasks.First()).Attribute.Attribute1);
          Assert.AreEqual(attributeValue2, ((TestTaskWithOneSetting)result.Tasks.First()).Attribute.Attribute2);
@@ -160,7 +160,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_InvalidSettingAttribute_ThrowsException() {
          var settingType = typeof(TestSettingWithAttributes);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
 
          const string invalidPropertyName = "asdf";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
@@ -168,7 +168,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -181,7 +181,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_SettingPrivateAttribute_ThrowsException() {
          var settingType = typeof(TestSettingWithAttributes);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
 
          var privateAttribute = settingType.GetProperty("PrivateAttribute", BindingFlags.Instance | BindingFlags.NonPublic).Name;
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = privateAttribute } };
@@ -190,7 +190,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -203,7 +203,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_SettingAttributeWithNoSet_ThrowsException() {
          var settingType = typeof(TestSettingWithAttributes);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
 
          var getOnlyAttribute = settingType.GetProperty("GetOnlyAttribute").Name;
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = getOnlyAttribute } };
@@ -212,7 +212,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode>());
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -225,13 +225,13 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_TaskHasParameterWithNoMatchingSetting_ThrowsException() {
          var taskType = typeof(TestTaskWithOneSetting);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -246,15 +246,15 @@ namespace SoftwareThresherTests.Configurations {
          var settingType = typeof(TestSettingWithAttributes);
          var taskType = typeof(TestTaskWithOneSetting);
 
-         classFinder.SettingTypes.Returns(new List<Type> { settingType });
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name },
                                                                                        new XmlNode { Name = settingType.Name } });
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -272,7 +272,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskName } });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -285,7 +285,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_SetsTaskAttributes() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          const string attribute1Value = "one";
          const string attribute2Value = "two";
@@ -295,7 +295,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          var task = (TestTask)result.Tasks.First();
          Assert.AreEqual(attribute1Value, task.Attribute1);
@@ -306,7 +306,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_InvalidTaskAttribute_ThrowsException() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          const string invalidPropertyName = "BAD NAME";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = invalidPropertyName } };
@@ -315,7 +315,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -328,7 +328,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_TaskPrivateAttribute_ThrowsException() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          var privateAttribute = taskType.GetProperty("PrivateAttribute", BindingFlags.Instance | BindingFlags.NonPublic).Name;
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = privateAttribute } };
@@ -337,7 +337,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -350,7 +350,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_TaskAttributeWithNoSet_ThrowsException() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          var reportTileTaskGetAttribute = taskType.GetProperty("ReportTitle").Name;
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = reportTileTaskGetAttribute } };
@@ -359,7 +359,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
          try {
-            new ConfigurationLoader(classFinder, configurationReader).Load("");
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
             Assert.Fail("Should have thrown an exception.");
          }
@@ -372,7 +372,7 @@ namespace SoftwareThresherTests.Configurations {
       public void Load_SetsTaskAttributeIgnoresCase() {
          var taskType = typeof(TestTask);
 
-         classFinder.TaskTypes.Returns(new List<Type> { taskType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
          const string attributeValue = "value";
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "attribute1", Value = attributeValue } };
@@ -380,7 +380,7 @@ namespace SoftwareThresherTests.Configurations {
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
          configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
 
-         var result = new ConfigurationLoader(classFinder, configurationReader).Load("");
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
 
          var task = (TestTask)result.Tasks.First();
          Assert.AreEqual(attributeValue, task.Attribute1);

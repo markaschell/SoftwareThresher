@@ -61,7 +61,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Configurations\ClassFinderTests.cs" />
+    <Compile Include="Configurations\AssemblyObjectFinderTests.cs" />
     <Compile Include="Configurations\ConfigurationLoaderTests.cs" />
     <Compile Include="Configurations\TypeStubs\TestSettingNoAttributes.cs" />
     <Compile Include="Configurations\TypeStubs\TestSettingWithAttributes.cs" />

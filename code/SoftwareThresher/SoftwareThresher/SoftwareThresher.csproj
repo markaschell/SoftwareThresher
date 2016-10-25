@@ -44,7 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configurations\ClassFinder.cs" />
+    <Compile Include="Configurations\AssemblyObjectFinder.cs" />
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationLoader.cs" />
     <Compile Include="Configurations\ConfigurationReader.cs" />

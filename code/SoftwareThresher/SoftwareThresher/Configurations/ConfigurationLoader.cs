@@ -19,14 +19,14 @@ namespace SoftwareThresher.Configurations {
       readonly IEnumerable<Type> taskTypes;
       readonly IEnumerable<Type> settingTypes;
 
-      public ConfigurationLoader(IClassFinder classFinder, IConfigurationReader taskReader) {
+      public ConfigurationLoader(IAssemblyObjectFinder assemblyObjectFinder, IConfigurationReader taskReader) {
          this.taskReader = taskReader;
 
-         taskTypes = classFinder.TaskTypes;
-         settingTypes = classFinder.SettingTypes;
+         taskTypes = assemblyObjectFinder.TaskTypes;
+         settingTypes = assemblyObjectFinder.SettingTypes;
       }
 
-      public ConfigurationLoader() : this(new ClassFinder(), new ConfigurationReader()) {
+      public ConfigurationLoader() : this(new AssemblyObjectFinder(), new ConfigurationReader()) {
       }
 
       public IConfiguration Load(string filename) {
