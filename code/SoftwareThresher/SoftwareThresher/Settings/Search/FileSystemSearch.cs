@@ -17,9 +17,9 @@ namespace SoftwareThresher.Settings.Search {
          this.systemFileReader = systemFileReader;
       }
 
-      public List<Observation> GetObservations(string directory, string searchPattern)
+      public List<Observation> GetObservations(string location, string searchPattern)
       {
-         var path = string.IsNullOrEmpty(BaseLocation) ? directory : BaseLocation + Path.DirectorySeparatorChar + directory;
+         var path = string.IsNullOrEmpty(BaseLocation) ? location : BaseLocation + Path.DirectorySeparatorChar + location;
 
          return Directory.EnumerateFiles(path, searchPattern, SearchOption.AllDirectories).ToList()
                          .ConvertAll(f => (Observation)new FileObservation(f));

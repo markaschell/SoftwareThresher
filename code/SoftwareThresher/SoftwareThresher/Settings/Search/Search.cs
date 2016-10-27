@@ -5,7 +5,7 @@ namespace SoftwareThresher.Settings.Search {
    public interface Search : Setting {
       string BaseLocation { set; }
 
-      List<Observation> GetObservations(string directory, string searchPattern);
+      List<Observation> GetObservations(string location, string searchPattern);
 
       List<string> GetReferenceLine(Observation observation, string searchPattern);
    }
