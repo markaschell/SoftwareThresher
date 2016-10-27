@@ -214,12 +214,12 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
-      public void Write_TaskWithMultipleSettings() {
+      public void Write_TaskWithMultipleSettings_DisplaysInAlphabeticalOrder() {
          assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTaskWithTwoSettings) });
 
          usageReport.Write();
 
-         console.Received().WriteLine(Arg.Is<string>(l => l.EndsWith("(ITestSettingWithAttributes, ITestSettingNoAttributes)")));
+         console.Received().WriteLine(Arg.Is<string>(l => l.EndsWith("(ITestSettingNoAttributes, ITestSettingWithAttributes)")));
       }
 
       [TestMethod]

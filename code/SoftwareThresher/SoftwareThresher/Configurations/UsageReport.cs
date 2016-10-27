@@ -91,7 +91,7 @@ namespace SoftwareThresher.Configurations {
 
       static string GetParameterText(Type task)
       {
-         var parameters = task.GetConstructors().Single().GetParameters();
+         var parameters = task.GetConstructors().Single().GetParameters().OrderBy(p => p.Name);
          return string.Join(", ", parameters.Select(p => p.ParameterType.Name));
       }
    }
