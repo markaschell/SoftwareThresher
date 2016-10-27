@@ -9,9 +9,9 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
    {
       public string ReportTitle => "";
 
-      public string Attribute1 { get; set; }
-
       public string Attribute2 { get; set; }
+
+      public string Attribute1 { get; set; }
 
       [UsageNote("Note")]
       public string AttributeWithNote { get; set; }

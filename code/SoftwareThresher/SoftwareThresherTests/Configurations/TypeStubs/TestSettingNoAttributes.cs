@@ -3,6 +3,6 @@
 namespace SoftwareThresherTests.Configurations.TypeStubs {
    public interface ITestSettingNoAttributes : Setting { }
 
-   public class TestSettingNoAttributes : ITestSettingNoAttributes {
+   public class TestSettingZeroAttributes : ITestSettingNoAttributes {
    }
 }

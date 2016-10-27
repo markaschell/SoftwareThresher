@@ -34,17 +34,22 @@ namespace SoftwareThresher.Configurations {
       {
          var settings = assemblyObjectFinder.SettingTypes.ToList();
 
-         foreach (var settingInterface in assemblyObjectFinder.SettingInterfaces)
+         foreach (var settingInterface in InAlphabeticalOrder(assemblyObjectFinder.SettingInterfaces))
          {
             WriteSettingType(settingInterface, settings);
          }
+      }
+
+      static IEnumerable<Type> InAlphabeticalOrder(IEnumerable<Type> types)
+      {
+         return types.OrderBy(t => t.Name);
       }
 
       void WriteSettingType(Type settingInterface, IEnumerable<Type> settings)
       {
          console.WriteLine($"{Indent}Setting Type:{Indent}{settingInterface.Name}");
 
-         foreach (var setting in settings.Where(s => s.GetInterfaces().Contains(settingInterface)))
+         foreach (var setting in InAlphabeticalOrder(settings.Where(s => s.GetInterfaces().Contains(settingInterface))))
          {
             WriteSetting(setting);
          }
@@ -61,7 +66,7 @@ namespace SoftwareThresher.Configurations {
       }
 
       static IEnumerable<PropertyInfo> GetProperties(Type type) {
-         return type.GetProperties().Where(a => a.CanWrite);
+         return type.GetProperties().Where(a => a.CanWrite).OrderBy(p => p.Name);
       }
 
       void WriteProperty(PropertyInfo property, string prefix = "") {
@@ -73,7 +78,7 @@ namespace SoftwareThresher.Configurations {
 
       void WriteTasks()
       {
-         foreach (var task in assemblyObjectFinder.TaskTypes)
+         foreach (var task in InAlphabeticalOrder(assemblyObjectFinder.TaskTypes))
          {
             console.WriteLine($"{Indent}Task:{Indent}{task.Name}({GetParameterText(task)})");
 

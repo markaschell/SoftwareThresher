@@ -52,29 +52,54 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
-      public void Write_SettingTypeWithOneImplementation() {
-         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
-         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingWithAttributes) });
+      public void Write_MultipleSettingTypesInAlphabeticalOrder() {
+         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes), typeof(ITestSettingNoAttributes) });
 
          usageReport.Write();
 
-         console.Received().WriteLine("\t\tSetting:\tTestSettingWithAttributes");
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingNoAttributes")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingWithAttributes")));
+         });
+      }
+
+      [TestMethod]
+      public void Write_SettingTypeWithOneImplementation() {
+         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes) });
+
+         usageReport.Write();
+
+         console.Received().WriteLine("\t\tSetting:\tTestSettingTwoAttributes");
       }
 
       [TestMethod]
       public void Write_SettingTypeWithMultipleImplementations() {
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
-         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingWithAttributes), typeof(TestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes), typeof(TestSettingTwoAttributes) });
 
          usageReport.Write();
 
-         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("TestSettingWithAttributes")));
-         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("TestSettingWithAttributes")));
+         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("TestSettingTwoAttributes")));
+         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("TestSettingTwoAttributes")));
+      }
+
+      [TestMethod]
+      public void Write_SettingTypeWithMultipleImplementationsInAlphabeticalOrder() {
+         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes), typeof(TestSettingOneAttribute) });
+
+         usageReport.Write();
+
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("TestSettingOneAttribute")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("TestSettingTwoAttributes")));
+         });
       }
 
       [TestMethod]
       public void Write_SettingTypeIsNotInterfaceForSetting_DoesNotWriteIt() {
-         var settingToNotMatch = typeof(TestSettingNoAttributes);
+         var settingToNotMatch = typeof(TestSettingZeroAttributes);
 
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingToNotMatch });
@@ -87,7 +112,7 @@ namespace SoftwareThresherTests.Configurations {
       [TestMethod]
       public void Write_SettingWithAtLeastOneAttribute() {
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
-         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes) });
 
          usageReport.Write();
 
@@ -96,7 +121,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Write_SettingWithPrivateAttribute_DoesNotWriteIt() {
-         var settingType = typeof(TestSettingWithAttributes);
+         var settingType = typeof(TestSettingTwoAttributes);
 
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
@@ -109,7 +134,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Write_SettingWithGetOnlyAttribute_DoesNotWriteIt() {
-         var settingType = typeof(TestSettingWithAttributes);
+         var settingType = typeof(TestSettingTwoAttributes);
 
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
@@ -123,27 +148,29 @@ namespace SoftwareThresherTests.Configurations {
       [TestMethod]
       public void Write_AttributeWithTheCorrectSettingAndSettingType() {
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes), typeof(ITestSettingNoAttributes) });
-         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes) });
 
          usageReport.Write();
 
          Received.InOrder(() => {
-            console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingWithAttributes")));
-            console.WriteLine(Arg.Is<string>(s => s.Contains("TestSettingWithAttributes")));
-            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
             console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingNoAttributes")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingWithAttributes")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("TestSettingTwoAttributes")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
          });
       }
 
       [TestMethod]
-      public void Write_SettingWithMultipleAttributes() {
+      public void Write_SettingWithMultipleAttributes_DisplaysInAlphabeticalOrder() {
          assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
-         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes) });
 
          usageReport.Write();
 
-         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
-         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Attribute2")));
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute2")));
+         });
       }
 
       [TestMethod]
@@ -163,6 +190,18 @@ namespace SoftwareThresherTests.Configurations {
 
          console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Task")));
          console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Task")));
+      }
+
+      [TestMethod]
+      public void Write_MultipleTasks_DisplaysInAlphabeticalOrder() {
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTaskWithTwoSettings), typeof(TestTask) });
+
+         usageReport.Write();
+
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Task")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("TestTaskWithTwoSettings")));
+         });
       }
 
       [TestMethod]
@@ -230,13 +269,15 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
-      public void Write_TaskWithMultipleAttributes() {
+      public void Write_TaskWithMultipleAttributes_DisplaysInAlphabeticalOrder() {
          assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTask) });
 
          usageReport.Write();
 
-         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
-         console.Received().WriteLine(Arg.Is<string>(s => s.Contains("Attribute2")));
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute2")));
+         });
       }
 
       [TestMethod]
@@ -250,14 +291,13 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Write_SettingsAndTasks() {
-         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes), typeof(ITestSettingNoAttributes) });
+         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
          assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTask) });
 
          usageReport.Write();
 
          Received.InOrder(() => {
             console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingWithAttributes")));
-            console.WriteLine(Arg.Is<string>(s => s.Contains("ITestSettingNoAttributes")));
             console.WriteLine(Arg.Is<string>(s => s == string.Empty));
             console.WriteLine(Arg.Is<string>(s => s.Contains("TestTask")));
          });

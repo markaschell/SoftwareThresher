@@ -20,6 +20,6 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
 
       public bool SettingsSet => Attribute != null;
 
-      public TestSettingWithAttributes Attribute => (TestSettingWithAttributes)testSettingWithAttributes;
+      public TestSettingTwoAttributes Attribute => (TestSettingTwoAttributes)testSettingWithAttributes;
    }
 }
