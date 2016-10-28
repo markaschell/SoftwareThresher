@@ -18,11 +18,13 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
+      // TODO - appears to be only returning 1000 at a time if only searching by path
+      // TODO - Find a better way to search by ".cs"
+      // TODO - use location?
       public List<Observation> GetObservations(string location, string searchPattern) {
-         // TODO - Could we use "file://" in the directory to search locally and just use the same Search?  Probably not because of the different return types.  Use that to access svn server - wonder which is faster
+         // TODO - Could we use "file://" to access svn server - wonder which is faster
          // TODO - I do not think we want a FileObservation here - create a new class
-         // TODO - double check that the value returned is what we want to use here - make sure it does not have the whole url and only has after source - also check for file search as well
-         return GetResults(TextSearchParameterLabel + searchPattern).ConvertAll(r => (Observation)new FileObservation(r.path));
+         return GetResults(PathSearchParameterLabel + searchPattern).ConvertAll(r => (Observation)new FileObservation(r.path));
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
