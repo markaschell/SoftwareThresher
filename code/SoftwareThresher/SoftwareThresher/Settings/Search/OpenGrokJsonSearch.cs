@@ -21,11 +21,9 @@ namespace SoftwareThresher.Settings.Search {
       public string BaseLocation { private get; set; }
 
       // TODO - Find a better way to search by ".cs" - do we double check in the code somehow and or search differently so that we can use the same parameter value - or should we use a filter?
-
       // TODO - use location?
       public List<Observation> GetObservations(string location, string searchPattern) {
-         // TODO - I do not think we want a FileObservation here - create a new class - have the to string convert \ to /
-         return GetResults($"{PathSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => (Observation)new FileObservation(r.path));
+         return GetResults($"{PathSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
@@ -58,15 +56,15 @@ namespace SoftwareThresher.Settings.Search {
       }
 
       public class OpenGrokJsonSearchResult {
-         //public string directory { get; set; }
-         //public string filename { get; set; }
+         public string directory { get; set; }
+         public string filename { get; set; }
          //public int lineno { get; set; }
          string _line;
          public string line {
             get { return _line; }
             set { _line = Encoding.UTF8.GetString(Convert.FromBase64String(value)); }
          }
-         public string path { get; set; }
+         //public string path { get; set; }
       }
    }
 }
