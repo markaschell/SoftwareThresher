@@ -20,7 +20,7 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
-      // TODO - Find a better way to search by ".cs" - do we double check in the code somehow and or search differently so that we can use the same parameter value - or should we use a filter?
+      // TODO - fix the filter for file search - Do I need to????
       // TODO - use location?
       public List<Observation> GetObservations(string location, string searchPattern) {
          return GetResults($"{PathSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
@@ -32,7 +32,6 @@ namespace SoftwareThresher.Settings.Search {
 
       List<OpenGrokJsonSearchResult> GetResults(string parameters) {
          var request = WebRequest.Create($"{BaseLocation}/json?{parameters}{ParameterJoin}{MaxResultsParameterLabel}{MaxResults}");
-         Console.WriteLine(request.RequestUri);
 
          using (var response = request.GetResponse()) {
             var serializer = new DataContractJsonSerializer(typeof(OpenGrokJsonSearchResponse));
