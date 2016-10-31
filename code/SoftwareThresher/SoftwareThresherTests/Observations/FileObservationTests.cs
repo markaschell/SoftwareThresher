@@ -64,34 +64,6 @@ namespace SoftwareThresherTests.Observations {
 
          Assert.AreEqual(path, observation.Location);
       }
-
-      [TestMethod]
-      public void ToString_CombinesLocationAndFilenanme() {
-         const string filename = @"C:\Directory\name.txt";
-
-         var observation = new FileObservation(filename);
-
-         Assert.AreEqual(filename, observation.ToString());
-      }
-
-      [TestMethod]
-      public void ToString_JustPath() {
-         const string path = @"C:\Directory\";
-
-         var observation = new FileObservation(path);
-
-         Assert.AreEqual(path, observation.ToString());
-      }
-
-      [TestMethod]
-      public void ToString_JustFile() {
-         const string file = @"test.txt";
-
-         var observation = new FileObservation(file);
-
-         Assert.AreEqual(file, observation.ToString());
-      }
-
    }
 
 }
