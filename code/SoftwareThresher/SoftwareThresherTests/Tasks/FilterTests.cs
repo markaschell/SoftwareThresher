@@ -17,7 +17,7 @@ namespace SoftwareThresherTests.Tasks {
 
       [TestMethod]
       public void Execute_FiltersLocationRegExPattern() {
-         filter.LocationSearchPattern = "a";
+         filter.SearchPattern = "a";
 
          var result = filter.Execute(new List<Observation> { new FileObservation(@"C:\akdkk\this is it") });
 
@@ -26,7 +26,7 @@ namespace SoftwareThresherTests.Tasks {
 
       [TestMethod]
       public void Execute_DoesNotFilterLocationRegExPattern() {
-         filter.LocationSearchPattern = "i";
+         filter.SearchPattern = "z";
 
          var results = filter.Execute(new List<Observation> { new FileObservation(@"C:\akdkk\this is it") });
 

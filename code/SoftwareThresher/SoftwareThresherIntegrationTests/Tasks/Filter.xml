@@ -5,6 +5,6 @@
   </settings>
   <tasks>
     <FindFilesOnDisk Directory="" SearchPattern="*.cs"></FindFilesOnDisk>
-    <Filter LocationSearchPattern="\\(Skip)" />
+    <Filter SearchPattern="\\(Skip)" />
   </tasks>
 </configuration>
