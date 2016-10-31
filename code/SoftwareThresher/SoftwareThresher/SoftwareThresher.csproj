@@ -52,6 +52,7 @@
     <Compile Include="Configurations\XmlNode.cs" />
     <Compile Include="Observations\FileObservation.cs" />
     <Compile Include="Observations\Observation.cs" />
+    <Compile Include="Observations\OpenGrokObservation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporting\Report.cs" />
