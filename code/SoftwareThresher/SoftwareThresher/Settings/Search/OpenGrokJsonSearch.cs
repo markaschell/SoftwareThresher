@@ -14,29 +14,36 @@ namespace SoftwareThresher.Settings.Search {
       //const string SymbolSearchParameterLabel = "symbol=";
       const string PathSearchParameterLabel = "path=";
       //const string HistorySearchParameterLabel = "hist=";
+      const string MaxResultsParameterLabel = "maxresults=";
       const string ParameterJoin = "&";
+      const int MaxResults = 1000000; // In theroy could go as high as java max Integer
 
       public string BaseLocation { private get; set; }
 
-      // TODO - appears to be only returning 1000 at a time if only searching by path
-      // TODO - Find a better way to search by ".cs"
+      // TODO - Find a better way to search by ".cs" - do we double check in the code somehow and or search differently so that we can use the same parameter value - or should we use a filter?
+
       // TODO - use location?
       public List<Observation> GetObservations(string location, string searchPattern) {
-         // TODO - Could we use "file://" to access svn server - wonder which is faster
-         // TODO - I do not think we want a FileObservation here - create a new class
-         return GetResults(PathSearchParameterLabel + searchPattern).ConvertAll(r => (Observation)new FileObservation(r.path));
+         // TODO - I do not think we want a FileObservation here - create a new class - have the to string convert \ to /
+         return GetResults($"{PathSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => (Observation)new FileObservation(r.path));
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
-         return GetResults(PathSearchParameterLabel + observation + ParameterJoin + TextSearchParameterLabel + searchPattern).ConvertAll(r => r.line);
+         return GetResults($"{PathSearchParameterLabel}\"{observation}\"{ParameterJoin}{TextSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => r.line);
       }
 
       List<OpenGrokJsonSearchResult> GetResults(string parameters) {
-         var request = WebRequest.Create(BaseLocation + "/json?" + parameters);
+         var request = WebRequest.Create($"{BaseLocation}/json?{parameters}{ParameterJoin}{MaxResultsParameterLabel}{MaxResults}");
+         Console.WriteLine(request.RequestUri);
 
          using (var response = request.GetResponse()) {
             var serializer = new DataContractJsonSerializer(typeof(OpenGrokJsonSearchResponse));
             var searchResponse = (OpenGrokJsonSearchResponse)serializer.ReadObject(response.GetResponseStream());
+
+            if (searchResponse.resultcount == searchResponse.maxresults)
+            {
+               throw new Exception($"Maximum Opengrok results reached: {searchResponse.maxresults}");
+            }
 
             return searchResponse.results;
          }
@@ -44,11 +51,13 @@ namespace SoftwareThresher.Settings.Search {
 
       // As defined here: https://github.com/OpenGrok/OpenGrok/wiki/OpenGrok-web-services
       public class OpenGrokJsonSearchResponse {
+         //public string duration { get; set; }
+         public string resultcount { get; set; }
+         public string maxresults { get; set; }
          public List<OpenGrokJsonSearchResult> results { get; set; }
       }
 
       public class OpenGrokJsonSearchResult {
-         public string path { get; set; }
          //public string directory { get; set; }
          //public string filename { get; set; }
          //public int lineno { get; set; }
@@ -57,6 +66,7 @@ namespace SoftwareThresher.Settings.Search {
             get { return _line; }
             set { _line = Encoding.UTF8.GetString(Convert.FromBase64String(value)); }
          }
+         public string path { get; set; }
       }
    }
 }
