@@ -12,9 +12,6 @@ namespace SoftwareThresher.Observations {
 
       public override string Name => Path.GetFileName(filename);
 
-      public override string ToString()
-      {
-         return filename;
-      }
+      public override string SystemSpecificString => filename;
    }
 }

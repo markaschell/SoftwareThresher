@@ -30,7 +30,7 @@ namespace SoftwareThresherTests.Settings.Search {
          search.GetReferenceLine(observation, searchText);
 
          Received.InOrder(() => {
-            reader.Open(observation.ToString());
+            reader.Open(observation.SystemSpecificString);
             reader.ReadLine();
             reader.Close();
          });

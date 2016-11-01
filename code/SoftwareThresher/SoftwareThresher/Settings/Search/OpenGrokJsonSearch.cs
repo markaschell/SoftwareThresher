@@ -20,7 +20,6 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
-      // TODO - fix the filter for file search - Do I need to????
       // TODO - use location?
       public List<Observation> GetObservations(string location, string searchPattern) {
          return GetResults($"{PathSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));

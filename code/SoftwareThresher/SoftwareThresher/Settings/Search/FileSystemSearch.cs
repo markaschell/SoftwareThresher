@@ -29,7 +29,7 @@ namespace SoftwareThresher.Settings.Search {
          try {
             var references = new List<string>();
 
-            systemFileReader.Open(observation.ToString());
+            systemFileReader.Open(observation.SystemSpecificString);
 
             string line = systemFileReader.ReadLine();
             while (line != null) {
