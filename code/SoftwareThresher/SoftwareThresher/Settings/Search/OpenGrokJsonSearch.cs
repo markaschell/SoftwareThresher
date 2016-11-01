@@ -26,7 +26,7 @@ namespace SoftwareThresher.Settings.Search {
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
-         return GetResults($"{PathSearchParameterLabel}\"{observation}\"{ParameterJoin}{TextSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => r.line);
+         return GetResults($"{PathSearchParameterLabel}\"{observation.SystemSpecificString}\"{ParameterJoin}{TextSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => r.line);
       }
 
       List<OpenGrokJsonSearchResult> GetResults(string parameters) {
