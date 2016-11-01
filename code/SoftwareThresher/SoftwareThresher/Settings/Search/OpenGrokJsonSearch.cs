@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
@@ -33,7 +34,9 @@ namespace SoftwareThresher.Settings.Search {
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
-         return GetResults($"{PathSearchParameterLabel}\"{observation.SystemSpecificString}\"{ParameterJoin}{TextSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => r.line);
+         return GetResults($"{PathSearchParameterLabel}\"{observation.SystemSpecificString}\"{ParameterJoin}{TextSearchParameterLabel}\"{searchPattern}\"")
+                .Where(r => !string.IsNullOrEmpty(r.lineno)).ToList()
+                .ConvertAll(r => r.line);
       }
 
       List<OpenGrokJsonSearchResult> GetResults(string parameters) {
@@ -62,7 +65,7 @@ namespace SoftwareThresher.Settings.Search {
       public class OpenGrokJsonSearchResult {
          public string directory { get; set; }
          public string filename { get; set; }
-         //public int lineno { get; set; }
+         public string lineno { get; set; }
          string _line;
          public string line {
             get { return _line; }

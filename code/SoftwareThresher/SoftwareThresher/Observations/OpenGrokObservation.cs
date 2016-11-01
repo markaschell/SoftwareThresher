@@ -3,7 +3,7 @@
 namespace SoftwareThresher.Observations {
    public class OpenGrokObservation : Observation
    {
-      const string DirectorySeperator = @"\\\/";
+      const string DirectorySeperator = @"\/";
 
       readonly string directory;
 
@@ -12,6 +12,7 @@ namespace SoftwareThresher.Observations {
          this.Name = filename;
       }
 
+      // TODO - Add tests
       public override string Location => directory.Replace(DirectorySeperator, Path.PathSeparator.ToString());
 
       public override string Name { get; }
