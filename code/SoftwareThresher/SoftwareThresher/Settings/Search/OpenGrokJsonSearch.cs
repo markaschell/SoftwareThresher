@@ -20,9 +20,16 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
-      // TODO - use location?
       public List<Observation> GetObservations(string location, string searchPattern) {
-         return GetResults($"{PathSearchParameterLabel}\"{searchPattern}\"").ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
+         return GetResults($"{PathSearchParameterLabel}\"{GetPathSearchPattern(location, searchPattern)}\"").ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
+      }
+
+      string GetPathSearchPattern(string location, string searchPattern) {
+         if (!string.IsNullOrEmpty(location) && !string.IsNullOrEmpty(searchPattern)) {
+            return $"{location} {searchPattern}";
+         }
+
+         return !string.IsNullOrEmpty(location) ? location : searchPattern;
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
@@ -36,8 +43,7 @@ namespace SoftwareThresher.Settings.Search {
             var serializer = new DataContractJsonSerializer(typeof(OpenGrokJsonSearchResponse));
             var searchResponse = (OpenGrokJsonSearchResponse)serializer.ReadObject(response.GetResponseStream());
 
-            if (searchResponse.resultcount == searchResponse.maxresults)
-            {
+            if (searchResponse.resultcount == searchResponse.maxresults) {
                throw new Exception($"Maximum Opengrok results reached: {searchResponse.maxresults}");
             }
 
