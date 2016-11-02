@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Web;
 using SoftwareThresher.Observations;
 
 // On Upgrade of Opengrok (current version ) check the following:
@@ -30,6 +31,7 @@ namespace SoftwareThresher.Settings.Search {
          return GetResults(parameters).ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
       }
 
+      // TODO - test this in production
       string GetPathSearchPattern(string location, string searchPattern) {
          if (!string.IsNullOrEmpty(location) && !string.IsNullOrEmpty(searchPattern)) {
             return $"{location}+{searchPattern}";
@@ -71,6 +73,7 @@ namespace SoftwareThresher.Settings.Search {
          return parameters.Aggregate(string.Empty, (current, parameter) => current + ParamaterString(parameter, string.IsNullOrEmpty(current)));
       }
 
+      // TODO - do we need to have first parameter - can we assume there is always 2 parameters with the max results
       static string ParamaterString(OpenGrokParameter parameter, bool firstParameter) {
          const string quotes = "\"";
 
@@ -80,6 +83,7 @@ namespace SoftwareThresher.Settings.Search {
          return $"{parameterJoin}{parameter.Label}={quotes}{value}{quotes}";
       }
 
+      // TODO - move above function until this object
       public class OpenGrokParameter {
          public OpenGrokParameter(string label, string value) {
             Label = label;
@@ -107,7 +111,8 @@ namespace SoftwareThresher.Settings.Search {
             get { return _line; }
             set {
                var readableString = Encoding.UTF8.GetString(Convert.FromBase64String(value));
-               _line = readableString.Replace("</b>", string.Empty);
+               var removedFormatting = readableString.Replace("<b>", string.Empty).Replace("</b>", string.Empty);
+               _line = HttpUtility.HtmlDecode(removedFormatting);
             }
          }
          //public string path { get; set; }

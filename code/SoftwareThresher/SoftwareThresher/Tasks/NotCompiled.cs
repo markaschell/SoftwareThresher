@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Settings.Search;
 
@@ -11,7 +12,7 @@ namespace SoftwareThresher.Tasks {
 
       public string CompileConfigurationFileSearchPattern { get; set; }
 
-      // NOTE - RegEx format for FileSystemSearch
+      [UsageNote("Format is RegEx")]
       public string TextSearchPattern { get; set; }
 
       public string ReportTitle => "Not Compiled";
