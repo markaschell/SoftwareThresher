@@ -13,7 +13,7 @@ namespace SoftwareThresher.Observations {
       }
 
       // TODO - Add tests
-      public override string Location => directory.Replace(DirectorySeperator, Path.PathSeparator.ToString());
+      public override string Location => directory.Replace(DirectorySeperator, Path.DirectorySeparatorChar.ToString());
 
       public override string Name { get; }
 
