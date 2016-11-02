@@ -32,7 +32,7 @@ namespace SoftwareThresher.Settings.Search {
 
       string GetPathSearchPattern(string location, string searchPattern) {
          if (!string.IsNullOrEmpty(location) && !string.IsNullOrEmpty(searchPattern)) {
-            return $"{location} {searchPattern}";
+            return $"{location}+{searchPattern}";
          }
 
          return !string.IsNullOrEmpty(location) ? location : searchPattern;
