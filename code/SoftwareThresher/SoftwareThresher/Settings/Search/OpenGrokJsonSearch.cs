@@ -73,10 +73,12 @@ namespace SoftwareThresher.Settings.Search {
       }
 
       static string ParamaterString(OpenGrokParameter parameter, bool firstParameter) {
-         var parameterJoin = firstParameter ? string.Empty : ParameterJoin;
-         var value = parameter.Value.Replace("\"", "\\\"");
+         const string quotes = "\"";
 
-         return $"{parameterJoin}{parameter.Label}=\"{value}\"";
+         var parameterJoin = firstParameter ? string.Empty : ParameterJoin;
+         var value = parameter.Value.Replace(quotes, $"\\{quotes}");
+
+         return $"{parameterJoin}{parameter.Label}={quotes}{value}{quotes}";
       }
 
       public class OpenGrokParameter {
