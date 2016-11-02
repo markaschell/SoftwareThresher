@@ -6,7 +6,6 @@ using System.Runtime.Serialization.Json;
 using System.Text;
 using SoftwareThresher.Observations;
 
-// TODO - Add to the usage - Current searching does not support file extentions very well so we have to filter out until then
 // On Upgrade of Opengrok (current version ) check the following:
 //   - if formatting is still in line value
 //   - if searching by path with an extension works.  ex - ".cs"
