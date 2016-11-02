@@ -74,8 +74,9 @@ namespace SoftwareThresher.Settings.Search {
 
       static string ParamaterString(OpenGrokParameter parameter, bool firstParameter) {
          var parameterJoin = firstParameter ? string.Empty : ParameterJoin;
+         var value = parameter.Value.Replace("\"", "\\\"");
 
-         return $"{parameterJoin}{parameter.Label}=\"{parameter.Value}\"";
+         return $"{parameterJoin}{parameter.Label}=\"{value}\"";
       }
 
       public class OpenGrokParameter {
