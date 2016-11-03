@@ -19,7 +19,7 @@ namespace SoftwareThresher.Settings.Search {
       //const string HistorySearchParameterLabel = "hist";
       const string MaxResultsParameterLabel = "maxresults";
       const string ParameterJoin = "&";
-      const int MaxResults = 1000000; // In theroy could go as high as java max Integer
+      const string MaxResults = "1000000"; // In theroy could go as high as java max Integer
 
       public string BaseLocation { private get; set; }
 
@@ -29,7 +29,7 @@ namespace SoftwareThresher.Settings.Search {
          return GetResults(parameters).ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
       }
 
-      // TODO - test this in production
+      // TODO - test this?
       string GetPathSearchPattern(string location, string searchPattern) {
          if (!string.IsNullOrEmpty(location) && !string.IsNullOrEmpty(searchPattern)) {
             return $"{location}+{searchPattern}";
@@ -65,34 +65,32 @@ namespace SoftwareThresher.Settings.Search {
       }
 
       // TODO - test any of this? - move to another class
-      // TODO - check code coverage percentage
       static string BuildParameterString(ICollection<OpenGrokParameter> parameters) {
-         var result = parameters.Aggregate(string.Empty, (current, parameter) => current + ParamaterString(parameter, string.IsNullOrEmpty(current)));
+         parameters.Add(new OpenGrokParameter(MaxResultsParameterLabel, MaxResults));
 
-         // TODO - should this be pushed into parameter somehow?  Duplication with other parameters
-         result += $"{ParameterJoin}{MaxResultsParameterLabel}={MaxResults}";
-
-         return result;
+         return parameters.Aggregate(string.Empty, (current, parameter) => $"{current}{ParameterJoin}{parameter}");
       }
 
-      static string ParamaterString(OpenGrokParameter parameter, bool firstParameter) {
-         const string quotes = "\"";
+      // TODO - move to another file and test
+      public class OpenGrokParameter
+      {
+         readonly string label;
+         readonly string value;
 
-         var parameterJoin = firstParameter ? string.Empty : ParameterJoin;
-         var value = parameter.Value.Replace(quotes, $"\\{quotes}");
-
-         return $"{parameterJoin}{parameter.Label}={quotes}{value}{quotes}";
-      }
-
-      // TODO - move above function until this object and also creating of the Max results
-      public class OpenGrokParameter {
          public OpenGrokParameter(string label, string value) {
-            Label = label;
-            Value = value;
+            this.label = label;
+            this.value = value;
          }
 
-         public string Label { get; }
-         public string Value { get; }
+         public override string ToString()
+         {
+            const string quotesString = "\"";
+
+            var escapedValue = value.Replace(quotesString, $"\\{quotesString}");
+            var quotes = escapedValue.Any(char.IsWhiteSpace) ? quotesString : string.Empty;
+
+            return $"{label}={quotes}{escapedValue}{quotes}";
+         }
       }
    }
 }
