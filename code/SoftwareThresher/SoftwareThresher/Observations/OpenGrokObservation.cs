@@ -9,10 +9,9 @@ namespace SoftwareThresher.Observations {
 
       public OpenGrokObservation(string directory, string filename) {
          this.directory = directory;
-         this.Name = filename;
+         Name = filename;
       }
 
-      // TODO - Add tests
       public override string Location => directory.Replace(DirectorySeperator, Path.DirectorySeparatorChar.ToString());
 
       public override string Name { get; }
