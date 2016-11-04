@@ -29,8 +29,7 @@ namespace SoftwareThresher.Settings.Search {
          return GetResults(parameters).ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
       }
 
-      // TODO - test this?
-      string GetPathSearchPattern(string location, string searchPattern) {
+      static string GetPathSearchPattern(string location, string searchPattern) {
          if (!string.IsNullOrEmpty(location) && !string.IsNullOrEmpty(searchPattern)) {
             return $"{location}+{searchPattern}";
          }
@@ -64,33 +63,10 @@ namespace SoftwareThresher.Settings.Search {
          }
       }
 
-      // TODO - test any of this? - move to another class
       static string BuildParameterString(ICollection<OpenGrokParameter> parameters) {
          parameters.Add(new OpenGrokParameter(MaxResultsParameterLabel, MaxResults));
 
          return parameters.Aggregate(string.Empty, (current, parameter) => $"{current}{ParameterJoin}{parameter}");
-      }
-
-      // TODO - move to another file and test
-      public class OpenGrokParameter
-      {
-         readonly string label;
-         readonly string value;
-
-         public OpenGrokParameter(string label, string value) {
-            this.label = label;
-            this.value = value;
-         }
-
-         public override string ToString()
-         {
-            const string quotesString = "\"";
-
-            var escapedValue = value.Replace(quotesString, $"\\{quotesString}");
-            var quotes = escapedValue.Any(char.IsWhiteSpace) ? quotesString : string.Empty;
-
-            return $"{label}={quotes}{escapedValue}{quotes}";
-         }
       }
    }
 }
