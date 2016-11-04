@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
@@ -9,6 +10,7 @@ namespace SoftwareThresher.Settings.Search {
    public class FileSystemSearch : Search {
       readonly ISystemFileReader systemFileReader;
 
+      [Optional]
       public string BaseLocation { private get; set; }
 
       public FileSystemSearch() : this(new SystemFileReader()) { }

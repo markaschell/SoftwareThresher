@@ -8,7 +8,7 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
       readonly ITestSettingWithAttributes testSettingWithAttributes;
       readonly ITestSettingNoAttributes testSettingNoAttributes;
 
-      public string ReportTitle => "";
+      public override string DefaultReportHeaderText => "";
 
       public TestTaskWithTwoSettings(ITestSettingWithAttributes testSettingWithAttributes, ITestSettingNoAttributes testSettingNoAttributes)
       {
@@ -16,7 +16,7 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
          this.testSettingNoAttributes = testSettingNoAttributes;
       }
 
-      public List<Observation> Execute(List<Observation> observations) {
+      public override List<Observation> Execute(List<Observation> observations) {
          throw new NotImplementedException();
       }
 

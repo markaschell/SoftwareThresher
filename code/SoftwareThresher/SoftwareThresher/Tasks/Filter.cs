@@ -9,9 +9,9 @@ namespace SoftwareThresher.Tasks {
       [UsageNote("Format is RegEx")]
       public string SearchPattern { get; set; }
 
-      public string ReportTitle => "Items Filtered";
+      public override string DefaultReportHeaderText => "Items Filtered";
 
-      public List<Observation> Execute(List<Observation> observations) {
+      public override List<Observation> Execute(List<Observation> observations) {
          var regex = new Regex(SearchPattern, RegexOptions.RightToLeft | RegexOptions.Singleline);
 
          return observations.FindAll(o => !regex.IsMatch(o.ToString()));

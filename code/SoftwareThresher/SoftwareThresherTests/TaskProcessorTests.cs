@@ -60,7 +60,7 @@ namespace SoftwareThresherTests {
          configuration.Tasks.Returns(new List<Task> { task });
 
          var title = "This is it";
-         task.ReportTitle.Returns(title);
+         task.ReportHeader.Returns(title);
 
          var passedObservation = Substitute.For<Observation>();
          passedObservation.Failed.Returns(false);

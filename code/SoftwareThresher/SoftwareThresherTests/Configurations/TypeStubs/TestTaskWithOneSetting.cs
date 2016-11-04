@@ -5,7 +5,7 @@ using SoftwareThresher.Tasks;
 
 namespace SoftwareThresherTests.Configurations.TypeStubs {
    public class TestTaskWithOneSetting : Task {
-      public string ReportTitle => "";
+      public override string DefaultReportHeaderText => "";
 
       readonly ITestSettingWithAttributes testSettingWithAttributes;
 
@@ -14,7 +14,7 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
          this.testSettingWithAttributes = testSettingWithAttributes;
       }
 
-      public List<Observation> Execute(List<Observation> observations) {
+      public override List<Observation> Execute(List<Observation> observations) {
          throw new NotImplementedException();
       }
 

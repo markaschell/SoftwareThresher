@@ -303,6 +303,24 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
+      public void Load_SetsTaskBaseAttributes() {
+         var taskType = typeof(TestTask);
+
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
+
+         const string header = "one";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "ReportHeaderText", Value = header } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
+
+         var result = new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
+
+         var task = (TestTask)result.Tasks.First();
+         Assert.AreEqual(header, task.ReportHeaderText);
+      }
+
+      [TestMethod]
       public void Load_InvalidTaskAttribute_ThrowsException() {
          var taskType = typeof(TestTask);
 
@@ -352,7 +370,7 @@ namespace SoftwareThresherTests.Configurations {
 
          assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
 
-         var reportTileTaskGetAttribute = taskType.GetProperty("ReportTitle").Name;
+         var reportTileTaskGetAttribute = taskType.GetProperty("GetOnlyAttribute").Name;
          var attributes = new List<XmlAttribute> { new XmlAttribute { Name = reportTileTaskGetAttribute } };
 
          configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());

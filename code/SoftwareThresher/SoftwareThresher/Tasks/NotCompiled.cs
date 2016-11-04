@@ -15,7 +15,7 @@ namespace SoftwareThresher.Tasks {
       [UsageNote("Format is RegEx")]
       public string TextSearchPattern { get; set; }
 
-      public string ReportTitle => "Not Compiled";
+      public override string DefaultReportHeaderText => "Not Compiled";
 
       readonly Search search;
 
@@ -23,7 +23,7 @@ namespace SoftwareThresher.Tasks {
          this.search = search;
       }
 
-      public List<Observation> Execute(List<Observation> observations) {
+      public override List<Observation> Execute(List<Observation> observations) {
          observations.ForEach(o => o.Failed = true);
 
          var observationsLookup = observations.ToLookup(o => o.Location);

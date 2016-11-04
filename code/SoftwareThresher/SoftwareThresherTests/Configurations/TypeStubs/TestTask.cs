@@ -7,18 +7,20 @@ using SoftwareThresher.Tasks;
 namespace SoftwareThresherTests.Configurations.TypeStubs {
    public class TestTask : Task
    {
-      public string ReportTitle => "";
+      public override string DefaultReportHeaderText => "";
 
       public string Attribute2 { get; set; }
 
       public string Attribute1 { get; set; }
+
+      public string GetOnlyAttribute { get; }
 
       [UsageNote("Note")]
       public string AttributeWithNote { get; set; }
 
       string PrivateAttribute { get; set; }
 
-      public List<Observation> Execute(List<Observation> observations)
+      public override List<Observation> Execute(List<Observation> observations)
       {
          throw new NotImplementedException();
       }

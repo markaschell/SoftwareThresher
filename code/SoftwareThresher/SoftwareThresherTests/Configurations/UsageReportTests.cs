@@ -232,6 +232,15 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
+      public void Write_TaskBaseAttribute() {
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTask) });
+
+         usageReport.Write();
+
+         console.Received().WriteLine("\t\tAttribute:\tReportHeaderText (String)");
+      }
+
+      [TestMethod]
       public void Write_TaskWithPrivateAttribute_DoesNotWriteIt() {
          var taskType = typeof(TestTask);
 
@@ -251,7 +260,7 @@ namespace SoftwareThresherTests.Configurations {
 
          usageReport.Write();
 
-         var getOnlyAttribute = taskType.GetProperty("ReportTitle").Name;
+         var getOnlyAttribute = taskType.GetProperty("GetOnlyAttribute").Name;
          console.DidNotReceive().WriteLine(Arg.Is<string>(s => s.Contains(getOnlyAttribute)));
       }
 

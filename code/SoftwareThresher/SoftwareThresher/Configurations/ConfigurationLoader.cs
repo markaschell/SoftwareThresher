@@ -84,7 +84,7 @@ namespace SoftwareThresher.Configurations {
 
       static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName) {
          try {
-            var property = output.GetType().GetProperty(attribute.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.DeclaredOnly);
+            var property = output.GetType().GetProperty(attribute.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
             property.SetValue(output, attribute.Value);
          }
          catch (Exception) {

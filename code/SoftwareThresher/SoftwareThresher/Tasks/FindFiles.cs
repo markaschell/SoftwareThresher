@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Tasks {
    public class FindFiles : Task {
+      [Optional]
       public string Directory { get; set; }
 
       public string SearchPattern { get; set; }
@@ -14,9 +16,9 @@ namespace SoftwareThresher.Tasks {
          this.search = search;
       }
 
-      public string ReportTitle => "Files Found";
+      public override string DefaultReportHeaderText => "Files Found";
 
-      public List<Observation> Execute(List<Observation> observations) {
+      public override List<Observation> Execute(List<Observation> observations) {
          var foundItems = search.GetObservations(Directory, SearchPattern);
 
          observations.AddRange(foundItems);

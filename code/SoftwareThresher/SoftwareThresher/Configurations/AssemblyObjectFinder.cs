@@ -18,7 +18,7 @@ namespace SoftwareThresher.Configurations
    {
       readonly Type settingBaseInterface = typeof(Setting);
 
-      public IEnumerable<Type> TaskTypes => GetTypes.Where(t => t.IsClass && t.GetInterfaces().Contains(typeof(Task)));
+      public IEnumerable<Type> TaskTypes => GetTypes.Where(t => t.IsClass && t.BaseType == typeof(Task));
 
       public IEnumerable<Type> SettingTypes => GetTypes.Where(t => t.IsClass && t.GetInterfaces().Contains(settingBaseInterface));
 

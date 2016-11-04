@@ -33,7 +33,7 @@ namespace SoftwareThresher {
 
                var failedObservations = observations.Where(o => o.Failed).ToList();
                var numberOfPassedObservations = observations.Count - failedObservations.Count;
-               report.WriteObservations(task.ReportTitle, numberOfPassedObservations - orginalNumberOfObservations, numberOfPassedObservations, stopWatch.Elapsed, failedObservations);
+               report.WriteObservations(task.ReportHeader, numberOfPassedObservations - orginalNumberOfObservations, numberOfPassedObservations, stopWatch.Elapsed, failedObservations);
             }
          }
          finally {
