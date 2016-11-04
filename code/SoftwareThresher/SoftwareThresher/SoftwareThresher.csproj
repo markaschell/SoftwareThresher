@@ -49,6 +49,7 @@
     <Compile Include="Configurations\Configuration.cs" />
     <Compile Include="Configurations\ConfigurationLoader.cs" />
     <Compile Include="Configurations\ConfigurationReader.cs" />
+    <Compile Include="Configurations\OptionalAttribute.cs" />
     <Compile Include="Configurations\XmlAttribute.cs" />
     <Compile Include="Configurations\XmlNode.cs" />
     <Compile Include="Observations\FileObservation.cs" />
