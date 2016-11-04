@@ -57,7 +57,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\FilterTests.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
-    <Compile Include="Tasks\FindFilesOnDiskTests.cs" />
+    <Compile Include="Tasks\FindFilesTests.cs" />
     <Compile Include="Tasks\TaskTestBase.cs" />
     <Compile Include="Tasks\TestReport.cs" />
   </ItemGroup>
@@ -70,7 +70,7 @@
   <ItemGroup>
     <Content Include="Tasks\Filter.xml" />
     <Content Include="Tasks\NotCompiled.xml" />
-    <Content Include="Tasks\FindFilesOnDisk.xml" />
+    <Content Include="Tasks\FindFiles.xml" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

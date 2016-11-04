@@ -8,28 +8,28 @@ using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresherTests.Tasks {
    [TestClass]
-   public class FindFilesOnDiskTests {
+   public class FindFilesTests {
       Search systemDirectory;
 
-      FindFilesOnDisk findFilesOnDisk;
+      FindFiles findFiles;
 
       [TestInitialize]
       public void Setup() {
          systemDirectory = Substitute.For<Search>();
 
-         findFilesOnDisk = new FindFilesOnDisk(systemDirectory);
+         findFiles = new FindFiles(systemDirectory);
       }
 
       [TestMethod]
       public void Execute_CreatesFileObservations() {
          var directory = "location";
          var pattern = "kljasdf";
-         findFilesOnDisk.Directory = directory;
-         findFilesOnDisk.SearchPattern = pattern;
+         findFiles.Directory = directory;
+         findFiles.SearchPattern = pattern;
 
          systemDirectory.GetObservations(directory, pattern).Returns(new List<Observation> { new FileObservation("one") });
 
-         var results = findFilesOnDisk.Execute(new List<Observation>());
+         var results = findFiles.Execute(new List<Observation>());
 
          Assert.AreEqual(1, results.Count);
          Assert.AreEqual(typeof(FileObservation), results.First().GetType());
@@ -40,7 +40,7 @@ namespace SoftwareThresherTests.Tasks {
       public void Execute_AddsToPassedInObservations() {
          systemDirectory.GetObservations("", "").ReturnsForAnyArgs(new List<Observation> { new FileObservation("one") });
 
-         var results = findFilesOnDisk.Execute(new List<Observation> { new FileObservation("") });
+         var results = findFiles.Execute(new List<Observation> { new FileObservation("") });
 
          Assert.AreEqual(2, results.Count);
       }

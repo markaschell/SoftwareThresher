@@ -42,11 +42,11 @@
   <ItemGroup>
     <Compile Include="Filter\NotFiltered.cs" />
     <Compile Include="Filter\Skip\Filtered.cs" />
-    <Compile Include="FindFilesOnDisk\GoodClass.cs" />
+    <Compile Include="FindFiles\GoodClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FindFilesOnDisk\OtherFile.txt" />
+    <Content Include="FindFiles\OtherFile.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="NotCompiled\" />

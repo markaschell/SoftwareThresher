@@ -4,6 +4,6 @@
     <FileSystemSearch BaseLocation=".\..\..\..\TestProject\" />
   </settings>
   <tasks>
-    <FindFilesOnDisk Directory="\FindFilesOnDisk" SearchPattern="*.cs"></FindFilesOnDisk>
+    <FindFiles Directory="\FindFiles" SearchPattern="*.cs"></FindFiles>
   </tasks>
 </configuration>

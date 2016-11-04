@@ -4,7 +4,7 @@
     <FileSystemSearch BaseLocation=".\..\..\..\TestProject\Filter" />
   </settings>
   <tasks>
-    <FindFilesOnDisk Directory="" SearchPattern="*.cs"></FindFilesOnDisk>
+    <FindFiles Directory="" SearchPattern="*.cs"></FindFiles>
     <Filter SearchPattern="\\(Skip)" />
   </tasks>
 </configuration>

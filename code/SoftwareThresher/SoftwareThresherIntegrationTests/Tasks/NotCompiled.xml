@@ -4,7 +4,7 @@
     <FileSystemSearch BaseLocation=".\..\..\..\TestProject" />
   </settings>
   <tasks>
-    <FindFilesOnDisk Directory="NotCompiled" SearchPattern="*.cs"></FindFilesOnDisk>
+    <FindFiles Directory="NotCompiled" SearchPattern="*.cs"></FindFiles>
     <NotCompiled Directory="" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
   </tasks>
 </configuration>

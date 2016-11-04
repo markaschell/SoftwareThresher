@@ -2,10 +2,10 @@
 
 namespace SoftwareThresherIntegrationTests.Tasks {
    [TestClass]
-   public class FindFilesOnDiskTests : TaskTestBase {
+   public class FindFilesTests : TaskTestBase {
       [TestMethod]
-      public void FindFilesOnDisk() {
-         RunTest("FindFilesOnDisk.xml");
+      public void FindFiles() {
+         RunTest("FindFiles.xml");
 
          Assert.AreEqual(1, LastReportItem.ChangeInObservations);
          Assert.AreEqual(0, LastReportItem.FailedObservations.Count);
