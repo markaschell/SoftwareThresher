@@ -60,6 +60,7 @@
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Settings\Search\OpenGrokJsonSearchResponse.cs" />
     <Compile Include="Settings\Search\OpenGrokJsonSearchResult.cs" />
+    <Compile Include="Settings\Search\OpenGrokParameter.cs" />
     <Compile Include="Settings\Setting.cs" />
     <Compile Include="Tasks\Filter.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
