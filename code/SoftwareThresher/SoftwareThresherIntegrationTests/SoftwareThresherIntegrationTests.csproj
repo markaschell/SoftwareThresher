@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="ProgramTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\DoesNothingTests.cs" />
     <Compile Include="Tasks\FilterTests.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
     <Compile Include="Tasks\FindFilesTests.cs" />
@@ -68,6 +69,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Tasks\DoesNothing.xml" />
     <Content Include="Tasks\Filter.xml" />
     <Content Include="Tasks\NotCompiled.xml" />
     <Content Include="Tasks\FindFiles.xml" />
