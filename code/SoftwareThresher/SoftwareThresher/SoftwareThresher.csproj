@@ -71,6 +71,7 @@
     <Compile Include="Configurations\UsageNoteAttribute.cs" />
     <Compile Include="Configurations\UsageReport.cs" />
     <Compile Include="Utilities\Console.cs" />
+    <Compile Include="Utilities\Date.cs" />
     <Compile Include="Utilities\SystemFileReader.cs" />
     <Compile Include="Utilities\SystemFileWriter.cs" />
     <Compile Include="TaskProcessor.cs" />

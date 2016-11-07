@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Observations {
    public abstract class Observation {
@@ -7,6 +9,8 @@ namespace SoftwareThresher.Observations {
       public abstract string Name { get; }
 
       public abstract string Location { get; }
+
+      public abstract Date LastEdit { get; }
 
       public abstract string SystemSpecificString { get; }
 

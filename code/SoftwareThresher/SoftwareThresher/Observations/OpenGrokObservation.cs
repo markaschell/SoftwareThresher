@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Observations {
    public class OpenGrokObservation : Observation
@@ -12,9 +14,11 @@ namespace SoftwareThresher.Observations {
          Name = filename;
       }
 
+      public override string Name { get; }
+
       public override string Location => directory.Replace(DirectorySeperator, Path.DirectorySeparatorChar.ToString());
 
-      public override string Name { get; }
+      public override Date LastEdit { get { throw new NotImplementedException(); } }
 
       public override string SystemSpecificString {
          get
