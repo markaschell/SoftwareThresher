@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
@@ -17,19 +16,26 @@ namespace SoftwareThresher.Tasks {
       public override string DefaultReportHeaderText => "Items Filtered";
 
       public override List<Observation> Execute(List<Observation> observations) {
-         var passedObservations = observations;
-         if (!string.IsNullOrEmpty(SearchPattern))
-         {
-            var regex = new Regex(SearchPattern, RegexOptions.RightToLeft | RegexOptions.Singleline);
-            passedObservations.RemoveAll(o => regex.IsMatch(o.ToString()));
+         var passedObservations = FilterBySearchPattern(observations);
+
+         return FilterByEditAge(passedObservations);
+      }
+
+      List<Observation> FilterBySearchPattern(List<Observation> observations) {
+         if (string.IsNullOrEmpty(SearchPattern)) return observations;
+
+         var regex = new Regex(SearchPattern, RegexOptions.RightToLeft | RegexOptions.Singleline);
+         observations.RemoveAll(o => regex.IsMatch(o.ToString()));
+
+         return observations;
+      }
+
+      List<Observation> FilterByEditAge(List<Observation> observations) {
+         if (EditedInDays > 0) {
+            observations.RemoveAll(o => o.LastEdit.DaysOld <= EditedInDays);
          }
 
-         if (EditedInDays > 0)
-         {
-            passedObservations.RemoveAll(o => o.LastEdit.DaysOld <= EditedInDays);
-         }
-
-         return passedObservations;
+         return observations;
       }
    }
 }
