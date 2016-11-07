@@ -18,6 +18,7 @@ namespace SoftwareThresher.Observations {
 
       public override string Location => directory.Replace(DirectorySeperator, Path.DirectorySeparatorChar.ToString());
 
+      // TODO - push more logic into this function?
       public override Date LastEdit { get { throw new NotImplementedException(); } }
 
       public override string SystemSpecificString {

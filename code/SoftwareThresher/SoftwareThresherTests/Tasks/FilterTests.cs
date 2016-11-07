@@ -1,17 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NSubstitute;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Tasks;
+using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests.Tasks {
    [TestClass]
-   public class FilterTests {
+   public class FilterTests
+   {
+      Observation observation;
 
       Filter filter;
 
       [TestInitialize]
-      public void Setup() {
+      public void Setup()
+      {
+         observation = Substitute.For<Observation>();
+
          filter = new Filter();
       }
 
@@ -19,19 +27,39 @@ namespace SoftwareThresherTests.Tasks {
       public void Execute_FiltersLocationRegExPattern() {
          filter.SearchPattern = "a";
 
-         var result = filter.Execute(new List<Observation> { new FileObservation(@"C:\akdkk\this is it") });
+         observation.ToString().Returns(@"C:\akdkk\this is it");
 
-         Assert.AreEqual(0, result.Count);
+         var results = filter.Execute(new List<Observation> { observation });
+
+         Assert.AreEqual(0, results.Count);
       }
 
       [TestMethod]
-      public void Execute_DoesNotFilterLocationRegExPattern() {
+      public void Execute_DoesNotFilter() {
          filter.SearchPattern = "z";
 
-         var results = filter.Execute(new List<Observation> { new FileObservation(@"C:\akdkk\this is it") });
+         const double daysSinceEdit = 5;
+         filter.EditedInDays = daysSinceEdit;
+
+         observation.ToString().Returns(@"C:\akdkk\this is it");
+         observation.LastEdit.Returns(new Date(DateTime.Today.AddDays(-(daysSinceEdit + 1))));
+
+         var results = filter.Execute(new List<Observation> { observation });
 
          Assert.AreEqual(1, results.Count);
          Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_FiltersLastEdit() {
+         const double daysSinceEdit = 5;
+         filter.EditedInDays = daysSinceEdit;
+
+         observation.LastEdit.Returns(new Date(DateTime.Today.AddDays(-daysSinceEdit)));
+
+         var results = filter.Execute(new List<Observation> { observation });
+
+         Assert.AreEqual(0, results.Count);
       }
    }
 }
