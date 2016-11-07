@@ -116,7 +116,7 @@ namespace SoftwareThresherTests.Configurations {
 
          usageReport.Write();
 
-         console.Received().WriteLine("\t\t\tAttribute:\tAttribute1 (String)");
+         console.Received().WriteLine("\t\t\tAttribute:\t\tAttribute1 (String)");
       }
 
       [TestMethod]
@@ -170,6 +170,32 @@ namespace SoftwareThresherTests.Configurations {
          Received.InOrder(() => {
             console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
             console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute2")));
+         });
+      }
+
+      [TestMethod]
+      public void Write_SettingWithMultipleAttributes_DisplaysOptionalInAlphabeticalOrder() {
+         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes) });
+
+         usageReport.Write();
+
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("AaOptionalAttr1")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("AaOptionalAttr2")));
+         });
+      }
+
+      [TestMethod]
+      public void Write_SettingWithMultipleAttributes_DisplaysOptionalAfterRequired() {
+         assemblyObjectFinder.SettingInterfaces.Returns(new List<Type> { typeof(ITestSettingWithAttributes) });
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { typeof(TestSettingTwoAttributes) });
+
+         usageReport.Write();
+
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("AaOptionalAttr1")));
          });
       }
 
@@ -228,7 +254,16 @@ namespace SoftwareThresherTests.Configurations {
 
          usageReport.Write();
 
-         console.Received().WriteLine("\t\tAttribute:\tAttribute1 (String)");
+         console.Received().WriteLine("\t\tAttribute:\t\tAttribute1 (String)");
+      }
+
+      [TestMethod]
+      public void Write_TaskWithOptionalAttribute() {
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTask) });
+
+         usageReport.Write();
+
+         console.Received().WriteLine("\t\tOptional Attribute:\tAaOptionalAttr1 (String)");
       }
 
       [TestMethod]
@@ -237,7 +272,7 @@ namespace SoftwareThresherTests.Configurations {
 
          usageReport.Write();
 
-         console.Received().WriteLine("\t\tAttribute:\tReportHeaderText (String)");
+         console.Received().WriteLine("\t\tOptional Attribute:\tReportHeaderText (String)");
       }
 
       [TestMethod]
@@ -286,6 +321,30 @@ namespace SoftwareThresherTests.Configurations {
          Received.InOrder(() => {
             console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
             console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute2")));
+         });
+      }
+
+      [TestMethod]
+      public void Write_TaskWithMultipleAttributes_DisplaysOptionalInAlphabeticalOrder() {
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTask) });
+
+         usageReport.Write();
+
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("AaOptionalAttr1")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("AaOptionalAttr2")));
+         });
+      }
+
+      [TestMethod]
+      public void Write_TaskWithMultipleAttributes_DisplaysOptionalAfterRequired() {
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { typeof(TestTask) });
+
+         usageReport.Write();
+
+         Received.InOrder(() => {
+            console.WriteLine(Arg.Is<string>(s => s.Contains("Attribute1")));
+            console.WriteLine(Arg.Is<string>(s => s.Contains("AaOptionalAttr2")));
          });
       }
 

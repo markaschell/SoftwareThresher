@@ -58,10 +58,36 @@ namespace SoftwareThresher.Configurations {
       void WriteSetting(Type setting)
       {
          console.WriteLine($"{Indent}{Indent}Setting:{Indent}{setting.Name}");
+         WriteProperties(setting, Indent);
+      }
 
-         foreach (var property in GetProperties(setting))
+      void WriteProperties(Type type, string prefix = "")
+      {
+         var properties = GetProperties(type);
+
+         var requiredProperties = new List<PropertyInfo>();
+         var optionalProperties = new List<PropertyInfo>();
+
+         foreach (var property in properties)
          {
-            WriteProperty(property, Indent);
+            var optionalAttribute = (OptionalAttribute)Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(OptionalAttribute));
+
+            if (optionalAttribute != null)
+            {
+               optionalProperties.Add(property);
+            }
+            else
+            {
+               requiredProperties.Add(property);
+            }
+         }
+
+         foreach (var property in requiredProperties) {
+            WriteProperty(property, false, prefix);
+         }
+
+         foreach (var property in optionalProperties) {
+            WriteProperty(property, true, prefix);
          }
       }
 
@@ -69,11 +95,14 @@ namespace SoftwareThresher.Configurations {
          return type.GetProperties().Where(a => a.CanWrite).OrderBy(p => p.Name);
       }
 
-      void WriteProperty(PropertyInfo property, string prefix = "") {
+      void WriteProperty(PropertyInfo property, bool isOptional, string prefix) {
+         var optionalText = isOptional ? "Optional " : string.Empty;
+         var propertyIndent = isOptional ? Indent : $"{Indent}{Indent}";
+
          var noteAttribute = (UsageNoteAttribute)Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(UsageNoteAttribute));
          var noteText = noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
 
-         console.WriteLine($"{prefix}{Indent}{Indent}Attribute:{Indent}{property.Name} ({property.PropertyType.Name}){noteText}");
+         console.WriteLine($"{prefix}{Indent}{Indent}{optionalText}Attribute:{propertyIndent}{property.Name} ({property.PropertyType.Name}){noteText}");
       }
 
       void WriteTasks()
@@ -81,11 +110,7 @@ namespace SoftwareThresher.Configurations {
          foreach (var task in InAlphabeticalOrder(assemblyObjectFinder.TaskTypes))
          {
             console.WriteLine($"{Indent}Task:{Indent}{task.Name}({GetParameterText(task)})");
-
-            foreach (var property in GetProperties(task))
-            {
-               WriteProperty(property);
-            }
+            WriteProperties(task);
          }
       }
 

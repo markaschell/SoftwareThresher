@@ -1,4 +1,5 @@
-﻿using SoftwareThresher.Settings;
+﻿using SoftwareThresher.Configurations;
+using SoftwareThresher.Settings;
 
 namespace SoftwareThresherTests.Configurations.TypeStubs {
 
@@ -7,6 +8,12 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
    public class TestSettingTwoAttributes : ITestSettingWithAttributes {
       public string Attribute2 { get; set; }
       public string Attribute1 { get; set; }
+
+      [Optional]
+      public string AaOptionalAttr2 { get; set; }
+
+      [Optional]
+      public string AaOptionalAttr1 { get; set; }
 
       string PrivateAttribute { get; set; }
 

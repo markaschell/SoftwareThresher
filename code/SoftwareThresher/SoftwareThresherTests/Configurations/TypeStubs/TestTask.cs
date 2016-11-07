@@ -13,6 +13,12 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
 
       public string Attribute1 { get; set; }
 
+      [Optional]
+      public string AaOptionalAttr2 { get; set; }
+
+      [Optional]
+      public string AaOptionalAttr1 { get; set; }
+
       public string GetOnlyAttribute { get; }
 
       [UsageNote("Note")]

@@ -6,7 +6,6 @@ namespace SoftwareThresher.Tasks {
    public abstract class Task {
       public abstract string DefaultReportHeaderText { get; }
 
-      // TODO - Indicate optional in the usage
       [Optional]
       public string ReportHeaderText { get; set; }
 
