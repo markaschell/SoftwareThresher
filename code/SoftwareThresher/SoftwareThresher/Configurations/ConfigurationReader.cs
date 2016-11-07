@@ -41,7 +41,10 @@ namespace SoftwareThresher.Configurations {
 
       private void MoveToFirstChildNode(string sectionName) {
          xmlReader.ReadToFollowing(sectionName);
-         xmlReader.ReadStartElement();
+
+         if (!xmlReader.EOF) {
+            xmlReader.ReadStartElement();
+         }
       }
 
       private void MoveToNextNode() {

@@ -69,7 +69,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Tasks\DoesNothing.xml" />
+    <Content Include="Tasks\NoSections.xml" />
+    <Content Include="Tasks\NoSettingsOrTasks.xml" />
     <Content Include="Tasks\Filter.xml" />
     <Content Include="Tasks\NotCompiled.xml" />
     <Content Include="Tasks\FindFiles.xml" />

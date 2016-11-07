@@ -5,7 +5,14 @@ namespace SoftwareThresherIntegrationTests.Tasks {
    public class DoesNothingTests : TaskTestBase {
       [TestMethod]
       public void DoesNothing_NoResult() {
-         RunTest("DoesNothing.xml");
+         RunTest("NoSettingsOrTasks.xml");
+
+         Assert.IsNull(LastReportItem);
+      }
+
+      [TestMethod]
+      public void NoSections_NoResult() {
+         RunTest("NoSections.xml");
 
          Assert.IsNull(LastReportItem);
       }
