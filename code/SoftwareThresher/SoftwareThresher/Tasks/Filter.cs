@@ -9,7 +9,7 @@ namespace SoftwareThresher.Tasks {
       [Optional, UsageNote("Format is RegEx")]
       public string SearchPattern { get; set; }
 
-      // TODO - will this work as not a string - Add tests in configruation for this?
+      // TODO - will this work as not a string - Add tests in configruation for this?  At minimum we should have a different error if the value cannot be set becasue of type
       [Optional, UsageNote("Postive Number")]
       public double EditedInDays { get; set; }
 

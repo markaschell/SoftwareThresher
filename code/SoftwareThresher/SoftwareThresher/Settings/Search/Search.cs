@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SoftwareThresher.Observations;
+using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Settings.Search {
    public interface Search : Setting {
@@ -8,5 +9,7 @@ namespace SoftwareThresher.Settings.Search {
       List<Observation> GetObservations(string location, string searchPattern);
 
       List<string> GetReferenceLine(Observation observation, string searchPattern);
+
+      Date GetLastEditDate(Observation observation);
    }
 }

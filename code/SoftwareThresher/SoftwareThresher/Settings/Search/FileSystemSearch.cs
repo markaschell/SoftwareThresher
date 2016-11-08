@@ -48,5 +48,10 @@ namespace SoftwareThresher.Settings.Search {
             systemFileReader.Close();
          }
       }
+
+      public Date GetLastEditDate(Observation observation)
+      {
+         throw new System.NotImplementedException();
+      }
    }
 }

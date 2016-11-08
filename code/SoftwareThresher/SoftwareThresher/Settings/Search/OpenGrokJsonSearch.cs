@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Runtime.Serialization.Json;
 using SoftwareThresher.Observations;
+using SoftwareThresher.Utilities;
 
 // On Upgrade of Opengrok (current version ) check the following:
 //   - if formatting is still in line value
@@ -23,10 +23,17 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
+      readonly IWebRequest webRequest;
+
+      public OpenGrokJsonSearch()
+      {
+         webRequest = new WebRequest();
+      }
+
       public List<Observation> GetObservations(string location, string searchPattern) {
          var parameters = new List<OpenGrokParameter> { new OpenGrokParameter(PathSearchParameterLabel, GetPathSearchPattern(location, searchPattern)) };
 
-         return GetResults(parameters).ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename));
+         return GetResults(parameters).ConvertAll(r => (Observation)new OpenGrokObservation(r.directory, r.filename, this));
       }
 
       static string GetPathSearchPattern(string location, string searchPattern) {
@@ -49,7 +56,7 @@ namespace SoftwareThresher.Settings.Search {
 
       List<OpenGrokJsonSearchResult> GetResults(ICollection<OpenGrokParameter> parameters) {
          var parameterString = BuildParameterString(parameters);
-         var request = WebRequest.Create($"{BaseLocation}/json?{parameterString}");
+         var request = System.Net.WebRequest.Create($"{BaseLocation}/json?{parameterString}");
 
          using (var response = request.GetResponse()) {
             var serializer = new DataContractJsonSerializer(typeof(OpenGrokJsonSearchResponse));
@@ -67,6 +74,15 @@ namespace SoftwareThresher.Settings.Search {
          parameters.Add(new OpenGrokParameter(MaxResultsParameterLabel, MaxResults));
 
          return parameters.Aggregate(string.Empty, (current, parameter) => $"{current}{ParameterJoin}{parameter}");
+      }
+
+      public Date GetLastEditDate(Observation observation)
+      {
+         var response = webRequest.IssueRequest($"{BaseLocation}/history{observation.SystemSpecificString}");
+         var tableDetails = response.SelectNodes("//form/table/tbody/tr/td");
+
+         var dateString = tableDetails[2].InnerText;
+         return new Date(DateTime.Parse(dateString));
       }
    }
 }

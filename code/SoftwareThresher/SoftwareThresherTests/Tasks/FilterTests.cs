@@ -53,7 +53,7 @@ namespace SoftwareThresherTests.Tasks {
       [TestMethod]
       public void Execute_FiltersLastEdit() {
          const double daysSinceEdit = 5;
-         filter.EditedInDays = daysSinceEdit;
+         filter.EditedInDays = daysSinceEdit + .1;
 
          observation.LastEdit.Returns(new Date(DateTime.Today.AddDays(-daysSinceEdit)));
 
