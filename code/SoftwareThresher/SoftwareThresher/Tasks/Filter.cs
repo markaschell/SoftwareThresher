@@ -4,12 +4,14 @@ using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Tasks {
+   // TODO - add a note to this to indicate that the filters are anded together 
    public class Filter : Task {
 
       [Optional, UsageNote("Format is RegEx")]
       public string SearchPattern { get; set; }
 
       // TODO - will this work as not a string - Add tests in configruation for this?  At minimum we should have a different error if the value cannot be set becasue of type
+      // TODO - test this out
       [Optional, UsageNote("Postive Number")]
       public double EditedInDays { get; set; }
 
@@ -21,6 +23,7 @@ namespace SoftwareThresher.Tasks {
          return FilterByEditAge(passedObservations);
       }
 
+      // TODO - change this to be an and instead of an or  - upate the issue for this
       List<Observation> FilterBySearchPattern(List<Observation> observations) {
          if (string.IsNullOrEmpty(SearchPattern)) return observations;
 
