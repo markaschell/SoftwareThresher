@@ -178,6 +178,30 @@ namespace SoftwareThresherTests.Configurations {
       }
 
       [TestMethod]
+      public void Load_InvalidSettingAttributeValue_ThrowsException() {
+         var settingType = typeof(TestSettingWithAttributes);
+         var taskType = typeof(TestTaskWithOneSetting);
+
+         assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
+
+         var attributeValue = "one";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "IntAttribute", Value = attributeValue } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode> { new XmlNode { Name = settingType.Name, Attributes = attributes } });
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name } });
+
+         try {
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
+
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (Exception e) {
+            Assert.AreEqual(attributeValue + " is an invalid value for attribute IntAttribute.", e.Message);
+         }
+      }
+
+      [TestMethod]
       public void Load_SettingPrivateAttribute_ThrowsException() {
          var settingType = typeof(TestSettingWithAttributes);
 
@@ -339,6 +363,28 @@ namespace SoftwareThresherTests.Configurations {
          }
          catch (NotSupportedException e) {
             Assert.AreEqual(invalidPropertyName + " is not a supported attribute for " + taskType.Name + ".", e.Message);
+         }
+      }
+
+      [TestMethod]
+      public void Load_InvalidTaskAttributeValue_ThrowsException() {
+         var taskType = typeof(TestTask);
+
+         assemblyObjectFinder.TaskTypes.Returns(new List<Type> { taskType });
+
+         const string attributeValue = "one";
+         var attributes = new List<XmlAttribute> { new XmlAttribute { Name = "IntAttribute", Value = attributeValue } };
+
+         configurationReader.GetNodes(SettingsSectionName).Returns(new List<XmlNode>());
+         configurationReader.GetNodes(TasksSectionName).Returns(new List<XmlNode> { new XmlNode { Name = taskType.Name, Attributes = attributes } });
+
+         try {
+            new ConfigurationLoader(assemblyObjectFinder, configurationReader).Load("");
+
+            Assert.Fail("Should have thrown an exception.");
+         }
+         catch (Exception e) {
+            Assert.AreEqual(attributeValue + " is an invalid value for attribute IntAttribute.", e.Message);
          }
       }
 

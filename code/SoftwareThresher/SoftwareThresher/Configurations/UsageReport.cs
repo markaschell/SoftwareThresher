@@ -61,6 +61,7 @@ namespace SoftwareThresher.Configurations {
          return Attribute.GetCustomAttributes(objectToCheck).FirstOrDefault(a => a.GetType() == attributeType);
       }
 
+      // TODO - split out into a seperate class?
       void WriteProperties(Type type, string prefix = "") {
          var properties = GetProperties(type);
 

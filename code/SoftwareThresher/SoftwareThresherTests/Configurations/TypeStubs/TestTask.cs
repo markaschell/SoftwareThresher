@@ -24,6 +24,8 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
       [UsageNote("Note")]
       public string AttributeWithNote { get; set; }
 
+      public int IntAttribute { get; set; }
+
       string PrivateAttribute { get; set; }
 
       public override List<Observation> Execute(List<Observation> observations)

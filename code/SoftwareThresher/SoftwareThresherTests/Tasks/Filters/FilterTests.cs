@@ -27,7 +27,7 @@ namespace SoftwareThresherTests.Tasks.Filters {
       public void Execute_AllMatch_Filters() {
          filter.SearchPattern = "a";
 
-         const double daysSinceEdit = 5;
+         const int daysSinceEdit = 5;
          filter.EditedInDays = daysSinceEdit;
 
          observation.ToString().Returns(@"C:\akdkk\this is it");
@@ -51,8 +51,8 @@ namespace SoftwareThresherTests.Tasks.Filters {
 
       [TestMethod]
       public void Execute_OnlyEditInDaysMatches_Filters() {
-         const double daysSinceEdit = 5;
-         filter.EditedInDays = daysSinceEdit + .1;
+         const int daysSinceEdit = 5;
+         filter.EditedInDays = daysSinceEdit;
 
          observation.LastEdit.Returns(new Date(DateTime.Today.AddDays(-daysSinceEdit)));
 
@@ -65,7 +65,7 @@ namespace SoftwareThresherTests.Tasks.Filters {
       public void Execute_DoesNotMatchSearch_DoesNotFilter() {
          filter.SearchPattern = "z";
 
-         const double daysSinceEdit = 5;
+         const int daysSinceEdit = 5;
          filter.EditedInDays = daysSinceEdit;
 
          observation.ToString().Returns(@"C:\akdkk\this is it");
@@ -81,7 +81,7 @@ namespace SoftwareThresherTests.Tasks.Filters {
       public void Execute_DoesNotMatchEditInDays_DoesNotFilter() {
          filter.SearchPattern = "a";
 
-         const double daysSinceEdit = 5;
+         const int daysSinceEdit = 5;
          filter.EditedInDays = daysSinceEdit;
 
          observation.ToString().Returns(@"C:\akdkk\this is it");

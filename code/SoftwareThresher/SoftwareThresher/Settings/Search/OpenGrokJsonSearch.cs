@@ -76,6 +76,7 @@ namespace SoftwareThresher.Settings.Search {
          return parameters.Aggregate(string.Empty, (current, parameter) => $"{current}{ParameterJoin}{parameter}");
       }
 
+      // TODO - Move out of this class?  Not only Json Search
       public Date GetLastEditDate(Observation observation)
       {
          var response = webRequest.IssueRequest($"{BaseLocation}/history{observation.SystemSpecificString}");

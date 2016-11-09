@@ -76,19 +76,46 @@ namespace SoftwareThresher.Configurations {
          }
       }
 
+      // TODO - seperate class - seperate classes for Setting and Task and combine with usage?
       static void SetAttributes(XmlNode input, object output) {
          foreach (var attribute in input.Attributes) {
             SetAttribute(attribute, output, input.Name);
          }
       }
 
-      static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName) {
+      static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName)
+      {
+         var property = GetProperty(attribute, output, xmlNodeName);
+         SetProperty(property, attribute, output, xmlNodeName);
+      }
+
+      static PropertyInfo GetProperty(XmlAttribute attribute, object output, string xmlNodeName)
+      {
+         var property = output.GetType().GetProperty(attribute.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
+
+         if (property == null)
+         {
+            ThrowAttributeNotSupportedException(attribute, xmlNodeName);
+         }
+
+         return property;
+      }
+
+      static void ThrowAttributeNotSupportedException(XmlAttribute attribute, string xmlNodeName)
+      {
+         throw new NotSupportedException($"{attribute.Name} is not a supported attribute for {xmlNodeName}.");
+      }
+
+      static void SetProperty(PropertyInfo property, XmlAttribute attribute, object output, string xmlNodeName) {
          try {
-            var property = output.GetType().GetProperty(attribute.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
             property.SetValue(output, attribute.Value);
          }
-         catch (Exception) {
-            throw new NotSupportedException($"{attribute.Name} is not a supported attribute for {xmlNodeName}.");
+         catch (Exception e) {
+            if (e.Message == "Property set method not found.") {
+               ThrowAttributeNotSupportedException(attribute, xmlNodeName);
+            }
+
+            throw new Exception($"{attribute.Value} is an invalid value for attribute {attribute.Name}.");
          }
       }
 
@@ -99,16 +126,13 @@ namespace SoftwareThresher.Configurations {
          return (Task)constructor.Invoke(parameterValues.ToArray());
       }
 
-      ConstructorInfo GetTaskConstuctor(string taskName)
-      {
-         try
-         {
+      ConstructorInfo GetTaskConstuctor(string taskName) {
+         try {
             var taskType = taskTypes.Single(t => t.Name == taskName);
 
             return taskType.GetConstructors().Single();
          }
-         catch (Exception)
-         {
+         catch (Exception) {
             throw new NotSupportedException($"{taskName} is not a supported task.");
          }
       }

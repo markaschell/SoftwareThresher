@@ -10,10 +10,8 @@ namespace SoftwareThresher.Tasks.Filters {
       [Optional, UsageNote("Format is RegEx")]
       public string SearchPattern { get; set; }
 
-      // TODO - will this work as not a string - Add tests in configruation for this?  At minimum we should have a different error if the value cannot be set becasue of type
-      // TODO - test this out
-      [Optional, UsageNote("Postive Number")]
-      public double EditedInDays { get; set; }
+      [Optional, UsageNote("Works for OpenGrokJsonSearch only, Must be a postive number")]
+      public int EditedInDays { get; set; }
 
       public override string DefaultReportHeaderText => "Items Filtered";
 

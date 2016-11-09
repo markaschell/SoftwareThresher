@@ -2,9 +2,9 @@
 
 namespace SoftwareThresher.Tasks.Filters {
    public class EditAgeFilterParameter : FilterParameter {
-      readonly double editedInDays;
+      readonly int editedInDays;
 
-      public EditAgeFilterParameter(double editedInDays) {
+      public EditAgeFilterParameter(int editedInDays) {
          this.editedInDays = editedInDays;
       }
 
