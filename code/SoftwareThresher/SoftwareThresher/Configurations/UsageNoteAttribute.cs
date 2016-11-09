@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace SoftwareThresher.Configurations {
-   [AttributeUsage(AttributeTargets.Property)]
+   [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
    public class UsageNoteAttribute : Attribute {
 
       public string Note { get; private set; }

@@ -5,7 +5,7 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
 
    public interface ITestSettingWithAttributes : Setting { }
 
-   public class TestSettingTwoAttributes : ITestSettingWithAttributes {
+   public class TestSettingWithAttributes : ITestSettingWithAttributes {
       public string Attribute2 { get; set; }
       public string Attribute1 { get; set; }
 
@@ -18,6 +18,9 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
       string PrivateAttribute { get; set; }
 
       public string GetOnlyAttribute { get; }
+
+      [UsageNote("Note")]
+      public string AttributeWithNote { get; set; }
    }
 
    public class TestSettingOneAttribute : ITestSettingWithAttributes {

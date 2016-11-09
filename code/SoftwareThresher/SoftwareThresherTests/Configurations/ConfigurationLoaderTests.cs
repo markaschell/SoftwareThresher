@@ -84,7 +84,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_TaskWithMulipleSettings() {
-         var settingType1 = typeof(TestSettingTwoAttributes);
+         var settingType1 = typeof(TestSettingWithAttributes);
          var settingType2 = typeof(TestSettingZeroAttributes);
          var taskType = typeof(TestTaskWithTwoSettings);
 
@@ -118,7 +118,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_SetsSettingProperty() {
-         var settingType = typeof(TestSettingTwoAttributes);
+         var settingType = typeof(TestSettingWithAttributes);
          var taskType = typeof(TestTaskWithOneSetting);
 
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
@@ -137,7 +137,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_SetsMultipleSettingProperties() {
-         var settingType = typeof(TestSettingTwoAttributes);
+         var settingType = typeof(TestSettingWithAttributes);
          var taskType = typeof(TestTaskWithOneSetting);
 
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
@@ -158,7 +158,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_InvalidSettingAttribute_ThrowsException() {
-         var settingType = typeof(TestSettingTwoAttributes);
+         var settingType = typeof(TestSettingWithAttributes);
 
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
 
@@ -179,7 +179,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_SettingPrivateAttribute_ThrowsException() {
-         var settingType = typeof(TestSettingTwoAttributes);
+         var settingType = typeof(TestSettingWithAttributes);
 
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
 
@@ -201,7 +201,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_SettingAttributeWithNoSet_ThrowsException() {
-         var settingType = typeof(TestSettingTwoAttributes);
+         var settingType = typeof(TestSettingWithAttributes);
 
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });
 
@@ -243,7 +243,7 @@ namespace SoftwareThresherTests.Configurations {
 
       [TestMethod]
       public void Load_TaskHasTwoMatchingSettings_ThrowsException() {
-         var settingType = typeof(TestSettingTwoAttributes);
+         var settingType = typeof(TestSettingWithAttributes);
          var taskType = typeof(TestTaskWithOneSetting);
 
          assemblyObjectFinder.SettingTypes.Returns(new List<Type> { settingType });

@@ -4,7 +4,7 @@ using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 
 namespace SoftwareThresher.Tasks.Filters {
-   // TODO - add a note to this to indicate that the filters are anded together 
+   [UsageNote("All attributes must match to filter")]
    public class Filter : Task {
 
       [Optional, UsageNote("Format is RegEx")]

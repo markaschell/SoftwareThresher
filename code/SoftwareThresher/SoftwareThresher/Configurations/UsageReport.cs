@@ -6,8 +6,7 @@ using SoftwareThresher.Utilities;
 using Console = SoftwareThresher.Utilities.Console;
 
 namespace SoftwareThresher.Configurations {
-   public class UsageReport
-   {
+   public class UsageReport {
       const string Indent = "\t";
 
       readonly IConsole console;
@@ -15,69 +14,66 @@ namespace SoftwareThresher.Configurations {
 
       public UsageReport() : this(new AssemblyObjectFinder(), new Console()) { }
 
-      public UsageReport(IAssemblyObjectFinder assemblyObjectFinder, IConsole console)
-      {
+      public UsageReport(IAssemblyObjectFinder assemblyObjectFinder, IConsole console) {
          this.console = console;
          this.assemblyObjectFinder = assemblyObjectFinder;
       }
 
-      public void Write()
-      {
+      public void Write() {
          console.WriteLine("Usage: SoftwareThresher.exe config.xml [config.xml]");
-         
+
          WriteSettings();
          console.WriteLine("");
          WriteTasks();
       }
 
-      void WriteSettings()
-      {
+      void WriteSettings() {
          var settings = assemblyObjectFinder.SettingTypes.ToList();
 
-         foreach (var settingInterface in InAlphabeticalOrder(assemblyObjectFinder.SettingInterfaces))
-         {
+         foreach (var settingInterface in InAlphabeticalOrder(assemblyObjectFinder.SettingInterfaces)) {
             WriteSettingType(settingInterface, settings);
          }
       }
 
-      static IEnumerable<Type> InAlphabeticalOrder(IEnumerable<Type> types)
-      {
+      static IEnumerable<Type> InAlphabeticalOrder(IEnumerable<Type> types) {
          return types.OrderBy(t => t.Name);
       }
 
-      void WriteSettingType(Type settingInterface, IEnumerable<Type> settings)
-      {
+      void WriteSettingType(Type settingInterface, IEnumerable<Type> settings) {
          console.WriteLine($"{Indent}Setting Type:{Indent}{settingInterface.Name}");
 
-         foreach (var setting in InAlphabeticalOrder(settings.Where(s => s.GetInterfaces().Contains(settingInterface))))
-         {
+         foreach (var setting in InAlphabeticalOrder(settings.Where(s => s.GetInterfaces().Contains(settingInterface)))) {
             WriteSetting(setting);
          }
       }
 
-      void WriteSetting(Type setting)
-      {
-         console.WriteLine($"{Indent}{Indent}Setting:{Indent}{setting.Name}");
+      void WriteSetting(Type setting) {
+         console.WriteLine($"{Indent}{Indent}Setting:{Indent}{setting.Name}{GetUsageNote(setting)}");
          WriteProperties(setting, Indent);
       }
 
-      void WriteProperties(Type type, string prefix = "")
-      {
+      static string GetUsageNote(MemberInfo objectToCheck) {
+         var noteAttribute = (UsageNoteAttribute)GetCustomAttribute(objectToCheck, typeof(UsageNoteAttribute));
+         return noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
+      }
+
+      static Attribute GetCustomAttribute(MemberInfo objectToCheck, Type attributeType) {
+         return Attribute.GetCustomAttributes(objectToCheck).FirstOrDefault(a => a.GetType() == attributeType);
+      }
+
+      void WriteProperties(Type type, string prefix = "") {
          var properties = GetProperties(type);
 
          var requiredProperties = new List<PropertyInfo>();
          var optionalProperties = new List<PropertyInfo>();
 
-         foreach (var property in properties)
-         {
-            var optionalAttribute = (OptionalAttribute)Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(OptionalAttribute));
+         foreach (var property in properties) {
+            var optionalAttribute = (OptionalAttribute)GetCustomAttribute(property, typeof(OptionalAttribute));
 
-            if (optionalAttribute != null)
-            {
+            if (optionalAttribute != null) {
                optionalProperties.Add(property);
             }
-            else
-            {
+            else {
                requiredProperties.Add(property);
             }
          }
@@ -99,23 +95,17 @@ namespace SoftwareThresher.Configurations {
          var optionalText = isOptional ? "Optional " : string.Empty;
          var propertyIndent = isOptional ? Indent : $"{Indent}{Indent}";
 
-         var noteAttribute = (UsageNoteAttribute)Attribute.GetCustomAttributes(property).FirstOrDefault(a => a.GetType() == typeof(UsageNoteAttribute));
-         var noteText = noteAttribute != null ? " - " + noteAttribute.Note : string.Empty;
-
-         console.WriteLine($"{prefix}{Indent}{Indent}{optionalText}Attribute:{propertyIndent}{property.Name} ({property.PropertyType.Name}){noteText}");
+         console.WriteLine($"{prefix}{Indent}{Indent}{optionalText}Attribute:{propertyIndent}{property.Name} ({property.PropertyType.Name}){GetUsageNote(property)}");
       }
 
-      void WriteTasks()
-      {
-         foreach (var task in InAlphabeticalOrder(assemblyObjectFinder.TaskTypes))
-         {
-            console.WriteLine($"{Indent}Task:{Indent}{task.Name}({GetParameterText(task)})");
+      void WriteTasks() {
+         foreach (var task in InAlphabeticalOrder(assemblyObjectFinder.TaskTypes)) {
+            console.WriteLine($"{Indent}Task:{Indent}{task.Name}({GetParameterText(task)}){GetUsageNote(task)}");
             WriteProperties(task);
          }
       }
 
-      static string GetParameterText(Type task)
-      {
+      static string GetParameterText(Type task) {
          var parameters = task.GetConstructors().Single().GetParameters().OrderBy(p => p.Name);
          return string.Join(", ", parameters.Select(p => p.ParameterType.Name));
       }
