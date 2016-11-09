@@ -9,7 +9,6 @@ namespace SoftwareThresher.Utilities {
 
    public class WebRequest : IWebRequest
    {
-      // TODO - I do not like the return type for this
       public HtmlNode IssueRequest(string url) {
          ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
          var web = new HtmlWeb();

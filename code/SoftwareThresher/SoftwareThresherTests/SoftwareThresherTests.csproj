@@ -76,7 +76,7 @@
     <Compile Include="Settings\Search\OpenGrokParameterTests.cs" />
     <Compile Include="TaskProcessorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\FilterTests.cs" />
+    <Compile Include="Tasks\Filters\FilterTests.cs" />
     <Compile Include="Tasks\FindFilesTests.cs" />
     <Compile Include="Tasks\NotCompiledTests.cs" />
     <Compile Include="Configurations\UsageReportTests.cs" />

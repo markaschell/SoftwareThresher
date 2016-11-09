@@ -4,6 +4,7 @@ using SoftwareThresher.Configurations;
 using SoftwareThresher.Settings;
 using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Tasks;
+using SoftwareThresher.Tasks.Filters;
 
 namespace SoftwareThresherTests.Configurations {
    [TestClass]

@@ -67,7 +67,10 @@
     <Compile Include="Settings\Search\OpenGrokJsonSearchResult.cs" />
     <Compile Include="Settings\Search\OpenGrokParameter.cs" />
     <Compile Include="Settings\Setting.cs" />
-    <Compile Include="Tasks\Filter.cs" />
+    <Compile Include="Tasks\Filters\EditAgeFilterParameter.cs" />
+    <Compile Include="Tasks\Filters\Filter.cs" />
+    <Compile Include="Tasks\Filters\FilterParameter.cs" />
+    <Compile Include="Tasks\Filters\SearchPatternFilterParameter.cs" />
     <Compile Include="Tasks\NotCompiled.cs" />
     <Compile Include="Settings\Search\OpenGrokJsonSearch.cs" />
     <Compile Include="Settings\Search\Search.cs" />
