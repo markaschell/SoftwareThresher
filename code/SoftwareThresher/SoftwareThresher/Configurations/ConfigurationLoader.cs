@@ -15,18 +15,20 @@ namespace SoftwareThresher.Configurations {
       const string TasksSectionName = "tasks";
 
       readonly IConfigurationReader taskReader;
+      readonly IAttributeLoader attributeLoader;
 
       readonly IEnumerable<Type> taskTypes;
       readonly IEnumerable<Type> settingTypes;
 
-      public ConfigurationLoader(IAssemblyObjectFinder assemblyObjectFinder, IConfigurationReader taskReader) {
+      public ConfigurationLoader(IAssemblyObjectFinder assemblyObjectFinder, IConfigurationReader taskReader, IAttributeLoader attributeLoader) {
          this.taskReader = taskReader;
+         this.attributeLoader = attributeLoader;
 
          taskTypes = assemblyObjectFinder.TaskTypes;
          settingTypes = assemblyObjectFinder.SettingTypes;
       }
 
-      public ConfigurationLoader() : this(new AssemblyObjectFinder(), new ConfigurationReader()) {
+      public ConfigurationLoader() : this(new AssemblyObjectFinder(), new ConfigurationReader(), new AttributeLoader()) {
       }
 
       public IConfiguration Load(string filename) {
@@ -46,7 +48,7 @@ namespace SoftwareThresher.Configurations {
 
          foreach (var xmlTask in taskReader.GetNodes(TasksSectionName)) {
             var task = CreateTask(xmlTask.Name, settings);
-            SetAttributes(xmlTask, task);
+            task = (Task)attributeLoader.SetAttributes(xmlTask.Attributes, task);
             configuration.Tasks.Add(task);
          }
 
@@ -58,7 +60,7 @@ namespace SoftwareThresher.Configurations {
 
          foreach (var xmlSetting in taskReader.GetNodes(SettingsSectionName)) {
             var setting = CreateSetting(xmlSetting.Name);
-            SetAttributes(xmlSetting, setting);
+            setting = (Setting)attributeLoader.SetAttributes(xmlSetting.Attributes, setting);
             settings.Add(setting);
          }
 
@@ -73,49 +75,6 @@ namespace SoftwareThresher.Configurations {
          }
          catch (Exception) {
             throw new NotSupportedException($"{settingName} is not a supported setting.");
-         }
-      }
-
-      // TODO - seperate class - seperate classes for Setting and Task and combine with usage?
-      static void SetAttributes(XmlNode input, object output) {
-         foreach (var attribute in input.Attributes) {
-            SetAttribute(attribute, output, input.Name);
-         }
-      }
-
-      static void SetAttribute(XmlAttribute attribute, object output, string xmlNodeName)
-      {
-         var property = GetProperty(attribute, output, xmlNodeName);
-         SetProperty(property, attribute, output, xmlNodeName);
-      }
-
-      static PropertyInfo GetProperty(XmlAttribute attribute, object output, string xmlNodeName)
-      {
-         var property = output.GetType().GetProperty(attribute.Name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.IgnoreCase);
-
-         if (property == null)
-         {
-            ThrowAttributeNotSupportedException(attribute, xmlNodeName);
-         }
-
-         return property;
-      }
-
-      static void ThrowAttributeNotSupportedException(XmlAttribute attribute, string xmlNodeName)
-      {
-         throw new NotSupportedException($"{attribute.Name} is not a supported attribute for {xmlNodeName}.");
-      }
-
-      static void SetProperty(PropertyInfo property, XmlAttribute attribute, object output, string xmlNodeName) {
-         try {
-            property.SetValue(output, attribute.Value);
-         }
-         catch (Exception e) {
-            if (e.Message == "Property set method not found.") {
-               ThrowAttributeNotSupportedException(attribute, xmlNodeName);
-            }
-
-            throw new Exception($"{attribute.Value} is an invalid value for attribute {attribute.Name}.");
          }
       }
 

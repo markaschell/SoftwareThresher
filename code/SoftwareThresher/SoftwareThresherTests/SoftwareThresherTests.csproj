@@ -62,6 +62,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Configurations\AssemblyObjectFinderTests.cs" />
+    <Compile Include="Configurations\AttributeLoaderTests.cs" />
     <Compile Include="Configurations\ConfigurationLoaderTests.cs" />
     <Compile Include="Configurations\TypeStubs\ITestSettingNoAttributes.cs" />
     <Compile Include="Configurations\TypeStubs\TestSettingWithNote.cs" />

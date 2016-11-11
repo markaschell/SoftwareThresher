@@ -21,8 +21,6 @@ namespace SoftwareThresherTests.Configurations.TypeStubs {
 
       [UsageNote("Note")]
       public string AttributeWithNote { get; set; }
-
-      public int IntAttribute { get; set; }
    }
 
    public class TestSettingOneAttribute : ITestSettingWithAttributes {
