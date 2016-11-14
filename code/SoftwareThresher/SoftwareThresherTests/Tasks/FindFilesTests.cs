@@ -27,7 +27,7 @@ namespace SoftwareThresherTests.Tasks {
          findFiles.Directory = directory;
          findFiles.SearchPattern = pattern;
 
-         systemDirectory.GetObservations(directory, pattern).Returns(new List<Observation> { new FileObservation("one") });
+         systemDirectory.GetObservations(directory, pattern).Returns(new List<Observation> { new FileObservation("one", null) });
 
          var results = findFiles.Execute(new List<Observation>());
 
@@ -38,9 +38,9 @@ namespace SoftwareThresherTests.Tasks {
 
       [TestMethod]
       public void Execute_AddsToPassedInObservations() {
-         systemDirectory.GetObservations("", "").ReturnsForAnyArgs(new List<Observation> { new FileObservation("one") });
+         systemDirectory.GetObservations("", "").ReturnsForAnyArgs(new List<Observation> { new FileObservation("one", null) });
 
-         var results = findFiles.Execute(new List<Observation> { new FileObservation("") });
+         var results = findFiles.Execute(new List<Observation> { new FileObservation("", null) });
 
          Assert.AreEqual(2, results.Count);
       }

@@ -1,20 +1,17 @@
-﻿using System;
-using System.IO;
-using SoftwareThresher.Utilities;
+﻿using System.IO;
+using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Observations {
    public class FileObservation : Observation {
       readonly string filename;
 
-      public FileObservation(string filename) {
+      public FileObservation(string filename, Search search) : base(search) {
          this.filename = filename;
       }
 
       public override string Name => Path.GetFileName(filename);
 
       public override string Location => Path.GetDirectoryName(filename);
-
-      public override Date LastEdit { get { throw new NotImplementedException(); } }
 
       public override string SystemSpecificString => filename;
    }

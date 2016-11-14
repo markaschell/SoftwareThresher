@@ -7,6 +7,7 @@ using SoftwareThresher;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Tasks;
 
 namespace SoftwareThresherTests {
@@ -31,6 +32,8 @@ namespace SoftwareThresherTests {
          taskProcessor = new TaskProcessor(configurationLoader, report);
       }
 
+      static Observation ObservationStub => Substitute.For<Observation>((Search)null);
+
       [TestMethod]
       public void Run_MultipleTasks() {
          var task2 = Substitute.For<Task>();
@@ -39,9 +42,9 @@ namespace SoftwareThresherTests {
          configurationLoader.Load(configurationnFilename).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task, task2 });
 
-         var passedObservation = Substitute.For<Observation>();
+         var passedObservation = ObservationStub;
          passedObservation.Failed.Returns(false);
-         var failedObservation = Substitute.For<Observation>();
+         var failedObservation = ObservationStub;
          failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Is<List<Observation>>(l => l.Count == 0)).Returns(new List<Observation> { failedObservation, passedObservation });
@@ -62,9 +65,9 @@ namespace SoftwareThresherTests {
          var title = "This is it";
          task.ReportHeader.Returns(title);
 
-         var passedObservation = Substitute.For<Observation>();
+         var passedObservation = ObservationStub;
          passedObservation.Failed.Returns(false);
-         var failedObservation = Substitute.For<Observation>();
+         var failedObservation = ObservationStub;
          failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation>());
@@ -83,9 +86,9 @@ namespace SoftwareThresherTests {
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task });
 
-         var passedObservation = Substitute.For<Observation>();
+         var passedObservation = ObservationStub;
          passedObservation.Failed.Returns(false);
-         var failedObservation = Substitute.For<Observation>();
+         var failedObservation = ObservationStub;
          failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { passedObservation, failedObservation, passedObservation });
@@ -102,9 +105,9 @@ namespace SoftwareThresherTests {
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task, task2 });
 
-         var observation = Substitute.For<Observation>();
+         var observation = ObservationStub;
          observation.Failed.Returns(false);
-         var failedObservation = Substitute.For<Observation>();
+         var failedObservation = ObservationStub;
          failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { observation });
@@ -125,9 +128,9 @@ namespace SoftwareThresherTests {
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task, task2 });
 
-         var passedObservation = Substitute.For<Observation>();
+         var passedObservation = ObservationStub;
          passedObservation.Failed.Returns(false);
-         var failedObservation = Substitute.For<Observation>();
+         var failedObservation = ObservationStub;
          failedObservation.Failed.Returns(true);
 
          task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { passedObservation });

@@ -8,7 +8,7 @@ namespace SoftwareThresherTests.Observations {
       public void Name_JustName() {
          const string name = "name";
 
-         var observation = new FileObservation(name);
+         var observation = new FileObservation(name, null);
 
          Assert.AreEqual(name, observation.Name);
       }
@@ -17,7 +17,7 @@ namespace SoftwareThresherTests.Observations {
       public void Name_NameWithExtension() {
          const string name = "name.txt";
 
-         var observation = new FileObservation(name);
+         var observation = new FileObservation(name, null);
 
          Assert.AreEqual(name, observation.Name);
       }
@@ -26,14 +26,14 @@ namespace SoftwareThresherTests.Observations {
       public void Name_NameWithPath() {
          const string name = "name";
 
-         var observation = new FileObservation(@"C:\Directory\" + name);
+         var observation = new FileObservation(@"C:\Directory\" + name, null);
 
          Assert.AreEqual(name, observation.Name);
       }
 
       [TestMethod]
       public void Name_JustPath() {
-         var observation = new FileObservation(@"C:\Directory\");
+         var observation = new FileObservation(@"C:\Directory\", null);
 
          Assert.AreEqual(string.Empty, observation.Name);
       }
@@ -42,7 +42,7 @@ namespace SoftwareThresherTests.Observations {
       public void Location_JustName() {
          const string name = "name";
 
-         var observation = new FileObservation(name);
+         var observation = new FileObservation(name, null);
 
          Assert.AreEqual(string.Empty, observation.Location);
       }
@@ -51,7 +51,7 @@ namespace SoftwareThresherTests.Observations {
       public void Location_PathWithName() {
          const string path = @"C:\Directory";
 
-         var observation = new FileObservation(path + @"\name");
+         var observation = new FileObservation(path + @"\name", null);
 
          Assert.AreEqual(path, observation.Location);
       }
@@ -60,7 +60,7 @@ namespace SoftwareThresherTests.Observations {
       public void Location_JustPath() {
          const string path = @"C:\Directory";
 
-         var observation = new FileObservation(path + @"\");
+         var observation = new FileObservation(path + @"\", null);
 
          Assert.AreEqual(path, observation.Location);
       }

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Tasks.Filters;
 using SoftwareThresher.Utilities;
 
@@ -18,7 +19,7 @@ namespace SoftwareThresherTests.Tasks.Filters {
       [TestInitialize]
       public void Setup()
       {
-         observation = Substitute.For<Observation>();
+         observation = Substitute.For<Observation>((Search)null);
 
          filter = new Filter();
       }

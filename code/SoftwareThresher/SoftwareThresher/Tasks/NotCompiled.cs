@@ -44,7 +44,7 @@ namespace SoftwareThresher.Tasks {
          if (string.IsNullOrEmpty(referenceObject))
             return;
 
-         var referenceObservation = new FileObservation(referenceObject);
+         var referenceObservation = new FileObservation(referenceObject, null);
          var directory = Path.Combine(fileDirectory, referenceObservation.Location);
 
          observations.Where(o => o.Key == directory).SelectMany(g => g).Where(o => referenceObservation.Name == o.Name).ToList().ForEach(o => o.Failed = false);

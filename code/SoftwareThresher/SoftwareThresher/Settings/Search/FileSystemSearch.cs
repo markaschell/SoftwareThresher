@@ -24,7 +24,7 @@ namespace SoftwareThresher.Settings.Search {
          var path = string.IsNullOrEmpty(BaseLocation) ? location : BaseLocation + Path.DirectorySeparatorChar + location;
 
          return Directory.EnumerateFiles(path, searchPattern, SearchOption.AllDirectories).ToList()
-                         .ConvertAll(f => (Observation)new FileObservation(f));
+                         .ConvertAll(f => (Observation)new FileObservation(f, this));
       }
 
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {

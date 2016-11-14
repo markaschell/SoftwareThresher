@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests.Reporting {
@@ -22,11 +23,13 @@ namespace SoftwareThresherTests.Reporting {
          report = new Report(file, reportData);
       }
 
+      static Observation ObservationStub => Substitute.For<Observation>((Search)null);
+
       [TestMethod]
       public void Start() {
          var configurationFilename = "This is it";
 
-         var reportName = "reportName";
+         const string reportName = "reportName";
          reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
 
          report.Start(configurationFilename);
@@ -39,7 +42,7 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void WriteObservations_WritesHeader() {
-         var header = "This is my stupid title";
+         const string header = "This is my stupid title";
 
          report.WriteObservations(header, 1, 3, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
@@ -51,9 +54,9 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void WriteObservations_ObservationData() {
-         var name = "Issue";
-         var location = "It is here";
-         var observation = Substitute.For<Observation>();
+         const string name = "Issue";
+         const string location = "It is here";
+         var observation = ObservationStub;
          observation.Name.Returns(name);
          observation.Location.Returns(location);
 
@@ -70,7 +73,7 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void WriteObservations_MultipleObservations() {
-         var observation = Substitute.For<Observation>();
+         var observation = ObservationStub;
 
          report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
 
@@ -87,7 +90,7 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void WriteObservations_NothingAddedOrFailed_NothingIsWritten() {
-         var observation = Substitute.For<Observation>();
+         var observation = ObservationStub;
 
          report.WriteObservations("testing", 0, 3, new TimeSpan(), new List<Observation> { observation });
 
