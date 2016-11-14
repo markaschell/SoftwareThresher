@@ -11,5 +11,7 @@ namespace SoftwareThresher.Settings.Search {
       List<string> GetReferenceLine(Observation observation, string searchPattern);
 
       Date GetLastEditDate(Observation observation);
+
+      string GetHistoryUrl(Observation observation);
    }
 }

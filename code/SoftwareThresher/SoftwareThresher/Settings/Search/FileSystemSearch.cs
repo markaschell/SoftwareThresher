@@ -54,5 +54,10 @@ namespace SoftwareThresher.Settings.Search {
       {
          return Date.NullDate;
       }
+
+      public string GetHistoryUrl(Observation observation)
+      {
+         throw new System.NotImplementedException();
+      }
    }
 }

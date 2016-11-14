@@ -78,8 +78,20 @@ namespace SoftwareThresher.Settings.Search {
 
       public Date GetLastEditDate(Observation observation)
       {
-         openGrokHttpSearch.BaseLocation = BaseLocation;
+
+         SetPropertiesOnHttpSearch();
          return openGrokHttpSearch.GetLastEditDate(observation);
+      }
+
+      void SetPropertiesOnHttpSearch()
+      {
+         openGrokHttpSearch.BaseLocation = BaseLocation;
+      }
+
+      public string GetHistoryUrl(Observation observation)
+      {
+         SetPropertiesOnHttpSearch();
+         return openGrokHttpSearch.GetHistoryUrl(observation);
       }
    }
 }

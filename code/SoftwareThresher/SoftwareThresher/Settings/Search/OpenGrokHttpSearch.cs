@@ -28,11 +28,16 @@ namespace SoftwareThresher.Settings.Search {
       // TODO - Test this 
       public Date GetLastEditDate(Observation observation)
       {
-         var response = webRequest.IssueRequest($"{BaseLocation}/history{observation.SystemSpecificString}");
+         var response = webRequest.IssueRequest(GetHistoryUrl(observation));
          var tableDetails = response.SelectNodes("//form/table/tbody/tr/td");
 
          var dateString = tableDetails[2].InnerText;
          return new Date(DateTime.Parse(dateString));
+      }
+
+      public string GetHistoryUrl(Observation observation)
+      {
+         return $"{BaseLocation}/history{observation.SystemSpecificString}";
       }
    }
 }
