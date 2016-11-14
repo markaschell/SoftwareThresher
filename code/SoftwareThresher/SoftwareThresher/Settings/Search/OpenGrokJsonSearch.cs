@@ -23,11 +23,11 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
-      readonly IWebRequest webRequest;
+      readonly OpenGrokHttpSearch openGrokHttpSearch;
 
       public OpenGrokJsonSearch()
       {
-         webRequest = new WebRequest();
+         openGrokHttpSearch = new OpenGrokHttpSearch();
       }
 
       public List<Observation> GetObservations(string location, string searchPattern) {
@@ -76,15 +76,10 @@ namespace SoftwareThresher.Settings.Search {
          return parameters.Aggregate(string.Empty, (current, parameter) => $"{current}{ParameterJoin}{parameter}");
       }
 
-      // TODO - Move out of this class?  Not only Json Search
-      // TODO - Test this 
       public Date GetLastEditDate(Observation observation)
       {
-         var response = webRequest.IssueRequest($"{BaseLocation}/history{observation.SystemSpecificString}");
-         var tableDetails = response.SelectNodes("//form/table/tbody/tr/td");
-
-         var dateString = tableDetails[2].InnerText;
-         return new Date(DateTime.Parse(dateString));
+         openGrokHttpSearch.BaseLocation = BaseLocation;
+         return openGrokHttpSearch.GetLastEditDate(observation);
       }
    }
 }
