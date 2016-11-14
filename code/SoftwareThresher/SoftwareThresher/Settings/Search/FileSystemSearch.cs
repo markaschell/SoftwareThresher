@@ -49,9 +49,10 @@ namespace SoftwareThresher.Settings.Search {
          }
       }
 
+      // TODO - immplement?  Note or a Task on the web
       public Date GetLastEditDate(Observation observation)
       {
-         throw new System.NotImplementedException();
+         return Date.NullDate;
       }
    }
 }
