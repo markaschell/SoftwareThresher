@@ -21,6 +21,8 @@ namespace SoftwareThresher.Observations {
 
       public virtual Date LastEdit => search.GetLastEditDate(this);
 
+      public virtual string HistoryUrl => search.GetHistoryUrl(this);
+
       public override string ToString() {
          return $"{Location}{Path.PathSeparator}{Name}";
       }
