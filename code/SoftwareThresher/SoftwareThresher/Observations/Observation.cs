@@ -19,7 +19,6 @@ namespace SoftwareThresher.Observations {
 
       public abstract string SystemSpecificString { get; }
 
-      // TODO - push more logic into this class?
       public virtual Date LastEdit => search.GetLastEditDate(this);
 
       public override string ToString() {
