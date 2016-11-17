@@ -15,17 +15,17 @@ namespace SoftwareThresher.Settings.Search {
 
       public string BaseLocation { private get; set; }
 
-      // TODO - Implement
+      // TODO - ONLINE Implement
       public List<Observation> GetObservations(string location, string searchPattern) {
          throw new NotImplementedException();
       }
 
-      // TODO - Implement
+      // TODO - ONLINE Implement
       public List<string> GetReferenceLine(Observation observation, string searchPattern) {
          throw new NotImplementedException();
       }
 
-      // TODO - Test this 
+      // TODO - ONLINE Test this and make sure it shows up in the report
       public Date GetLastEditDate(Observation observation)
       {
          var response = webRequest.IssueRequest(GetHistoryUrl(observation));

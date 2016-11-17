@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Policy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
@@ -27,7 +28,7 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void Start() {
-         var configurationFilename = "This is it";
+         const string configurationFilename = "This is it";
 
          const string reportName = "reportName";
          reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
@@ -53,27 +54,41 @@ namespace SoftwareThresherTests.Reporting {
       }
 
       [TestMethod]
-      public void WriteObservations_ObservationData() {
+      public void WriteObservations_WritesNameAndLocation() {
          const string name = "Issue";
          const string location = "It is here";
          var observation = ObservationStub;
          observation.Name.Returns(name);
          observation.Location.Returns(location);
+         observation.LastEdit.Returns(Date.NullDate);
 
          report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
 
 
          Received.InOrder(() => {
             file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
-            file.Write("<tr><th>Name</th><th>Location</th></tr>");
-            file.Write("<tr><td>" + name + "</td><td>" + location + "</td></tr>");
+            file.Write("<tr><th>Name</th><th>Location</th><th>Last Edited</th></tr>");
+            file.Write("<tr><td>" + name + "</td><td>" + location + "</td><td></td></tr>");
             file.Write("</table>");
          });
       }
 
       [TestMethod]
+      public void WriteObservations_WritesLastEdit() {
+         const string url = "url";
+         var observation = ObservationStub;
+         observation.LastEdit.Returns(new Date(new DateTime(2015, 1, 3)));
+         observation.HistoryUrl.Returns(url);
+
+         report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
+
+         file.Received().Write("<tr><td></td><td></td><td><a href='" + url + "'>01/03/2015</a></td></tr>");
+      }
+
+      [TestMethod]
       public void WriteObservations_MultipleObservations() {
          var observation = ObservationStub;
+         observation.LastEdit.Returns(Date.NullDate);
 
          report.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
 

@@ -49,7 +49,7 @@ namespace SoftwareThresher.Settings.Search {
          }
       }
 
-      // TODO - immplement?  Note or a Task on the web
+      // TODO - ONLINE Add a task for the project in github to finish this implementation
       public Date GetLastEditDate(Observation observation)
       {
          return Date.NullDate;
@@ -57,7 +57,7 @@ namespace SoftwareThresher.Settings.Search {
 
       public string GetHistoryUrl(Observation observation)
       {
-         throw new System.NotImplementedException();
+         return string.Empty;
       }
    }
 }

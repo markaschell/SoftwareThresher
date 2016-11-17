@@ -39,9 +39,11 @@ namespace SoftwareThresher.Reporting {
 
          if (failedObservations.Count > 0) {
             file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
-            file.Write("<tr><th>Name</th><th>Location</th></tr>");
+            file.Write("<tr><th>Name</th><th>Location</th><th>Last Edited</th></tr>");
             foreach (var observation in failedObservations) {
-               file.Write($"<tr><td>{observation.Name}</td><td>{observation.Location}</td></tr>");
+               var lastEditString = observation.LastEdit == Date.NullDate ? string.Empty : $"<a href='{observation.HistoryUrl}'>{observation.LastEdit}</a>";
+
+               file.Write($"<tr><td>{observation.Name}</td><td>{observation.Location}</td><td>{lastEditString}</td></tr>");
             }
             file.Write("</table>");
          }

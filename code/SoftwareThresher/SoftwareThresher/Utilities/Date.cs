@@ -13,5 +13,11 @@ namespace SoftwareThresher.Utilities {
       }
 
       public double DaysOld => Math.Floor((DateTime.Today - date).TotalDays);
+
+      // TODO - ONLINE implement Equals
+
+      public override string ToString() {
+         return $"{date:MM/dd/yyyy}";
+      }
    }
 }
