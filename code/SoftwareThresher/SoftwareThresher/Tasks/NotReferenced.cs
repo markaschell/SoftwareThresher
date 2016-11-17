@@ -5,7 +5,6 @@ using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Tasks {
    public class NotReferenced : Task {
-      // TODO - Can we build into the base to just return the class name?
       public override string DefaultReportHeaderText => "Not Referenced";
 
       readonly Search search;
