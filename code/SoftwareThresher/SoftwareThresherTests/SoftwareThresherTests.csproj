@@ -84,6 +84,7 @@
     <Compile Include="Tasks\FindFilesTests.cs" />
     <Compile Include="Tasks\NotCompiledTests.cs" />
     <Compile Include="Configurations\UsageReportTests.cs" />
+    <Compile Include="Tasks\NotReferencedTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

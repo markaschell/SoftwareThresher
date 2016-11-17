@@ -26,5 +26,7 @@ namespace SoftwareThresher.Observations {
       public override string ToString() {
          return $"{Location}{Path.PathSeparator}{Name}";
       }
+
+      public string FilenameWithoutExtension => Path.GetFileNameWithoutExtension(Name);
    }
 }
