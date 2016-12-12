@@ -51,7 +51,7 @@ namespace SoftwareThresherTests.Tasks {
       }
 
       [TestMethod]
-      public void Execute_DifferentNameReferenceFound_Fails() {
+      public void Execute_DifferentNameReferenceFound_Passes() {
          const string name = "name";
 
          var foundObservation1 = ObservationStub;
@@ -67,20 +67,20 @@ namespace SoftwareThresherTests.Tasks {
 
          var results = notReferenced.Execute(new List<Observation> { suppliedObservation });
 
-         Assert.IsTrue(results.First().Failed);
-      }
-
-      [TestMethod]
-      public void Execute_NoReferencesFound_Passes() {
-         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation>());
-
-         var results = notReferenced.Execute(new List<Observation> { ObservationStub });
-
          Assert.IsFalse(results.First().Failed);
       }
 
       [TestMethod]
-      public void Execute_MatchingNameReferenceFound_Passes()
+      public void Execute_NoReferencesFound_Fails() {
+         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation>());
+
+         var results = notReferenced.Execute(new List<Observation> { ObservationStub });
+
+         Assert.IsTrue(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_MatchingNameReferenceFound_Fails()
       {
          const string name = "name";
 
@@ -94,11 +94,11 @@ namespace SoftwareThresherTests.Tasks {
 
          var results = notReferenced.Execute(new List<Observation> { suppliedObservation });
 
-         Assert.IsFalse(results.First().Failed);
+         Assert.IsTrue(results.First().Failed);
       }
 
       [TestMethod]
-      public void Execute_MatchingNameReferenceFoundWithExtenstion_Passes() {
+      public void Execute_MatchingNameReferenceFoundWithExtenstion_Fails() {
          const string name = "name";
 
          var foundObservation = ObservationStub;
@@ -111,11 +111,11 @@ namespace SoftwareThresherTests.Tasks {
 
          var results = notReferenced.Execute(new List<Observation> { suppliedObservation });
 
-         Assert.IsFalse(results.First().Failed);
+         Assert.IsTrue(results.First().Failed);
       }
 
       [TestMethod]
-      public void Execute_MatchingNameWithExtensionReferenceFound_Passes() {
+      public void Execute_MatchingNameWithExtensionReferenceFound_Fails() {
          const string name = "name";
 
          var foundObservation = ObservationStub;
@@ -128,23 +128,41 @@ namespace SoftwareThresherTests.Tasks {
 
          var results = notReferenced.Execute(new List<Observation> { suppliedObservation });
 
-         Assert.IsFalse(results.First().Failed);
+         Assert.IsTrue(results.First().Failed);
       }
 
       [TestMethod]
       public void Execute_Multiple() {
          search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { ObservationStub });
 
-         var name = "name";
-         var failedObservation = ObservationStub;
-         failedObservation.Name.Returns(name);
+         const string name = "name";
+         var otherObservation = ObservationStub;
+         otherObservation.Name.Returns(name);
 
-         var results = notReferenced.Execute(new List<Observation> { failedObservation, ObservationStub, failedObservation });
+         var results = notReferenced.Execute(new List<Observation> { ObservationStub, otherObservation, ObservationStub });
 
          search.Received().GetObservations(Arg.Any<string>(), name);
          search.Received().GetObservations(Arg.Any<string>(), string.Empty);
 
          Assert.AreEqual(2, results.FindAll(o => o.Failed).Count);
+      }
+
+      [TestMethod]
+      public void Execute_ReferenceFilesToIgnoreMatches_Failed() {
+         const string name = "name";
+
+         var foundObservation = ObservationStub;
+         foundObservation.Name.Returns(name + ".txt");
+
+         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { foundObservation });
+
+         var suppliedObservation = ObservationStub;
+         suppliedObservation.Name.Returns(name);
+
+         notReferenced.ReferenceFilesToIgnore = "me.t";
+         var results = notReferenced.Execute(new List<Observation> { suppliedObservation });
+
+         Assert.IsTrue(results.First().Failed);
       }
    }
 }
