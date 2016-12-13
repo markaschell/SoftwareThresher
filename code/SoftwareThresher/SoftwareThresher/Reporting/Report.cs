@@ -42,7 +42,8 @@ namespace SoftwareThresher.Reporting {
             file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
             file.Write("<tr><th>Name</th><th>Location</th><th>Last Edited</th></tr>");
             foreach (var observation in failedObservations.OrderBy(o => o.SystemSpecificString)) {
-               var lastEditString = observation.LastEdit == Date.NullDate ? string.Empty : $"<a href='{observation.HistoryUrl}'>{observation.LastEdit}</a>";
+               var lastEdit = observation.LastEdit;
+               var lastEditString = lastEdit == Date.NullDate ? string.Empty : $"<a href='{observation.HistoryUrl}'>{lastEdit}</a>";
 
                file.Write($"<tr><td>{observation.Name}</td><td>{observation.Location}</td><td>{lastEditString}</td></tr>");
             }
