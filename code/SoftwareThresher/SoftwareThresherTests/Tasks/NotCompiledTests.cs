@@ -71,7 +71,7 @@ namespace SoftwareThresherTests.Tasks {
 
          search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation("file", null) });
 
-         search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + "Filenname" });
+         search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + "filnname" });
 
          var observation = ObservationStub;
          observation.Name.Returns("filenname");
@@ -172,6 +172,40 @@ namespace SoftwareThresherTests.Tasks {
 
          var observation = ObservationStub;
          observation.Name.Returns(filename);
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresCaseOnObservation_Passes() {
+         const string searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation("file", null) });
+
+         search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + "filename" });
+
+         var observation = ObservationStub;
+         observation.Name.Returns("FILENAME");
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresCaseOnReferenceLine_Passes() {
+         const string searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation("file", null) });
+
+         search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + "FILENAME" });
+
+         var observation = ObservationStub;
+         observation.Name.Returns("filename");
 
          var results = notCompiled.Execute(new List<Observation> { observation });
 
