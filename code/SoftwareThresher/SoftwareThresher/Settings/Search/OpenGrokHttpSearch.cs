@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
@@ -26,14 +25,14 @@ namespace SoftwareThresher.Settings.Search {
          throw new NotImplementedException();
       }
 
-      // TODO - ONLINE Test this and make sure it shows up in the report - There appears to be some issues with min date showing up and dates missing that do exist in the system.....
-      public Date GetLastEditDate(Observation observation)
-      {
-         var response = webRequest.IssueRequest(GetHistoryUrl(observation));
+      // TODO - Does not always work need to figure out why - report as unknown with the link?
+      public Date GetLastEditDate(Observation observation) {
+         var url = GetHistoryUrl(observation);
+         var response = webRequest.IssueRequest(url);
          var tableDetails = response.SelectNodes("//table[@id='revisions']/tbody/tr/td");
 
-         if (tableDetails == null)
-         {
+         // TODO - other checks or just catch any exception?  Do this other places?
+         if (tableDetails == null) {
             return Date.NullDate;
          }
 
@@ -41,8 +40,7 @@ namespace SoftwareThresher.Settings.Search {
          return new Date(DateTime.Parse(dateString));
       }
 
-      public string GetHistoryUrl(Observation observation)
-      {
+      public string GetHistoryUrl(Observation observation) {
          return $"{BaseLocation}/history{observation.SystemSpecificString}";
       }
    }

@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Json;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
-// On Upgrade of Opengrok (current version ) check the following:
+// TODO On Upgrade of Opengrok (current version ) check the following:
 //   - if formatting is still in line value
 //   - if searching by path with an extension works.  ex - ".cs"
 namespace SoftwareThresher.Settings.Search {
@@ -78,7 +78,6 @@ namespace SoftwareThresher.Settings.Search {
 
       public Date GetLastEditDate(Observation observation)
       {
-
          SetPropertiesOnHttpSearch();
          return openGrokHttpSearch.GetLastEditDate(observation);
       }
