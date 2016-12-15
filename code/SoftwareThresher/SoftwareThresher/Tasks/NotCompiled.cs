@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Settings.Search;
 
@@ -12,7 +11,6 @@ namespace SoftwareThresher.Tasks {
 
       public string CompileConfigurationFileSearchPattern { get; set; }
 
-      [UsageNote("Format is RegEx")]
       public string TextSearchPattern { get; set; }
 
       public override string DefaultReportHeaderText => "Not Compiled";
@@ -35,7 +33,8 @@ namespace SoftwareThresher.Tasks {
       void MarkObservationsPassedForFile(ILookup<string, Observation> observations, Observation observation) {
          var observationsWithSameDirectory = observations.Where(o => o.Key.StartsWith(observation.Location)).SelectMany(g => g).ToLookup(o => o.Location);
 
-         search.GetReferenceLine(observation, TextSearchPattern).ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, observation.Location, r));
+         var referenceLines = search.GetReferenceLine(observation, TextSearchPattern);
+         referenceLines.ForEach(r => MarkObservationsPassedForReference(observationsWithSameDirectory, observation.Location, r));
       }
 
       void MarkObservationsPassedForReference(ILookup<string, Observation> observations, string fileDirectory, string reference) {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestProject
 {
+   // TODO - name this project better
     public class NotFiltered
     {
     }
