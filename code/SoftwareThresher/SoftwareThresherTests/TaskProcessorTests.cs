@@ -37,7 +37,7 @@ namespace SoftwareThresherTests {
       [TestMethod]
       public void Run_MultipleTasks() {
          var task2 = Substitute.For<Task>();
-         var configurationnFilename = "config this";
+         const string configurationnFilename = "config this";
 
          configurationLoader.Load(configurationnFilename).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task, task2 });
@@ -56,13 +56,13 @@ namespace SoftwareThresherTests {
       }
 
       [TestMethod]
-      public void Run_Task_WriteObservations() {
-         var configurationnFilename = "config this";
+      public void Run_WriteObservations() {
+         const string configurationnFilename = "config this";
 
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task });
 
-         var title = "This is it";
+         const string title = "This is it";
          task.ReportHeader.Returns(title);
 
          var passedObservation = ObservationStub;
@@ -82,7 +82,7 @@ namespace SoftwareThresherTests {
       }
 
       [TestMethod]
-      public void Run_Task_WriteFailedObservations() {
+      public void Run_WriteFailedObservations() {
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
          configuration.Tasks.Returns(new List<Task> { task });
 
@@ -99,7 +99,7 @@ namespace SoftwareThresherTests {
       }
 
       [TestMethod]
-      public void Run_Task_WriteDeltaObservations() {
+      public void Run_WriteDeltaObservations() {
          var task2 = Substitute.For<Task>();
 
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);
@@ -110,7 +110,7 @@ namespace SoftwareThresherTests {
          var failedObservation = ObservationStub;
          failedObservation.Failed.Returns(true);
 
-         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { observation });
+         task.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { observation, failedObservation });
          task2.Execute(Arg.Any<List<Observation>>()).Returns(new List<Observation> { observation, failedObservation, observation, observation });
 
          taskProcessor.Run("");
@@ -122,7 +122,7 @@ namespace SoftwareThresherTests {
       }
 
       [TestMethod]
-      public void Run_Task_WritePassedObservations() {
+      public void Run_WritePassedObservations() {
          var task2 = Substitute.For<Task>();
 
          configurationLoader.Load(Arg.Any<string>()).Returns(configuration);

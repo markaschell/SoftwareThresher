@@ -28,12 +28,13 @@ namespace SoftwareThresher {
                var orginalNumberOfObservations = observations.Count;
 
                var stopWatch = Stopwatch.StartNew();
-               observations = task.Execute(observations.Where(o => !o.Failed).ToList());
+               observations = task.Execute(observations);
                stopWatch.Stop();
 
                var failedObservations = observations.Where(o => o.Failed).ToList();
                var numberOfPassedObservations = observations.Count - failedObservations.Count;
                report.WriteObservations(task.ReportHeader, numberOfPassedObservations - orginalNumberOfObservations, numberOfPassedObservations, stopWatch.Elapsed, failedObservations);
+               observations = observations.Where(o => !o.Failed).ToList();
             }
          }
          finally {
