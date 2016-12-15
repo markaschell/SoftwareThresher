@@ -14,7 +14,7 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void GetFileNameWithoutExtesion_RemovesExtenstionAndAddsDateTime() {
-         var configurationFilename = "input";
+         const string configurationFilename = "input";
 
          var filename = reportData.GetFileNameWithoutExtesion(configurationFilename + ".xml");
 
@@ -22,8 +22,17 @@ namespace SoftwareThresherTests.Reporting {
       }
 
       [TestMethod]
+      public void GetFileNameWithoutExtesion_RemovesDirectory() {
+         const string configurationFilename = "input";
+
+         var filename = reportData.GetFileNameWithoutExtesion("diretory\\" + configurationFilename);
+
+         Assert.IsTrue(filename.StartsWith(configurationFilename + "_"));
+      }
+
+      [TestMethod]
       public void GetFileNameWithoutExtesion_NoExtenstionReturnsSameValue() {
-         var configurationFilename = "input";
+         const string configurationFilename = "input";
 
          var filename = reportData.GetFileNameWithoutExtesion(configurationFilename);
 
@@ -32,7 +41,7 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void GetFileNameWithoutExtesion_AddsDateTime() {
-         var configurationFilename = "input";
+         const string configurationFilename = "input";
          var now = DateTime.Now;
 
          var filename = reportData.GetFileNameWithoutExtesion(configurationFilename + ".xml");

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace SoftwareThresher.Reporting {
    public interface IReportData {
@@ -7,7 +8,7 @@ namespace SoftwareThresher.Reporting {
 
    public class ReportData : IReportData {
       public string GetFileNameWithoutExtesion(string configurationFilename) {
-         return configurationFilename.Split('.')[0] + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+         return Path.GetFileNameWithoutExtension(configurationFilename) + "_" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
       }
    }
 }
