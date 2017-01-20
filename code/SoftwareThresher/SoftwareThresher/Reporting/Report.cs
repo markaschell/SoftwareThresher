@@ -36,7 +36,7 @@ namespace SoftwareThresher.Reporting {
             return;
          }
 
-         file.Write($"<h3 style=\"display: inline;\">{title}: {changeInObservations} = {numberOfPassedObservations}</h3> in {runningTime:c}{NewLine}");
+         file.Write($"<h3 style=\"display: inline;\">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{NewLine}");
 
          if (failedObservations.Count > 0) {
             file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");

@@ -45,10 +45,22 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_WritesHeader() {
          const string header = "This is my stupid title";
 
-         report.WriteObservations(header, 1, 3, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
+         report.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
          Received.InOrder(() => {
-            file.Write("<h3 style=\"display: inline;\">" + header + ": 1 = 3</h3> in 9.07:05:03.0010000<br />");
+            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
+            file.Write("<br />");
+         });
+      }
+
+      [TestMethod]
+      public void WriteObservations_WritesAbsoluteValueNumberOfChanges() {
+         const string header = "This is my stupid title";
+
+         report.WriteObservations(header, -1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
+
+         Received.InOrder(() => {
+            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
             file.Write("<br />");
          });
       }
@@ -107,14 +119,14 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_NothingAddedOrFailed_NothingIsWritten() {
          var observation = ObservationStub;
 
-         report.WriteObservations("testing", 0, 3, new TimeSpan(), new List<Observation> { observation });
+         report.WriteObservations("testing", 0, 0, new TimeSpan(), new List<Observation> { observation });
 
          file.DidNotReceive().Write(Arg.Any<string>());
       }
 
       [TestMethod]
       public void WriteObservations_NoThingFailed_TableIsNotWritten() {
-         report.WriteObservations("testing", 1, 3, new TimeSpan(), new List<Observation>());
+         report.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
 
          file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));
       }
