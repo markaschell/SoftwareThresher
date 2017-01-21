@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Tasks {
+   // TODO - add note to a task
+   // Note:  ignores case
+   // TODO - should we be ignoring case other places?
    public class NotCompiled : Task {
 
       public string Directory { get; set; }
@@ -46,10 +50,9 @@ namespace SoftwareThresher.Tasks {
          var referenceObservation = new FileObservation(referenceObject, null);
          var directory = Path.Combine(fileDirectory, referenceObservation.Location);
 
-         // Visual Studio currently ignores case when reading the csproj file 
-         // TODO - should we add a test or some sort of protection in case this changes in the future
-         // TODO - do we have a similar issue for directory?
-         observations.Where(o => o.Key == directory).SelectMany(g => g).Where(o => referenceObservation.Name.ToLower() == o.Name.ToLower()).ToList().ForEach(o => o.Failed = false);
+         observations.Where(o => string.Equals(o.Key, directory, StringComparison.CurrentCultureIgnoreCase))
+                     .SelectMany(g => g).Where(o => string.Equals(referenceObservation.Name, o.Name, StringComparison.CurrentCultureIgnoreCase)).ToList()
+                     .ForEach(o => o.Failed = false);
       }
    }
 }

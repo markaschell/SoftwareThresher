@@ -86,7 +86,7 @@ namespace SoftwareThresherTests.Tasks {
          const string searchPattern = "search pattern";
          notCompiled.TextSearchPattern = searchPattern;
 
-         var projectDirectory = "Base Directory";
+         var projectDirectory = "base directory";
          search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation(projectDirectory + "/", null) });
 
          const string filename1 = "filenname1";
@@ -179,7 +179,7 @@ namespace SoftwareThresherTests.Tasks {
       }
 
       [TestMethod]
-      public void Execute_IgnoresCaseOnObservation_Passes() {
+      public void Execute_IgnoresCaseForFilename_Passes() {
          const string searchPattern = "search pattern";
          notCompiled.TextSearchPattern = searchPattern;
 
@@ -196,7 +196,26 @@ namespace SoftwareThresherTests.Tasks {
       }
 
       [TestMethod]
-      public void Execute_IgnoresCaseOnReferenceLine_Passes() {
+      public void Execute_IgnoresCaseForDirectory_Passes() {
+         const string searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation("file", null) });
+
+         const string filename = "filenname";
+         search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + @"directory\" + filename });
+
+         var observation = ObservationStub;
+         observation.Name.Returns(filename);
+         observation.Location.Returns("DIRECTORY");
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresCaseForFilenameInReferenceLine_Passes() {
          const string searchPattern = "search pattern";
          notCompiled.TextSearchPattern = searchPattern;
 
@@ -206,6 +225,25 @@ namespace SoftwareThresherTests.Tasks {
 
          var observation = ObservationStub;
          observation.Name.Returns("filename");
+
+         var results = notCompiled.Execute(new List<Observation> { observation });
+
+         Assert.IsFalse(results.First().Failed);
+      }
+
+      [TestMethod]
+      public void Execute_IgnoresCaseForDirectoryInReferenceLine_Passes() {
+         const string searchPattern = "search pattern";
+         notCompiled.TextSearchPattern = searchPattern;
+
+         search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation("file", null) });
+
+         const string filename = "filenname";
+         search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + @"DIRECTORY\" + filename });
+
+         var observation = ObservationStub;
+         observation.Name.Returns(filename);
+         observation.Location.Returns("directory");
 
          var results = notCompiled.Execute(new List<Observation> { observation });
 
@@ -273,7 +311,7 @@ namespace SoftwareThresherTests.Tasks {
          search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation("file", null) });
 
          const string filename = "filenname";
-         const string subPath = "Task";
+         const string subPath = "task";
          search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + subPath + @"\" + filename });
 
          var observation = ObservationStub;
@@ -290,15 +328,15 @@ namespace SoftwareThresherTests.Tasks {
          const string searchPattern = "search pattern";
          notCompiled.TextSearchPattern = searchPattern;
 
-         const string projectDirectory = "Base Directory";
+         const string projectDirectory = "base directory";
          search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation(projectDirectory + "/", null) });
 
          const string filename = "filenname";
-         const string subPath = "Task";
+         const string subPath = "task";
          search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + subPath + @"\" + filename });
 
          var observation = ObservationStub;
-         observation.Location.Returns(projectDirectory + '\\' + subPath);
+         observation.Location.Returns(projectDirectory + @"\" + subPath);
          observation.Name.Returns(filename);
 
          var results = notCompiled.Execute(new List<Observation> { observation });
@@ -311,15 +349,15 @@ namespace SoftwareThresherTests.Tasks {
          const string searchPattern = "search pattern";
          notCompiled.TextSearchPattern = searchPattern;
 
-         const string projectDirectory = "Base Directory";
+         const string projectDirectory = "base directory";
          search.GetObservations(Arg.Any<string>(), Arg.Any<string>()).Returns(new List<Observation> { new FileObservation(projectDirectory + "/", null) });
 
          const string filename = "filenname";
-         const string subPath = "Task";
+         const string subPath = "task";
          search.GetReferenceLine(Arg.Any<Observation>(), Arg.Any<string>()).Returns(new List<string> { searchPattern + subPath + @"\\" + filename });
 
          var observation = ObservationStub;
-         observation.Location.Returns(projectDirectory + '\\' + subPath);
+         observation.Location.Returns(projectDirectory + @"\" + subPath);
          observation.Name.Returns(filename);
 
          var results = notCompiled.Execute(new List<Observation> { observation });
