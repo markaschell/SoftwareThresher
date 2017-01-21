@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestProject
+namespace TestData
 {
-   // TODO - name this project better
-    public class NotFiltered
+    public class GoodClass
+
     {
     }
 }

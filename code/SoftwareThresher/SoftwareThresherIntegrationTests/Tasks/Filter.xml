@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
   <settings>
-    <FileSystemSearch BaseLocation=".\..\..\..\TestProject\Filter" />
+    <FileSystemSearch BaseLocation=".\..\..\..\TestData\Filter" />
   </settings>
   <tasks>
     <FindFiles Directory="" SearchPattern="*.cs"></FindFiles>
