@@ -9,6 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareThresherTests", "So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoftwareThresherIntegrationTests", "SoftwareThresherIntegrationTests\SoftwareThresherIntegrationTests.csproj", "{E1B3C5A7-9889-458F-A2C6-BABB737D2270}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestData", "TestData\TestData.csproj", "{73DA6AF2-490D-49F8-BEAD-5191C05AC150}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
