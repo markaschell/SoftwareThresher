@@ -49,7 +49,6 @@ namespace SoftwareThresher.Settings.Search {
          }
       }
 
-      // TODO - ONLINE Add a task for the project in github to finish this implementation
       public Date GetLastEditDate(Observation observation)
       {
          return Date.NullDate;

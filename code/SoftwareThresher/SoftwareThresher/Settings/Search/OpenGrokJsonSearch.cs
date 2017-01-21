@@ -8,6 +8,7 @@ using SoftwareThresher.Utilities;
 // TODO On Upgrade of Opengrok (current version ) check the following:
 //   - if formatting is still in line value
 //   - if searching by path with an extension works.  ex - ".cs"
+//   - if hist can be searched
 namespace SoftwareThresher.Settings.Search {
 
    public class OpenGrokJsonSearch : Search {

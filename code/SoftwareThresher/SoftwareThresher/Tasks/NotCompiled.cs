@@ -46,7 +46,8 @@ namespace SoftwareThresher.Tasks {
          var referenceObservation = new FileObservation(referenceObject, null);
          var directory = Path.Combine(fileDirectory, referenceObservation.Location);
 
-         // TODO - The ToLowers are not 100% accurate but given the way that Visual Studio ignores case when reading the csproj file this is the current solution 
+         // Visual Studio currently ignores case when reading the csproj file 
+         // TODO - should we add a test or some sort of protection in case this changes in the future
          // TODO - do we have a similar issue for directory?
          observations.Where(o => o.Key == directory).SelectMany(g => g).Where(o => referenceObservation.Name.ToLower() == o.Name.ToLower()).ToList().ForEach(o => o.Failed = false);
       }
