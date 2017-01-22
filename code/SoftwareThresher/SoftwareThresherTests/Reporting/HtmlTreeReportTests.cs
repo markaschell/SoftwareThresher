@@ -22,35 +22,10 @@ namespace SoftwareThresherTests.Reporting {
 
          htmlTreeReport = new HtmlTreeReport(file, htmlReportData);
       }
-
       static Observation ObservationStub => Substitute.For<Observation>((Search)null);
 
       //[TestMethod]
-      //public void WriteObservations_WritesHeader() {
-      //   const string header = "This is my stupid title";
-
-      //   htmlTreeReport.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
-
-      //   Received.InOrder(() => {
-      //      file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
-      //      file.Write("<br />");
-      //   });
-      //}
-
-      //[TestMethod]
-      //public void WriteObservations_WritesAbsoluteValueNumberOfChanges() {
-      //   const string header = "This is my stupid title";
-
-      //   htmlTreeReport.WriteObservations(header, -1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
-
-      //   Received.InOrder(() => {
-      //      file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
-      //      file.Write("<br />");
-      //   });
-      //}
-
-      //[TestMethod]
-      //public void WriteObservations_WritesNameAndLocation() {
+      //public void WriteObservationsDetails_WritesNameAndLocation() {
       //   const string name = "Issue";
       //   const string location = "It is here";
       //   var observation = ObservationStub;
@@ -58,8 +33,7 @@ namespace SoftwareThresherTests.Reporting {
       //   observation.Location.Returns(location);
       //   observation.LastEdit.Returns(Date.NullDate);
 
-      //   htmlTreeReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
-
+      //   htmlTableReport.WriteObservationsDetails(new List<Observation> { observation });
 
       //   Received.InOrder(() => {
       //      file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
@@ -70,49 +44,30 @@ namespace SoftwareThresherTests.Reporting {
       //}
 
       //[TestMethod]
-      //public void WriteObservations_WritesLastEdit() {
+      //public void WriteObservationsDetails_WritesLastEdit() {
       //   const string url = "url";
       //   var observation = ObservationStub;
       //   observation.LastEdit.Returns(new Date(new DateTime(2015, 1, 3)));
       //   observation.HistoryUrl.Returns(url);
 
-      //   htmlTreeReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
+      //   htmlTableReport.WriteObservationsDetails(new List<Observation> { observation });
 
       //   file.Received().Write("<tr><td></td><td></td><td><a href='" + url + "'>01/03/2015</a></td></tr>");
       //}
 
       //[TestMethod]
-      //public void WriteObservations_MultipleObservations() {
+      //public void WriteObservationsDetails_MultipleObservations() {
       //   var observation = ObservationStub;
-      //   observation.LastEdit.Returns(Date.NullDate);
 
-      //   htmlTreeReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
+      //   htmlTableReport.WriteObservationsDetails(new List<Observation> { observation, observation });
 
       //   Received.InOrder(() => {
-      //      file.Write(Arg.Is<string>(s => s.StartsWith("<h3")));
       //      file.Write(Arg.Is<string>(s => s.Contains("table")));
       //      file.Write(Arg.Is<string>(s => s.Contains("th")));
       //      file.Write(Arg.Any<string>());
       //      file.Write(Arg.Any<string>());
       //      file.Write(Arg.Is<string>(s => s.Contains("table")));
-      //      file.Write("<br />");
       //   });
-      //}
-
-      //[TestMethod]
-      //public void WriteObservations_NothingAddedOrFailed_NothingIsWritten() {
-      //   var observation = ObservationStub;
-
-      //   htmlTreeReport.WriteObservations("testing", 0, 0, new TimeSpan(), new List<Observation> { observation });
-
-      //   file.DidNotReceive().Write(Arg.Any<string>());
-      //}
-
-      //[TestMethod]
-      //public void WriteObservations_NoThingFailed_TableIsNotWritten() {
-      //   htmlTreeReport.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
-
-      //   file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));
       //}
    }
 }

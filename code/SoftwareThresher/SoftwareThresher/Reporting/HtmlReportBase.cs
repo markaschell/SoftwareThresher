@@ -3,33 +3,47 @@ using System.Collections.Generic;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
-// TODO - organize this clases better in the file system
 namespace SoftwareThresher.Reporting {
    public abstract class HtmlReportBase : Report {
-      protected readonly ISystemFileWriter file;
+      protected readonly ISystemFileWriter systemFileWriter;
       protected readonly IHtmlReportData htmlReportData;
 
       protected HtmlReportBase() : this(new SystemFileWriter(), new HtmlReportData()) { }
 
-      protected HtmlReportBase(ISystemFileWriter file, IHtmlReportData htmlReportData) {
-         this.file = file;
+      protected HtmlReportBase(ISystemFileWriter systemFileWriter, IHtmlReportData htmlReportData) {
+         this.systemFileWriter = systemFileWriter;
          this.htmlReportData = htmlReportData;
       }
 
       public void Start(string configurationFilename)
       {
          var reportFileName = htmlReportData.GetFileName(configurationFilename);
-         file.Create(reportFileName);
+         systemFileWriter.Create(reportFileName);
 
-         file.Write(htmlReportData.StartText);
+         systemFileWriter.Write(htmlReportData.StartText);
       }
 
-      public abstract void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations);
+      public void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations)
+      {
+         if (changeInObservations == 0) {
+            return;
+         }
+
+         systemFileWriter.Write($"<h3 style=\"display: inline;\">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{htmlReportData.NewLine}");
+
+         if (failedObservations.Count > 0) {
+            WriteObservationsDetails(failedObservations);
+         }
+
+         systemFileWriter.Write(htmlReportData.NewLine);
+      }
+
+      public abstract void WriteObservationsDetails(List<Observation> observations);
 
       public virtual void Complete()
       {
-         file.Write(htmlReportData.EndText);
-         file.Close();
+         systemFileWriter.Write(htmlReportData.EndText);
+         systemFileWriter.Close();
       }
    }
 }

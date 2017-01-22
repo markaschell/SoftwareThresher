@@ -1,6 +1,10 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
+using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests.Reporting {
@@ -9,14 +13,16 @@ namespace SoftwareThresherTests.Reporting {
       ISystemFileWriter file;
       IHtmlReportData htmlReportData;
 
-      Report htmlReportStrategy;
+      HtmlReportBase htmlReportBase;
+
+      static Observation ObservationStub => Substitute.For<Observation>((Search)null);
 
       [TestInitialize]
       public void Setup() {
          file = Substitute.For<ISystemFileWriter>();
          htmlReportData = Substitute.For<IHtmlReportData>();
 
-         htmlReportStrategy = Substitute.ForPartsOf<HtmlReportBase>(file, htmlReportData);
+         htmlReportBase = Substitute.ForPartsOf<HtmlReportBase>(file, htmlReportData);
       }
 
       [TestMethod]
@@ -29,7 +35,7 @@ namespace SoftwareThresherTests.Reporting {
          const string startText = "This is the beginning";
          htmlReportData.StartText.Returns(startText);
 
-         htmlReportStrategy.Start(configurationFilename);
+         htmlReportBase.Start(configurationFilename);
 
          Received.InOrder(() => {
             file.Create(reportName);
@@ -38,11 +44,49 @@ namespace SoftwareThresherTests.Reporting {
       }
 
       [TestMethod]
+      public void WriteObservations_NothingAddedOrFailed_NothingIsWritten() {
+         htmlReportBase.WriteObservations("testing", 0, 0, new TimeSpan(), new List<Observation> { ObservationStub });
+
+         file.DidNotReceive().Write(Arg.Any<string>());
+      }
+
+      [TestMethod]
+      public void WriteObservations_WritesResults() {
+         const string header = "This is my stupid title";
+
+         const string newLine = "new";
+         htmlReportData.NewLine.Returns(newLine);
+
+         var observations = new List<Observation> { ObservationStub };
+         htmlReportBase.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), observations);
+
+         Received.InOrder(() => {
+            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000" + newLine);
+            htmlReportBase.WriteObservationsDetails(observations);
+            file.Write(newLine);
+         });
+      }
+
+      [TestMethod]
+      public void WriteObservations_WritesAbsoluteValueNumberOfChanges() {
+         htmlReportBase.WriteObservations(string.Empty, -2, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
+
+         file.Write(Arg.Is<string>(s => s.Contains(": 2</h3>")));
+      }
+
+      [TestMethod]
+      public void WriteObservations_NoThingFailed_DetailsAreNotWritten() {
+         htmlReportBase.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
+
+         htmlReportBase.DidNotReceive().WriteObservationsDetails(Arg.Any<List<Observation>>());
+      }
+
+      [TestMethod]
       public void Complete() {
          const string endText = "This is the end, my friend";
          htmlReportData.EndText.Returns(endText);
 
-         htmlReportStrategy.Complete();
+         htmlReportBase.Complete();
 
          Received.InOrder(() => {
             file.Write(endText);
