@@ -74,6 +74,7 @@
     <Compile Include="Configurations\TypeStubs\TestTaskWithTwoSettings.cs" />
     <Compile Include="Observations\FileObservationTests.cs" />
     <Compile Include="Observations\OpenGrokObservationTests.cs" />
+    <Compile Include="Reporting\HtmlReportDataTests.cs" />
     <Compile Include="Reporting\ReportDataTests.cs" />
     <Compile Include="Reporting\HtmlTreeReportTests.cs" />
     <Compile Include="Reporting\HtmlTableReportTests.cs" />

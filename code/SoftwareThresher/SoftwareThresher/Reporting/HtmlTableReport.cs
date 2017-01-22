@@ -7,22 +7,20 @@ using SoftwareThresher.Utilities;
 namespace SoftwareThresher.Reporting {
    public class HtmlTableReport : Report {
       readonly ISystemFileWriter file;
-      readonly IReportData reportData;
+      readonly IHtmlReportData htmlReportData;
 
-      const string NewLine = "<br />";
+      public HtmlTableReport() : this(new SystemFileWriter(), new HtmlReportData()) { }
 
-      public HtmlTableReport() : this(new SystemFileWriter(), new ReportData()) { }
-
-      public HtmlTableReport(ISystemFileWriter file, IReportData reportData) {
+      public HtmlTableReport(ISystemFileWriter file, IHtmlReportData htmlReportData) {
          this.file = file;
-         this.reportData = reportData;
+         this.htmlReportData = htmlReportData;
       }
 
       public void Start(string configurationFilename) {
-         var reportFileName = reportData.GetFileNameWithoutExtesion(configurationFilename) + ".html";
+         var reportFileName = htmlReportData.GetFileName(configurationFilename);
          file.Create(reportFileName);
 
-         file.Write("<html><head></head><body>");
+         file.Write(htmlReportData.StartText);
       }
 
       public void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations) {
@@ -30,7 +28,7 @@ namespace SoftwareThresher.Reporting {
             return;
          }
 
-         file.Write($"<h3 style=\"display: inline;\">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{NewLine}");
+         file.Write($"<h3 style=\"display: inline;\">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{htmlReportData.NewLine}");
 
          if (failedObservations.Count > 0) {
             file.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
@@ -44,11 +42,11 @@ namespace SoftwareThresher.Reporting {
             file.Write("</table>");
          }
 
-         file.Write(NewLine);
+         file.Write(htmlReportData.NewLine);
       }
 
       public void Complete() {
-         file.Write("</body></html>");
+         file.Write(htmlReportData.EndText);
          file.Close();
       }
    }

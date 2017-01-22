@@ -11,16 +11,16 @@ namespace SoftwareThresherTests.Reporting {
    [TestClass]
    public class HtmlTableReportTests {
       ISystemFileWriter file;
-      IReportData reportData;
+      IHtmlReportData htmlReportData;
 
       HtmlTableReport htmlTableReport;
 
       [TestInitialize]
       public void Setup() {
          file = Substitute.For<ISystemFileWriter>();
-         reportData = Substitute.For<IReportData>();
+         htmlReportData = Substitute.For<IHtmlReportData>();
 
-         htmlTableReport = new HtmlTableReport(file, reportData);
+         htmlTableReport = new HtmlTableReport(file, htmlReportData);
       }
 
       static Observation ObservationStub => Substitute.For<Observation>((Search)null);
@@ -30,13 +30,16 @@ namespace SoftwareThresherTests.Reporting {
          const string configurationFilename = "This is it";
 
          const string reportName = "reportName";
-         reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
+         htmlReportData.GetFileName(configurationFilename).Returns(reportName);
+
+         const string startText = "This is the beginning";
+         htmlReportData.StartText.Returns(startText);
 
          htmlTableReport.Start(configurationFilename);
 
          Received.InOrder(() => {
-            file.Create(reportName + ".html");
-            file.Write("<html><head></head><body>");
+            file.Create(reportName);
+            file.Write(startText);
          });
       }
 
@@ -44,24 +47,22 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_WritesHeader() {
          const string header = "This is my stupid title";
 
+         const string newLine = "new";
+         htmlReportData.NewLine.Returns(newLine);
+
          htmlTableReport.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
          Received.InOrder(() => {
-            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
-            file.Write("<br />");
+            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000" + newLine);
+            file.Write(newLine);
          });
       }
 
       [TestMethod]
       public void WriteObservations_WritesAbsoluteValueNumberOfChanges() {
-         const string header = "This is my stupid title";
+         htmlTableReport.WriteObservations(string.Empty, -2, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
-         htmlTableReport.WriteObservations(header, -1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
-
-         Received.InOrder(() => {
-            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
-            file.Write("<br />");
-         });
+         file.Write(Arg.Is<string>(s => s.Contains(": 2</h3>")));
       }
 
       [TestMethod]
@@ -101,6 +102,9 @@ namespace SoftwareThresherTests.Reporting {
          var observation = ObservationStub;
          observation.LastEdit.Returns(Date.NullDate);
 
+         const string newLine = "new";
+         htmlReportData.NewLine.Returns(newLine);
+
          htmlTableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
 
          Received.InOrder(() => {
@@ -110,7 +114,7 @@ namespace SoftwareThresherTests.Reporting {
             file.Write(Arg.Any<string>());
             file.Write(Arg.Any<string>());
             file.Write(Arg.Is<string>(s => s.Contains("table")));
-            file.Write("<br />");
+            file.Write(newLine);
          });
       }
 
@@ -132,11 +136,13 @@ namespace SoftwareThresherTests.Reporting {
 
       [TestMethod]
       public void Complete() {
+         const string endText = "This is the end, my friend";
+         htmlReportData.EndText.Returns(endText);
 
          htmlTableReport.Complete();
 
          Received.InOrder(() => {
-            file.Write("</body></html>");
+            file.Write(endText);
             file.Received().Close();
          });
       }
