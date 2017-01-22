@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Tasks {
-   // TODO - add note to a task
-   // Note:  ignores case
-   // TODO - should we be ignoring case other places?
+   [UsageNote("Ignores case when matching names")]
    public class NotCompiled : Task {
 
       public string Directory { get; set; }
