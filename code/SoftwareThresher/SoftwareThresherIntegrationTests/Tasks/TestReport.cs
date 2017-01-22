@@ -4,7 +4,7 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
 
 namespace SoftwareThresherIntegrationTests.Tasks {
-   public class TestReport : IReport {
+   public class TestReport : Report {
 
       public ReportItem LastReportItem { get; private set; }
 

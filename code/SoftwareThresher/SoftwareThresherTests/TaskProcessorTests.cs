@@ -17,7 +17,7 @@ namespace SoftwareThresherTests {
       IConfiguration configuration;
       Task task;
 
-      IReport report;
+      Report report;
 
       TaskProcessor taskProcessor;
 
@@ -27,7 +27,7 @@ namespace SoftwareThresherTests {
          configuration = Substitute.For<IConfiguration>();
          task = Substitute.For<Task>();
 
-         report = Substitute.For<IReport>();
+         report = Substitute.For<Report>();
 
          taskProcessor = new TaskProcessor(configurationLoader, report);
       }

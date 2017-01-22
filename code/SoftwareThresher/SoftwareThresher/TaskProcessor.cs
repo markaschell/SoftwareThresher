@@ -8,14 +8,14 @@ using SoftwareThresher.Reporting;
 namespace SoftwareThresher {
    public class TaskProcessor {
       readonly IConfigurationLoader configurationLoader;
-      readonly IReport report;
+      readonly Report report;
 
-      public TaskProcessor(IConfigurationLoader configurationLoader, IReport report) {
+      public TaskProcessor(IConfigurationLoader configurationLoader, Report report) {
          this.configurationLoader = configurationLoader;
          this.report = report;
       }
 
-      public TaskProcessor() : this(new ConfigurationLoader(), new Report()) {
+      public TaskProcessor() : this(new ConfigurationLoader(), new TableReport()) {
       }
 
       public void Run(string configurationFilename) {
