@@ -13,16 +13,15 @@ namespace SoftwareThresher.Reporting {
 
       // TODO - finish
       public override void WriteObservationsDetails(List<Observation> observations) {
-         //systemFileWriter.Write("<table border=\"1\" style=\"border-collapse: collapse;\">");
-         //systemFileWriter.Write("<tr><th>Name</th><th>Location</th><th>Last Edited</th></tr>");
+         systemFileWriter.Write(@"<table id=""resultsTable"">");
 
-         //foreach (var observation in observations.OrderBy(o => o.SystemSpecificString)) {
-         //   var lastEdit = observation.LastEdit;
-         //   var lastEditString = lastEdit == Date.NullDate ? string.Empty : $"<a href='{observation.HistoryUrl}'>{lastEdit}</a>";
+         foreach (var observation in observations.OrderBy(o => o.SystemSpecificString)) {
+            var lastEdit = observation.LastEdit;
+            var lastEditString = lastEdit == Date.NullDate ? string.Empty : $"<a href='{observation.HistoryUrl}'>{lastEdit}</a>";
 
-         //   systemFileWriter.Write($"<tr><td>{observation.Name}</td><td>{observation.Location}</td><td>{lastEditString}</td></tr>");
-         //}
-         //systemFileWriter.Write("</table>");
+            systemFileWriter.Write($@"<tr data-depth=""0""><td>{observation.SystemSpecificString}</td><td>{lastEditString}</td></tr>");
+         }
+         systemFileWriter.Write("</table>");
       }
 
       public override void Complete() {

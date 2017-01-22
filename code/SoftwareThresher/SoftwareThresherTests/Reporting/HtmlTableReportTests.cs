@@ -53,7 +53,7 @@ namespace SoftwareThresherTests.Reporting {
 
          htmlTableReport.WriteObservationsDetails(new List<Observation> { observation });
 
-         file.Received().Write("<tr><td></td><td></td><td><a href='" + url + "'>01/03/2015</a></td></tr>");
+         file.Received().Write(Arg.Is<string>(s => s.Contains("<td><a href='" + url + "'>01/03/2015</a></td>")));
       }
 
       [TestMethod]

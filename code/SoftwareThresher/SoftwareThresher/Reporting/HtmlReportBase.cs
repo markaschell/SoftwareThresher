@@ -29,7 +29,7 @@ namespace SoftwareThresher.Reporting {
             return;
          }
 
-         systemFileWriter.Write($"<h3 style=\"display: inline;\">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{htmlReportData.NewLine}");
+         systemFileWriter.Write($@"<h3 style=""display: inline;"">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{htmlReportData.NewLine}");
 
          if (failedObservations.Count > 0) {
             WriteObservationsDetails(failedObservations);
