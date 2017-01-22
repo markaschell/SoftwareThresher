@@ -5,27 +5,14 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Reporting {
-   public class HtmlTreeReport : Report {
-      readonly ISystemFileWriter file;
-      readonly IReportData reportData;
+   // TODO - Do we want this to be a child or a strategy?
+   public class HtmlTreeReport : HtmlReportBase {
+      public HtmlTreeReport() { }
 
-      const string NewLine = "<br />";
+      public HtmlTreeReport(ISystemFileWriter file, IHtmlReportData htmlReportData) : base(file, htmlReportData) { }
 
-      public HtmlTreeReport() : this(new SystemFileWriter(), new ReportData()) { }
-
-      public HtmlTreeReport(ISystemFileWriter file, IReportData reportData) {
-         this.file = file;
-         this.reportData = reportData;
-      }
-
-      public void Start(string configurationFilename) {
-         //var reportFileName = reportData.GetFileNameWithoutExtesion(configurationFilename) + ".html";
-         //file.Create(reportFileName);
-
-         //file.Write("<html><head></head><body>");
-      }
-
-      public void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations) {
+      // TODO - finish
+      public override void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations) {
          //if (changeInObservations == 0) {
          //   return;
          //}
@@ -47,10 +34,10 @@ namespace SoftwareThresher.Reporting {
          //file.Write(NewLine);
       }
 
-      public void Complete() {
+      public override void Complete() {
          // TODO write script
-         //file.Write("</body></html>");
-         //file.Close();
+         file.Write("");
+         base.Complete();
       }
    }
 }

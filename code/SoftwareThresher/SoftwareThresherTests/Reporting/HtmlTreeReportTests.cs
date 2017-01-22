@@ -11,34 +11,19 @@ namespace SoftwareThresherTests.Reporting {
    [TestClass]
    public class HtmlTreeReportTests {
       ISystemFileWriter file;
-      IReportData reportData;
+      IHtmlReportData htmlReportData;
 
       HtmlTreeReport htmlTreeReport;
 
       [TestInitialize]
       public void Setup() {
          file = Substitute.For<ISystemFileWriter>();
-         reportData = Substitute.For<IReportData>();
+         htmlReportData = Substitute.For<IHtmlReportData>();
 
-         htmlTreeReport = new HtmlTreeReport(file, reportData);
+         htmlTreeReport = new HtmlTreeReport(file, htmlReportData);
       }
 
       static Observation ObservationStub => Substitute.For<Observation>((Search)null);
-
-      //[TestMethod]
-      //public void Start() {
-      //   const string configurationFilename = "This is it";
-
-      //   const string reportName = "reportName";
-      //   reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
-
-      //   htmlTreeReport.Start(configurationFilename);
-
-      //   Received.InOrder(() => {
-      //      file.Create(reportName + ".html");
-      //      file.Write("<html><head></head><body>");
-      //   });
-      //}
 
       //[TestMethod]
       //public void WriteObservations_WritesHeader() {
@@ -128,17 +113,6 @@ namespace SoftwareThresherTests.Reporting {
       //   htmlTreeReport.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
 
       //   file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));
-      //}
-
-      //[TestMethod]
-      //public void Complete() {
-
-      //   htmlTreeReport.Complete();
-
-      //   Received.InOrder(() => {
-      //      file.Write("</body></html>");
-      //      file.Received().Close();
-      //   });
       //}
    }
 }

@@ -26,24 +26,6 @@ namespace SoftwareThresherTests.Reporting {
       static Observation ObservationStub => Substitute.For<Observation>((Search)null);
 
       [TestMethod]
-      public void Start() {
-         const string configurationFilename = "This is it";
-
-         const string reportName = "reportName";
-         htmlReportData.GetFileName(configurationFilename).Returns(reportName);
-
-         const string startText = "This is the beginning";
-         htmlReportData.StartText.Returns(startText);
-
-         htmlTableReport.Start(configurationFilename);
-
-         Received.InOrder(() => {
-            file.Create(reportName);
-            file.Write(startText);
-         });
-      }
-
-      [TestMethod]
       public void WriteObservations_WritesHeader() {
          const string header = "This is my stupid title";
 
@@ -132,19 +114,6 @@ namespace SoftwareThresherTests.Reporting {
          htmlTableReport.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
 
          file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));
-      }
-
-      [TestMethod]
-      public void Complete() {
-         const string endText = "This is the end, my friend";
-         htmlReportData.EndText.Returns(endText);
-
-         htmlTableReport.Complete();
-
-         Received.InOrder(() => {
-            file.Write(endText);
-            file.Received().Close();
-         });
       }
    }
 }

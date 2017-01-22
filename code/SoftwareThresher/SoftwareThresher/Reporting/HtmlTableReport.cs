@@ -5,25 +5,12 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Reporting {
-   public class HtmlTableReport : Report {
-      readonly ISystemFileWriter file;
-      readonly IHtmlReportData htmlReportData;
+   public class HtmlTableReport : HtmlReportBase {
+      public HtmlTableReport() { }
 
-      public HtmlTableReport() : this(new SystemFileWriter(), new HtmlReportData()) { }
+      public HtmlTableReport(ISystemFileWriter file, IHtmlReportData htmlReportData) : base(file, htmlReportData) { }
 
-      public HtmlTableReport(ISystemFileWriter file, IHtmlReportData htmlReportData) {
-         this.file = file;
-         this.htmlReportData = htmlReportData;
-      }
-
-      public void Start(string configurationFilename) {
-         var reportFileName = htmlReportData.GetFileName(configurationFilename);
-         file.Create(reportFileName);
-
-         file.Write(htmlReportData.StartText);
-      }
-
-      public void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations) {
+      public override void WriteObservations(string title, int changeInObservations, int numberOfPassedObservations, TimeSpan runningTime, List<Observation> failedObservations) {
          if (changeInObservations == 0) {
             return;
          }
@@ -43,11 +30,6 @@ namespace SoftwareThresher.Reporting {
          }
 
          file.Write(htmlReportData.NewLine);
-      }
-
-      public void Complete() {
-         file.Write(htmlReportData.EndText);
-         file.Close();
       }
    }
 }
