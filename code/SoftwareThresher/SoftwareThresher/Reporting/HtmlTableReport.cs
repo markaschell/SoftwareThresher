@@ -5,15 +5,15 @@ using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Reporting {
-   public class TableReport : Report {
+   public class HtmlTableReport : Report {
       readonly ISystemFileWriter file;
       readonly IReportData reportData;
 
       const string NewLine = "<br />";
 
-      public TableReport() : this(new SystemFileWriter(), new ReportData()) { }
+      public HtmlTableReport() : this(new SystemFileWriter(), new ReportData()) { }
 
-      public TableReport(ISystemFileWriter file, IReportData reportData) {
+      public HtmlTableReport(ISystemFileWriter file, IReportData reportData) {
          this.file = file;
          this.reportData = reportData;
       }

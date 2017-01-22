@@ -75,7 +75,8 @@
     <Compile Include="Observations\FileObservationTests.cs" />
     <Compile Include="Observations\OpenGrokObservationTests.cs" />
     <Compile Include="Reporting\ReportDataTests.cs" />
-    <Compile Include="Reporting\TableReportTests.cs" />
+    <Compile Include="Reporting\HtmlTreeReportTests.cs" />
+    <Compile Include="Reporting\HtmlTableReportTests.cs" />
     <Compile Include="Settings\Search\FileSystemSearchTests.cs" />
     <Compile Include="Settings\Search\OpenGrokParameterTests.cs" />
     <Compile Include="TaskProcessorTests.cs" />

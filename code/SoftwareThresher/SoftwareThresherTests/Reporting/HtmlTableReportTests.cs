@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Policy;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
@@ -10,18 +9,18 @@ using SoftwareThresher.Utilities;
 
 namespace SoftwareThresherTests.Reporting {
    [TestClass]
-   public class TableReportTests {
+   public class HtmlTableReportTests {
       ISystemFileWriter file;
       IReportData reportData;
 
-      TableReport tableReport;
+      HtmlTableReport htmlTableReport;
 
       [TestInitialize]
       public void Setup() {
          file = Substitute.For<ISystemFileWriter>();
          reportData = Substitute.For<IReportData>();
 
-         tableReport = new TableReport(file, reportData);
+         htmlTableReport = new HtmlTableReport(file, reportData);
       }
 
       static Observation ObservationStub => Substitute.For<Observation>((Search)null);
@@ -33,7 +32,7 @@ namespace SoftwareThresherTests.Reporting {
          const string reportName = "reportName";
          reportData.GetFileNameWithoutExtesion(configurationFilename).Returns(reportName);
 
-         tableReport.Start(configurationFilename);
+         htmlTableReport.Start(configurationFilename);
 
          Received.InOrder(() => {
             file.Create(reportName + ".html");
@@ -45,7 +44,7 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_WritesHeader() {
          const string header = "This is my stupid title";
 
-         tableReport.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
+         htmlTableReport.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
          Received.InOrder(() => {
             file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
@@ -57,7 +56,7 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_WritesAbsoluteValueNumberOfChanges() {
          const string header = "This is my stupid title";
 
-         tableReport.WriteObservations(header, -1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
+         htmlTableReport.WriteObservations(header, -1, 0, new TimeSpan(9, 7, 5, 3, 1), new List<Observation>());
 
          Received.InOrder(() => {
             file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000<br />");
@@ -74,7 +73,7 @@ namespace SoftwareThresherTests.Reporting {
          observation.Location.Returns(location);
          observation.LastEdit.Returns(Date.NullDate);
 
-         tableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
+         htmlTableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
 
 
          Received.InOrder(() => {
@@ -92,7 +91,7 @@ namespace SoftwareThresherTests.Reporting {
          observation.LastEdit.Returns(new Date(new DateTime(2015, 1, 3)));
          observation.HistoryUrl.Returns(url);
 
-         tableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
+         htmlTableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation });
 
          file.Received().Write("<tr><td></td><td></td><td><a href='" + url + "'>01/03/2015</a></td></tr>");
       }
@@ -102,7 +101,7 @@ namespace SoftwareThresherTests.Reporting {
          var observation = ObservationStub;
          observation.LastEdit.Returns(Date.NullDate);
 
-         tableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
+         htmlTableReport.WriteObservations("", 1, 0, new TimeSpan(), new List<Observation> { observation, observation });
 
          Received.InOrder(() => {
             file.Write(Arg.Is<string>(s => s.StartsWith("<h3")));
@@ -119,14 +118,14 @@ namespace SoftwareThresherTests.Reporting {
       public void WriteObservations_NothingAddedOrFailed_NothingIsWritten() {
          var observation = ObservationStub;
 
-         tableReport.WriteObservations("testing", 0, 0, new TimeSpan(), new List<Observation> { observation });
+         htmlTableReport.WriteObservations("testing", 0, 0, new TimeSpan(), new List<Observation> { observation });
 
          file.DidNotReceive().Write(Arg.Any<string>());
       }
 
       [TestMethod]
       public void WriteObservations_NoThingFailed_TableIsNotWritten() {
-         tableReport.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
+         htmlTableReport.WriteObservations("testing", 1, 0, new TimeSpan(), new List<Observation>());
 
          file.DidNotReceive().Write(Arg.Is<string>(s => s.Contains("table")));
       }
@@ -134,7 +133,7 @@ namespace SoftwareThresherTests.Reporting {
       [TestMethod]
       public void Complete() {
 
-         tableReport.Complete();
+         htmlTableReport.Complete();
 
          Received.InOrder(() => {
             file.Write("</body></html>");

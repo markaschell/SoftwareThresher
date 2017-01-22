@@ -15,7 +15,8 @@ namespace SoftwareThresher {
          this.report = report;
       }
 
-      public TaskProcessor() : this(new ConfigurationLoader(), new TableReport()) {
+      // TODO - make the report configurable
+      public TaskProcessor() : this(new ConfigurationLoader(), new HtmlTableReport()) {
       }
 
       public void Run(string configurationFilename) {

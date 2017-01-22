@@ -4,6 +4,7 @@ using System.IO;
 namespace SoftwareThresher.Reporting {
    public interface IReportData {
       string GetFileNameWithoutExtesion(string configurationFilename);
+
    }
 
    public class ReportData : IReportData {
