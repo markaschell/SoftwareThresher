@@ -3,7 +3,7 @@ using System.Linq;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresher.Reporting {
+namespace SoftwareThresher.Reporting.Html {
    public class HtmlTableReport : HtmlReportBase {
       public HtmlTableReport() { }
 

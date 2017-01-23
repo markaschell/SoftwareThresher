@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresher.Reporting {
+namespace SoftwareThresher.Reporting.Html {
    public abstract class HtmlReportBase : Report {
       protected readonly ISystemFileWriter systemFileWriter;
       protected readonly IHtmlReportData htmlReportData;

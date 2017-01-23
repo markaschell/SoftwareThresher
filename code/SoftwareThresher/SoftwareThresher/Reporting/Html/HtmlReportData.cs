@@ -1,7 +1,7 @@
 ﻿using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresher.Reporting {
+namespace SoftwareThresher.Reporting.Html {
    public interface IHtmlReportData {
       string GetFileName(string configurationFilename);
       string StartText { get; }

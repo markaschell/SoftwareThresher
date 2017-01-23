@@ -3,7 +3,7 @@ using System.Linq;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresher.Reporting {
+namespace SoftwareThresher.Reporting.Html {
    // TODO - Do we want this to be a child or a strategy?
    // TODO - organize these clases better in the systemFileWriter system
    public class HtmlTreeReport : HtmlReportBase {

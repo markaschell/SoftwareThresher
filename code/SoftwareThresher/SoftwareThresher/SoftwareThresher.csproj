@@ -62,11 +62,11 @@
     <Compile Include="Observations\OpenGrokObservation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reporting\HtmlReportBase.cs" />
-    <Compile Include="Reporting\HtmlReportData.cs" />
+    <Compile Include="Reporting\Html\HtmlReportBase.cs" />
+    <Compile Include="Reporting\Html\HtmlReportData.cs" />
     <Compile Include="Reporting\Report.cs" />
-    <Compile Include="Reporting\HtmlTreeReport.cs" />
-    <Compile Include="Reporting\HtmlTableReport.cs" />
+    <Compile Include="Reporting\Html\HtmlTreeReport.cs" />
+    <Compile Include="Reporting\Html\HtmlTableReport.cs" />
     <Compile Include="Reporting\ReportData.cs" />
     <Compile Include="Settings\Search\OpenGrokHttpSearch.cs" />
     <Compile Include="Settings\Search\OpenGrokJsonSearchResponse.cs" />

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using SoftwareThresher.Observations;
-using SoftwareThresher.Reporting;
+using SoftwareThresher.Reporting.Html;
 using SoftwareThresher.Settings.Search;
 using SoftwareThresher.Utilities;
 
-namespace SoftwareThresherTests.Reporting {
+namespace SoftwareThresherTests.Reporting.Html {
    [TestClass]
    public class HtmlReportBaseTests {
       ISystemFileWriter file;

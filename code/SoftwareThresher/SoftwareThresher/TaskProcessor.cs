@@ -4,6 +4,7 @@ using System.Linq;
 using SoftwareThresher.Configurations;
 using SoftwareThresher.Observations;
 using SoftwareThresher.Reporting;
+using SoftwareThresher.Reporting.Html;
 
 namespace SoftwareThresher {
    public class TaskProcessor {
