@@ -9,7 +9,7 @@ namespace SoftwareThresher.Utilities {
 
    public class WebRequest : IWebRequest {
       public HtmlNode IssueRequest(string url) {
-         // TODO - check out .Net.HtttpClient or ask Anthony what they use to do their scrapping?
+         // TODO - check out .Net.HtttpClient?
          ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
          var web = new HtmlWeb();
 

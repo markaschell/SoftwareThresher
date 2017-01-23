@@ -16,12 +16,9 @@ namespace SoftwareThresher.Reporting {
          systemFileWriter.Write(@"<table id=""resultsTable"">");
 
          foreach (var observation in observations.OrderBy(o => o.SystemSpecificString)) {
-            var lastEdit = observation.LastEdit;
-            var lastEditString = lastEdit == Date.NullDate ? string.Empty : $"<a href='{observation.HistoryUrl}'>{lastEdit}</a>";
-
-            systemFileWriter.Write($@"<tr data-depth=""0""><td>{observation.SystemSpecificString}</td><td>{lastEditString}</td></tr>");
+            systemFileWriter.Write($@"<tr data-depth=""0""><td>{observation.SystemSpecificString}</td><td>{htmlReportData.GetLastEditText(observation)}</td></tr>");
          }
-         systemFileWriter.Write("</table>");
+         systemFileWriter.Write(@"</table>");
       }
 
       public override void Complete() {
