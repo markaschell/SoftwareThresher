@@ -142,6 +142,7 @@ namespace SoftwareThresherTests.Tasks {
          Assert.IsFalse(results.First().Failed);
       }
 
+      // TODO - why did I split per space or tab?  Still need to trim.  We need a better way to know when to stop searching.  Maybe that is parameter.  Search start and search end.
       [TestMethod]
       public void Execute_IgnoresSpaceAfterFilenameInConfigFile_ObservationsPasses() {
          const string searchPattern = "search pattern";

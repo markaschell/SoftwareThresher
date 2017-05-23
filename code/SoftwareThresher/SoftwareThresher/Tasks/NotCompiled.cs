@@ -8,6 +8,7 @@ using SoftwareThresher.Settings.Search;
 
 namespace SoftwareThresher.Tasks {
    [UsageNote("Ignores case when matching names")]
+   // TODO - Should the name be changed to remove the Not?  For this and Referenced.   Should this really be called compiled?  Or is this a more complicated reference?  Or something more generic more more than referenced.
    public class NotCompiled : Task {
 
       public string Directory { get; set; }
@@ -25,6 +26,7 @@ namespace SoftwareThresher.Tasks {
       }
 
       public override List<Observation> Execute(List<Observation> observations) {
+         // TODO - does this stay here if we do Ors?  I think so.
          observations.ForEach(o => o.Failed = true);
 
          var observationsLookup = observations.ToLookup(o => o.Location);

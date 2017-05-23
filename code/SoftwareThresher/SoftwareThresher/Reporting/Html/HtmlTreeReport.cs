@@ -5,6 +5,7 @@ using SoftwareThresher.Utilities;
 
 namespace SoftwareThresher.Reporting.Html {
    // TODO - Do we want this to be a child or a strategy?
+   // TODO - Do we need this or should be be creating a grouping one that groups per pre-defined ways or is that dynamic?
    public class HtmlTreeReport : HtmlReportBase {
       public HtmlTreeReport() { }
 
