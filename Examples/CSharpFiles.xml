@@ -4,8 +4,8 @@
     <FileSystemSearch BaseLocation=".\..\code\SoftwareThresher" />
   </settings>
   <tasks>
-    <FindFilesOnDisk Directory="\TestProject" SearchPattern="*.cs"></FindFilesOnDisk>
-    <Filter LocationSearchPattern="\\([O|o]bj\\|[B|b]in\\|[O|o]bj$|[B|b]in$)" />
-    <NotCompiled Directory="TestProject" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
+    <FindFiles Directory="\TestData" SearchPattern="*.cs"></FindFiles>
+    <Filter SearchPattern="\\([O|o]bj\\|[B|b]in\\|[O|o]bj$|[B|b]in$)" />
+    <NotCompiled Directory="TestData" CompileConfigurationFileSearchPattern="*.csproj" TextSearchPattern="&lt;Compile Include=&quot;"></NotCompiled>
   </tasks>
 </configuration>
