@@ -6,7 +6,6 @@ namespace SoftwareThresher.Reporting.Html {
       string GetFileName(string configurationFilename);
       string StartText { get; }
       string EndText { get; }
-      string NewLine { get; }
       string GetLastEditText(Observation observation);
    }
 
@@ -25,7 +24,6 @@ namespace SoftwareThresher.Reporting.Html {
 
       public string StartText => "<html><head></head><body>";
       public string EndText => "</body></html>";
-      public string NewLine => "<br />";
 
       public string GetLastEditText(Observation observation)
       {

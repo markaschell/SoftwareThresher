@@ -54,16 +54,14 @@ namespace SoftwareThresherTests.Reporting.Html {
       public void WriteObservations_WritesResults() {
          const string header = "This is my stupid title";
 
-         const string newLine = "new";
-         htmlReportData.NewLine.Returns(newLine);
-
          var observations = new List<Observation> { ObservationStub };
          htmlReportBase.WriteObservations(header, 1, 0, new TimeSpan(9, 7, 5, 3, 1), observations);
 
          Received.InOrder(() => {
-            file.Write("<h3 style=\"display: inline;\">" + header + ": 1</h3> in 9.07:05:03.0010000" + newLine);
+            file.Write("<p>");
+            file.Write("<div><div style=\"font-size: large; font-weight: bold; display: inline;\">" + header + ": 1</div> in 9.07:05:03.0010000</div>");
             htmlReportBase.WriteObservationsDetails(observations);
-            file.Write(newLine);
+            file.Write("</p>");
          });
       }
 

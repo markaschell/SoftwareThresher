@@ -29,13 +29,14 @@ namespace SoftwareThresher.Reporting.Html {
             return;
          }
 
-         systemFileWriter.Write($@"<h3 style=""display: inline;"">{title}: {Math.Abs(changeInObservations)}</h3> in {runningTime:c}{htmlReportData.NewLine}");
+         systemFileWriter.Write("<p>");
+         systemFileWriter.Write($@"<div><div style=""font-size: large; font-weight: bold; display: inline;"">{title}: {Math.Abs(changeInObservations)}</div> in {runningTime:c}</div>");
 
          if (failedObservations.Count > 0) {
             WriteObservationsDetails(failedObservations);
          }
 
-         systemFileWriter.Write(htmlReportData.NewLine);
+         systemFileWriter.Write("</p>");
       }
 
       public abstract void WriteObservationsDetails(List<Observation> observations);
